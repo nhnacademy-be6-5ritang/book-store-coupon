@@ -31,7 +31,7 @@ public class HelloController {
 
 	@GetMapping
 	public String getHello() {
-		return port + ":hello";
+		return port + ":hel¬lo";
 	}
 
 }

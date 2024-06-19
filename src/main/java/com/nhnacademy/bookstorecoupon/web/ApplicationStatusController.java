@@ -1,4 +1,3 @@
-
 package com.nhnacademy.bookstorecoupon.web;
 
 import org.springframework.http.HttpStatus;

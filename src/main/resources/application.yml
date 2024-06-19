@@ -1,0 +1,75 @@
+spring:
+  application:
+    name: book-store-coupon
+
+  datasource:
+    url: jdbc:mysql://133.186.241.167:3306/be6_5ritang_coupon
+    username: be6_5ritang
+    password: j2EqdFa0rt.tX]WK
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        highlight_sql: true
+        auto_quote_keyword: true
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: trace
+    org.springframework.transaction.interceptor: trace
+
+  server:
+    port: 9494
+    shutdown: graceful
+
+  eureka:
+    instance:
+      instance-id: coupon
+      hostname: localhost
+      prefer-ip-address: true
+    client:
+      fetch-registry: true
+      register-with-eureka: true
+      service-url:
+        defaultZone: http://admin:1234@localhost:8761/eureka
+
+  spring:
+    lifecycle:
+      timeout-per-shutdown-phase: 30s
+
+  management:
+    health:
+      status:
+        order: DOWN, UP
+    endpoint:
+      jolokia:
+        enabled: true
+      metrics:
+        enabled: true
+      pause:
+        enabled: true
+      resume:
+        enabled: true
+      restart:
+        enabled: true
+      shutdown:
+        enabled: true
+    endpoints:
+      web:
+        exposure:
+          include: '*'
+    info:
+      env:
+        enabled: true

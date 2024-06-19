@@ -1,4 +1,3 @@
-
 package com.nhnacademy.bookstorecoupon.actuator;
 
 import org.springframework.stereotype.Component;
