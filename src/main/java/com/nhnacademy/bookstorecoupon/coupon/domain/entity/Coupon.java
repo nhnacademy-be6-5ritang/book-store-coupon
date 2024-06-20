@@ -1,10 +1,8 @@
 package com.nhnacademy.bookstorecoupon.coupon.domain.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
-import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,10 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,19 +36,20 @@ public class Coupon {
 
 	@NotNull
 	@Column(name = "coupon_expired_date", nullable = false)
-	@Temporal(TemporalType.DATE)
 	private LocalDateTime expiredDate;
 
 	@NotNull
 	@Column(name = "coupon_issue_date", nullable = false)
-	@Temporal(TemporalType.DATE)
 	private LocalDateTime issueDate;
-
-	@OneToMany(mappedBy = "coupon")
-	private List<UserAndCoupon> userAndCoupons;
 
 	@Builder
 	public Coupon(CouponPolicy couponPolicy, LocalDateTime expiredDate, LocalDateTime issueDate) {
+		this.couponPolicy = couponPolicy;
+		this.expiredDate = expiredDate;
+		this.issueDate = issueDate;
+	}
+
+	public void update(CouponPolicy couponPolicy, LocalDateTime expiredDate, LocalDateTime issueDate) {
 		this.couponPolicy = couponPolicy;
 		this.expiredDate = expiredDate;
 		this.issueDate = issueDate;

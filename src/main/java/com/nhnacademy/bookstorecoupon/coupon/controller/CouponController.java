@@ -2,45 +2,50 @@ package com.nhnacademy.bookstorecoupon.coupon.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nhnacademy.bookstorecoupon.coupon.dto.CouponDTO;
-import com.nhnacademy.bookstorecoupon.coupon.service.impl.CouponServiceImpl;
+import com.nhnacademy.bookstorecoupon.coupon.domain.dto.request.CouponRequestDTO;
+import com.nhnacademy.bookstorecoupon.coupon.domain.dto.response.CouponResponseDTO;
+import com.nhnacademy.bookstorecoupon.coupon.service.CouponService;
 
 @RestController
-@RequestMapping("/api/coupons")
+@RequestMapping("/coupons")
 public class CouponController {
 
-	private final CouponServiceImpl couponServiceImpl;
+	@Autowired
+	private final CouponService couponService;
 
-	public CouponController(CouponServiceImpl couponServiceImpl) {
-		this.couponServiceImpl = couponServiceImpl;
+	public CouponController(CouponService couponService) {
+		this.couponService = couponService;
 	}
 
-	@GetMapping("/available")
-	public List<CouponDTO> getAvailableCoupons(@RequestParam Long userId) {
-		return couponServiceImpl.getAvailableCouponsForUser(userId);
+	@PostMapping
+	public ResponseEntity<Void> createCoupon(@RequestBody CouponRequestDTO requestDTO) {
+		couponService.createCoupon(requestDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@GetMapping("/used")
-	public List<CouponUsageDTO> getUsedCoupons(@RequestParam Long userId) {
-		return couponServiceImpl.getUsedCouponsForUser(userId);
+
+
+	@GetMapping
+	public ResponseEntity<List<CouponResponseDTO>> getAllCoupons() {
+		List<CouponResponseDTO> coupons = couponService.getAllCoupons();
+		return ResponseEntity.status(HttpStatus.OK).body(coupons);
 	}
 
-	@PostMapping("/apply")
-	public void applyCoupon(@RequestParam Long userId, @RequestParam Long couponId) {
-		couponServiceImpl.applyCoupon(userId, couponId);
-	}
-
-	@PostMapping("/expire")
-	public void expireCoupons() {
-		couponServiceImpl.expireOldCoupons();
+	@GetMapping("/{id}")
+	public ResponseEntity<CouponResponseDTO> getCouponById(@PathVariable Long id) {
+		CouponResponseDTO coupon = couponService.getCouponById(id);
+		return ResponseEntity.status(HttpStatus.OK).body(coupon);
 	}
 
 
 }
-

@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@RequestMapping("/coupon")
-public class IndexController {
-
-	@GetMapping("/coupon/{id}")
-	public ResponseEntity<String> getMember(@PathVariable("id") String id) {
-
-		return ResponseEntity.ok(id);
-	}
-
-}
+//
+// @RestController
+// @RequestMapping("/coupon")
+// public class IndexController {
+//
+// 	@GetMapping("/coupon/{id}")
+// 	public ResponseEntity<String> getMember(@PathVariable("id") String id) {
+//
+// 		return ResponseEntity.ok(id);
+// 	}
+//
+// }

@@ -12,8 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,7 +36,6 @@ public class UserAndCoupon {
 	private Long userId;
 
 	@Column(name = "users_and_coupons_used_date")
-	@Temporal(TemporalType.DATE)
 	private LocalDateTime usedDate;
 
 	@Column(name = "users_and_coupons_is_used", nullable = false)
@@ -46,6 +43,13 @@ public class UserAndCoupon {
 
 	@Builder
 	public UserAndCoupon(Coupon coupon, Long userId, LocalDateTime usedDate, Boolean isUsed) {
+		this.coupon = coupon;
+		this.userId = userId;
+		this.usedDate = usedDate;
+		this.isUsed = isUsed;
+	}
+
+	public void update(Coupon coupon, Long userId, LocalDateTime usedDate, Boolean isUsed) {
 		this.coupon = coupon;
 		this.userId = userId;
 		this.usedDate = usedDate;

@@ -1,11 +1,13 @@
 package com.nhnacademy.bookstorecoupon.coupon.service;
 
-import com.example.demo.dto.UserCouponDTO;
-import com.example.demo.entity.UsersAndCoupons;
-
 import java.util.List;
 
+import com.nhnacademy.bookstorecoupon.coupon.domain.dto.request.CouponRequestDTO;
+import com.nhnacademy.bookstorecoupon.coupon.domain.dto.response.CouponResponseDTO;
+
 public interface CouponService {
-    List<UserCouponDTO> getAvailableCoupons(Long userId);
-    List<UserCouponDTO> getUsedCoupons(Long userId);
+
+    void createCoupon(CouponRequestDTO requestDTO);
+    List<CouponResponseDTO> getAllCoupons();
+    CouponResponseDTO getCouponById(Long id);
 }

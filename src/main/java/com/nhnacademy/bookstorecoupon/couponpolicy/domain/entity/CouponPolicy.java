@@ -52,4 +52,14 @@ public class CouponPolicy {
 		this.maxSalePrice = maxSalePrice;
 		this.type = type;
 	}
+
+	public void update(BigDecimal minOrderPrice, BigDecimal salePrice, BigDecimal saleRate, BigDecimal maxSalePrice,
+		String type) {
+		this.minOrderPrice = minOrderPrice;
+		this.salePrice = salePrice;
+		this.saleRate = saleRate;
+		this.maxSalePrice = maxSalePrice;
+		this.type = type;
+	}
+
 }

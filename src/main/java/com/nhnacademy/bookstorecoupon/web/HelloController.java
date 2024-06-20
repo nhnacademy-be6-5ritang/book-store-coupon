@@ -22,16 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date : 25/05/2023
  */
 
-@RestController
-@RequestMapping("/coupon")
-public class HelloController {
-
-	@Value("${server.port}")
-	private String port;
-
-	@GetMapping
-	public String getHello() {
-		return port + ":hel¬lo";
-	}
-
-}
+// @RestController
+// @RequestMapping("/coupon")
+// public class HelloController {
+//
+// 	@Value("${server.port}")
+// 	private String port;
+//
+// 	@GetMapping
+// 	public String getHello() {
+// 		return port + ":hel¬lo";
+// 	}
+//
+// }
