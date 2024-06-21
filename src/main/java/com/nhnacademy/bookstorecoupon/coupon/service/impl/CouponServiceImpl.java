@@ -30,7 +30,7 @@ public class CouponServiceImpl implements CouponService {
 	}
 
 	@Override
-	public void createCoupon(CouponRequestDTO requestDTO) {
+	public CouponResponseDTO createCoupon(CouponRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = couponPolicyRepository.findById(requestDTO.couponPolicyId())
 			.orElseThrow(
 				() -> new EntityNotFoundException("Coupon Policy not found with ID: " + requestDTO.couponPolicyId()));
@@ -43,6 +43,21 @@ public class CouponServiceImpl implements CouponService {
 
 		couponRepository.save(coupon);
 
+
+		Coupon savedCoupon = couponRepository.save(coupon);
+
+		return new CouponResponseDTO(
+			savedCoupon.getId(),
+			new CouponPolicyResponseDTO(
+				savedCoupon.getCouponPolicy().getMinOrderPrice(),
+				savedCoupon.getCouponPolicy().getSalePrice(),
+				savedCoupon.getCouponPolicy().getSaleRate(),
+				savedCoupon.getCouponPolicy().getMaxSalePrice(),
+				savedCoupon.getCouponPolicy().getType()
+			),
+			savedCoupon.getExpiredDate(),
+			savedCoupon.getIssueDate()
+		);
 	}
 
 

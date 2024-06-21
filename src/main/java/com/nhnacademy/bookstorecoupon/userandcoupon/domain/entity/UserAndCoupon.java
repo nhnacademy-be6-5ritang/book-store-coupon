@@ -49,9 +49,7 @@ public class UserAndCoupon {
 		this.isUsed = isUsed;
 	}
 
-	public void update(Coupon coupon, Long userId, LocalDateTime usedDate, Boolean isUsed) {
-		this.coupon = coupon;
-		this.userId = userId;
+	public void update(LocalDateTime usedDate, Boolean isUsed) {
 		this.usedDate = usedDate;
 		this.isUsed = isUsed;
 	}

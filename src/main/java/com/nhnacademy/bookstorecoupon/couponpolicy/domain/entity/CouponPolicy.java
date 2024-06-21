@@ -29,7 +29,6 @@ public class CouponPolicy {
 	@Column(name = "coupon_policy_min_order_price")
 	private BigDecimal minOrderPrice;
 
-	@NotNull
 	@Column(name = "coupon_policy_sale_price")
 	private BigDecimal salePrice;
 

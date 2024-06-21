@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -32,7 +31,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
     }
 
     @Override
-    public void createUserAndCoupon(UserAndCouponRequestDTO requestDTO) {
+    public UserAndCouponResponseDTO createUserAndCoupon(UserAndCouponRequestDTO requestDTO) {
         Coupon coupon = couponRepository.findById(requestDTO.couponId())
                 .orElseThrow(() -> new EntityNotFoundException("Coupon not found with ID: " + requestDTO.couponId()));
 
@@ -43,25 +42,58 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
                 .isUsed(requestDTO.isUsed())
                 .build();
 
-        userAndCouponRepository.save(userAndCoupon);
+
+        UserAndCoupon savedUserAndCoupon = userAndCouponRepository.save(userAndCoupon);
+
+        return new UserAndCouponResponseDTO(
+            savedUserAndCoupon.getId(),
+            new CouponResponseDTO(
+                savedUserAndCoupon.getCoupon().getId(),
+                new CouponPolicyResponseDTO(
+                    savedUserAndCoupon.getCoupon().getCouponPolicy().getMinOrderPrice(),
+                    savedUserAndCoupon.getCoupon().getCouponPolicy().getSalePrice(),
+                    savedUserAndCoupon.getCoupon().getCouponPolicy().getSaleRate(),
+                    savedUserAndCoupon.getCoupon().getCouponPolicy().getMaxSalePrice(),
+                    savedUserAndCoupon.getCoupon().getCouponPolicy().getType()
+                ),
+                savedUserAndCoupon.getCoupon().getExpiredDate(),
+                savedUserAndCoupon.getCoupon().getIssueDate()
+            ),
+            savedUserAndCoupon.getUserId(),
+            savedUserAndCoupon.getUsedDate(),
+            savedUserAndCoupon.getIsUsed()
+        );
 
 
     }
 
     @Override
-    public void updateUserAndCoupon(Long id, UserAndCouponRequestDTO requestDTO) {
-        Optional<UserAndCoupon> optionalUserAndCoupon = userAndCouponRepository.findById(id);
-        if (optionalUserAndCoupon.isPresent()) {
-            UserAndCoupon userAndCoupon = optionalUserAndCoupon.get();
-            Coupon coupon = couponRepository.findById(requestDTO.couponId())
-                .orElseThrow(() -> new EntityNotFoundException("Coupon not found with ID: " + requestDTO.couponId()));
+    public UserAndCouponResponseDTO updateUserAndCoupon(Long id, UserAndCouponRequestDTO requestDTO) {
+        UserAndCoupon userAndCoupon = userAndCouponRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("UserAndCoupon not found with ID: " + id));
 
-            userAndCoupon.update(coupon, requestDTO.userId(), requestDTO.usedDate(), requestDTO.isUsed());
+        userAndCoupon.update(requestDTO.usedDate(), requestDTO.isUsed());
 
+        UserAndCoupon updatedUserAndCoupon = userAndCouponRepository.save(userAndCoupon);
 
-            userAndCouponRepository.save(userAndCoupon);
-
-        }
+        return new UserAndCouponResponseDTO(
+            updatedUserAndCoupon.getId(),
+            new CouponResponseDTO(
+                updatedUserAndCoupon.getCoupon().getId(),
+                new CouponPolicyResponseDTO(
+                    updatedUserAndCoupon.getCoupon().getCouponPolicy().getMinOrderPrice(),
+                    updatedUserAndCoupon.getCoupon().getCouponPolicy().getSalePrice(),
+                    updatedUserAndCoupon.getCoupon().getCouponPolicy().getSaleRate(),
+                    updatedUserAndCoupon.getCoupon().getCouponPolicy().getMaxSalePrice(),
+                    updatedUserAndCoupon.getCoupon().getCouponPolicy().getType()
+                ),
+                updatedUserAndCoupon.getCoupon().getExpiredDate(),
+                updatedUserAndCoupon.getCoupon().getIssueDate()
+            ),
+            updatedUserAndCoupon.getUserId(),
+            updatedUserAndCoupon.getUsedDate(),
+            updatedUserAndCoupon.getIsUsed()
+        );
     }
 
     @Override

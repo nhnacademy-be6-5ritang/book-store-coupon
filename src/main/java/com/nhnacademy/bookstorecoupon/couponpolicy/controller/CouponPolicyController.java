@@ -18,7 +18,7 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPol
 import com.nhnacademy.bookstorecoupon.couponpolicy.service.impl.CouponPolicyServiceImpl;
 
 @RestController
-@RequestMapping("/coupon/policy")
+@RequestMapping("/coupons/policies")
 public class CouponPolicyController {
 	private final CouponPolicyServiceImpl couponPolicyService;
 
@@ -27,33 +27,33 @@ public class CouponPolicyController {
 	}
 
 	@PostMapping("/welcome")
-	public ResponseEntity<Void> issueWelcomeCoupon(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
-		couponPolicyService.issueWelcomeCoupon(couponPolicyRequestDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+	public ResponseEntity<CouponPolicyResponseDTO> issueWelcomeCoupon(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		CouponPolicyResponseDTO response = couponPolicyService.issueWelcomeCoupon(couponPolicyRequestDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@PostMapping("/birthday")
-	public ResponseEntity<Void> issueBirthdayCoupon(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
-		couponPolicyService.issueBirthdayCoupon(couponPolicyRequestDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+	public ResponseEntity<CouponPolicyResponseDTO> issueBirthdayCoupon(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		CouponPolicyResponseDTO response = couponPolicyService.issueBirthdayCoupon(couponPolicyRequestDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	@PostMapping("/book/{bookId}")
-	public ResponseEntity<Void> issueSpecificBookCoupon(@PathVariable("bookId") Long bookId,@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
-		couponPolicyService.issueSpecificBookCoupon(bookId, couponPolicyRequestDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+	@PostMapping("/books/{bookId}")
+	public ResponseEntity<CouponPolicyResponseDTO> issueSpecificBookCoupon(@PathVariable("bookId") Long bookId, @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		CouponPolicyResponseDTO response = couponPolicyService.issueSpecificBookCoupon(bookId, couponPolicyRequestDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	@PostMapping("/category/{categoryId}")
-	public ResponseEntity<Void> issueSpecificCategoryCoupon(@PathVariable("categoryId") Long categoryId,@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
-		couponPolicyService.issueSpecificCategoryCoupon(categoryId, couponPolicyRequestDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+	@PostMapping("/categories/{categoryId}")
+	public ResponseEntity<CouponPolicyResponseDTO> issueSpecificCategoryCoupon(@PathVariable("categoryId") Long categoryId, @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		CouponPolicyResponseDTO response = couponPolicyService.issueSpecificCategoryCoupon(categoryId, couponPolicyRequestDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@PostMapping("/sale")
-	public ResponseEntity<Void> issueDiscountCoupon(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
-		 couponPolicyService.issueDiscountCoupon(couponPolicyRequestDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+	public ResponseEntity<CouponPolicyResponseDTO> issueDiscountCoupon(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		CouponPolicyResponseDTO response = couponPolicyService.issueDiscountCoupon(couponPolicyRequestDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@GetMapping
@@ -65,13 +65,13 @@ public class CouponPolicyController {
 	@GetMapping("/{couponPolicyId}")
 	public ResponseEntity<CouponPolicyResponseDTO> getCouponPolicyById(@PathVariable("couponPolicyId") Long couponPolicyId) {
 		CouponPolicyResponseDTO policy = couponPolicyService.getCouponPolicyById(couponPolicyId);
-		return  ResponseEntity.status(HttpStatus.OK).body(policy);
+		return ResponseEntity.status(HttpStatus.OK).body(policy);
 	}
 
 	@PutMapping("/{couponPolicyId}")
-	public ResponseEntity<Void> updateCouponPolicy(@PathVariable Long couponPolicyId, @RequestBody CouponPolicyRequestDTO requestDTO) {
-		couponPolicyService.updateCouponPolicy(couponPolicyId, requestDTO);
-		return ResponseEntity.status(HttpStatus.OK).build();
+	public ResponseEntity<CouponPolicyResponseDTO> updateCouponPolicy(@PathVariable Long couponPolicyId, @RequestBody CouponPolicyRequestDTO requestDTO) {
+		CouponPolicyResponseDTO response = couponPolicyService.updateCouponPolicy(couponPolicyId, requestDTO);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@DeleteMapping("/{couponPolicyId}")

@@ -7,9 +7,10 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndC
 
 public interface UserAndCouponService {
 
-    void createUserAndCoupon(UserAndCouponRequestDTO requestDTO);
 
-    void updateUserAndCoupon(Long id, UserAndCouponRequestDTO requestDTO);
+    UserAndCouponResponseDTO createUserAndCoupon(UserAndCouponRequestDTO requestDTO);
+
+    UserAndCouponResponseDTO updateUserAndCoupon(Long id, UserAndCouponRequestDTO requestDTO);
 
     List<UserAndCouponResponseDTO> getAllUserAndCoupons();
 

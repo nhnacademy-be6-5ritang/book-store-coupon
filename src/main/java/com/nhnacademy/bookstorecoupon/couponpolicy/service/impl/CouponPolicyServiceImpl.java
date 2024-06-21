@@ -31,10 +31,8 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 		this.bookCouponRepository = bookCouponRepository;
 		this.categoryCouponRepository = categoryCouponRepository;
 	}
-
 	@Override
-	public void issueWelcomeCoupon(CouponPolicyRequestDTO requestDTO) {
-		// 비즈니스 로직 처리
+	public CouponPolicyResponseDTO issueWelcomeCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.builder()
 			.minOrderPrice(requestDTO.minOrderPrice())
 			.salePrice(requestDTO.salePrice())
@@ -43,14 +41,17 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			.type(requestDTO.type())
 			.build();
 
-		// TODO 1:같은정책있는지 체크!
 		couponPolicyRepository.save(couponPolicy);
-
+		return new CouponPolicyResponseDTO(
+			couponPolicy.getMinOrderPrice(),
+			couponPolicy.getSalePrice(),
+			couponPolicy.getSaleRate(),
+			couponPolicy.getMaxSalePrice(),
+			couponPolicy.getType());
 	}
 
 	@Override
-	public void issueBirthdayCoupon(CouponPolicyRequestDTO requestDTO) {
-		// 비즈니스 로직 처리
+	public CouponPolicyResponseDTO issueBirthdayCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.builder()
 			.minOrderPrice(requestDTO.minOrderPrice())
 			.salePrice(requestDTO.salePrice())
@@ -59,14 +60,17 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			.type(requestDTO.type())
 			.build();
 
-		// TODO 1:같은정책있는지 체크!
 		couponPolicyRepository.save(couponPolicy);
-
+		return new CouponPolicyResponseDTO(
+			couponPolicy.getMinOrderPrice(),
+			couponPolicy.getSalePrice(),
+			couponPolicy.getSaleRate(),
+			couponPolicy.getMaxSalePrice(),
+			couponPolicy.getType());
 	}
 
 	@Override
-	public void issueSpecificBookCoupon(Long bookId, CouponPolicyRequestDTO requestDTO) {
-		// 비즈니스 로직 처리
+	public CouponPolicyResponseDTO issueSpecificBookCoupon(Long bookId, CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.builder()
 			.minOrderPrice(requestDTO.minOrderPrice())
 			.salePrice(requestDTO.salePrice())
@@ -75,17 +79,18 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			.type(requestDTO.type())
 			.build();
 
-		// TODO 1:같은정책있는지 체크!
 		couponPolicyRepository.save(couponPolicy);
-		// BookCoupon 객체 생성 및 저장
 		bookCouponRepository.save(BookCoupon.builder().bookId(bookId).couponPolicy(couponPolicy).build());
-		// Coupon 객체 생성 및 반환
-
+		return new CouponPolicyResponseDTO(
+			couponPolicy.getMinOrderPrice(),
+			couponPolicy.getSalePrice(),
+			couponPolicy.getSaleRate(),
+			couponPolicy.getMaxSalePrice(),
+			couponPolicy.getType());
 	}
 
 	@Override
-	public void issueSpecificCategoryCoupon(Long categoryId, CouponPolicyRequestDTO requestDTO) {
-		// 비즈니스 로직 처리
+	public CouponPolicyResponseDTO issueSpecificCategoryCoupon(Long categoryId, CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.builder()
 			.minOrderPrice(requestDTO.minOrderPrice())
 			.salePrice(requestDTO.salePrice())
@@ -94,18 +99,18 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			.type(requestDTO.type())
 			.build();
 
-		// TODO 1:같은정책있는지 체크!
 		couponPolicyRepository.save(couponPolicy);
-		// CategoryCoupon 객체 생성 및 저장
-		// TODO 2: @builder 왜써야하는지 공부
 		categoryCouponRepository.save(new CategoryCoupon(couponPolicy, categoryId));
-		// Coupon 객체 생성 및 반환
-
+		return new CouponPolicyResponseDTO(
+			couponPolicy.getMinOrderPrice(),
+			couponPolicy.getSalePrice(),
+			couponPolicy.getSaleRate(),
+			couponPolicy.getMaxSalePrice(),
+			couponPolicy.getType());
 	}
 
 	@Override
-	public void issueDiscountCoupon(CouponPolicyRequestDTO requestDTO) {
-		// 비즈니스 로직 처리
+	public CouponPolicyResponseDTO issueDiscountCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.builder()
 			.minOrderPrice(requestDTO.minOrderPrice())
 			.salePrice(requestDTO.salePrice())
@@ -114,9 +119,13 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			.type(requestDTO.type())
 			.build();
 
-		// TODO 1:같은정책있는지 체크!
 		couponPolicyRepository.save(couponPolicy);
-		// Coupon 객체 생성 및 반환
+		return new CouponPolicyResponseDTO(
+			couponPolicy.getMinOrderPrice(),
+			couponPolicy.getSalePrice(),
+			couponPolicy.getSaleRate(),
+			couponPolicy.getMaxSalePrice(),
+			couponPolicy.getType());
 	}
 
 	@Override
@@ -151,11 +160,10 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	}
 
 	@Override
-	public void updateCouponPolicy(Long id, CouponPolicyRequestDTO requestDTO) {
+	public CouponPolicyResponseDTO updateCouponPolicy(Long id, CouponPolicyRequestDTO requestDTO) {
 		Optional<CouponPolicy> optionalPolicy = couponPolicyRepository.findById(id);
 		if (optionalPolicy.isPresent()) {
 			CouponPolicy policy = optionalPolicy.get();
-
 			policy.update(
 				requestDTO.minOrderPrice(),
 				requestDTO.salePrice(),
@@ -164,6 +172,12 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 				requestDTO.type()
 			);
 			couponPolicyRepository.save(policy);
+			return new CouponPolicyResponseDTO(
+				policy.getMinOrderPrice(),
+				policy.getSalePrice(),
+				policy.getSaleRate(),
+				policy.getMaxSalePrice(),
+				policy.getType());
 		} else {
 			throw new EntityNotFoundException("Coupon Policy not found with ID: " + id);
 		}

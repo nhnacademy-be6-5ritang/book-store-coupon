@@ -7,7 +7,7 @@ import com.nhnacademy.bookstorecoupon.coupon.domain.dto.response.CouponResponseD
 
 public interface CouponService {
 
-    void createCoupon(CouponRequestDTO requestDTO);
+    CouponResponseDTO createCoupon(CouponRequestDTO requestDTO);
     List<CouponResponseDTO> getAllCoupons();
     CouponResponseDTO getCouponById(Long id);
 }

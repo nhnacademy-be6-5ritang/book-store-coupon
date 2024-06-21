@@ -1,3 +1,6 @@
+server:
+  port: 9494
+
 spring:
   application:
     name: book-store-coupon
@@ -19,7 +22,7 @@ spring:
         auto_quote_keyword: true
         dialect: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     defer-datasource-initialization: true
   sql:
     init:
@@ -30,8 +33,8 @@ logging:
     org.hibernate.orm.jdbc.bind: trace
     org.springframework.transaction.interceptor: trace
 
-  server:
-    port: 9494
+
+
 #    shutdown: graceful
 #
 #  eureka:
