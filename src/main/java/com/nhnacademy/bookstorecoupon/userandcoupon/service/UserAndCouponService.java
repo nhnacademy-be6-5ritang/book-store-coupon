@@ -2,18 +2,18 @@ package com.nhnacademy.bookstorecoupon.userandcoupon.service;
 
 import java.util.List;
 
-import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.UserAndCouponRequestDTO;
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.UserAndCouponCreateRequestDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 
 public interface UserAndCouponService {
 
 
-    UserAndCouponResponseDTO createUserAndCoupon(UserAndCouponRequestDTO requestDTO);
+    UserAndCouponResponseDTO createUserAndCoupon(Long couponId, UserAndCouponCreateRequestDTO requestDTO);
 
-    UserAndCouponResponseDTO updateUserAndCoupon(Long id, UserAndCouponRequestDTO requestDTO);
+    UserAndCouponResponseDTO updateUserAndCoupon(String userEmail);
 
     List<UserAndCouponResponseDTO> getAllUserAndCoupons();
 
-    UserAndCouponResponseDTO getUserAndCouponById(Long id);
+    List<UserAndCouponResponseDTO> getUserAndCouponById(String userEmail);
 
 }

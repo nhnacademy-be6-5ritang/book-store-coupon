@@ -32,8 +32,8 @@ public class UserAndCoupon {
 	@JoinColumn(name = "coupon_id", nullable = false)
 	private Coupon coupon;
 
-	@Column(name = "user_id", nullable = false)
-	private Long userId;
+	@Column(name = "user_email", nullable = false)
+	private String userEmail;
 
 	@Column(name = "users_and_coupons_used_date")
 	private LocalDateTime usedDate;
@@ -42,9 +42,9 @@ public class UserAndCoupon {
 	private Boolean isUsed = false;
 
 	@Builder
-	public UserAndCoupon(Coupon coupon, Long userId, LocalDateTime usedDate, Boolean isUsed) {
+	public UserAndCoupon(Coupon coupon, String userEmail, LocalDateTime usedDate, Boolean isUsed) {
 		this.coupon = coupon;
-		this.userId = userId;
+		this.userEmail = userEmail;
 		this.usedDate = usedDate;
 		this.isUsed = isUsed;
 	}

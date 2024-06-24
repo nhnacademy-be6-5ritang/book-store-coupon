@@ -7,16 +7,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController
-@RequestMapping("/coupon")
-public class HelloController {
-
-	@Value("${server.port}")
-	private String port;
-
-	@GetMapping
-	public String getHello() {
-		return port + ":hello";
-	}
-
-}
+// @RestController
+// @RequestMapping("/coupon")
+// public class HelloController {
+//
+// 	@Value("${server.port}")
+// 	private String port;
+//
+// 	@GetMapping
+// 	public String getHello() {
+// 		return port + ":hello";
+// 	}
+//
+// }

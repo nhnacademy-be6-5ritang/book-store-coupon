@@ -49,6 +49,7 @@ public class CouponServiceImpl implements CouponService {
 		return new CouponResponseDTO(
 			savedCoupon.getId(),
 			new CouponPolicyResponseDTO(
+				savedCoupon.getCouponPolicy().getId(),
 				savedCoupon.getCouponPolicy().getMinOrderPrice(),
 				savedCoupon.getCouponPolicy().getSalePrice(),
 				savedCoupon.getCouponPolicy().getSaleRate(),
@@ -68,7 +69,9 @@ public class CouponServiceImpl implements CouponService {
 		List<Coupon> coupons = couponRepository.findAll();
 		return coupons.stream()
 			.map(coupon -> new CouponResponseDTO(coupon.getId(),
-				new CouponPolicyResponseDTO(coupon.getCouponPolicy().getMinOrderPrice(),
+				new CouponPolicyResponseDTO(
+					coupon.getCouponPolicy().getId(),
+					coupon.getCouponPolicy().getMinOrderPrice(),
 					coupon.getCouponPolicy().getSalePrice(),
 					coupon.getCouponPolicy().getSaleRate(),
 					coupon.getCouponPolicy().getMaxSalePrice(),
@@ -85,7 +88,9 @@ public class CouponServiceImpl implements CouponService {
 			.orElseThrow(() -> new EntityNotFoundException("Coupon not found with ID: " + id));
 
 		return new CouponResponseDTO(coupon.getId(),
-			new CouponPolicyResponseDTO(coupon.getCouponPolicy().getMinOrderPrice(),
+			new CouponPolicyResponseDTO(
+				coupon.getCouponPolicy().getId(),
+				coupon.getCouponPolicy().getMinOrderPrice(),
 				coupon.getCouponPolicy().getSalePrice(),
 				coupon.getCouponPolicy().getSaleRate(),
 				coupon.getCouponPolicy().getMaxSalePrice(),

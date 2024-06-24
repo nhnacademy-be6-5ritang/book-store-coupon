@@ -12,6 +12,7 @@ import com.nhnacademy.bookstorecoupon.bookcoupon.repository.BookCouponRepository
 import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupon;
 import com.nhnacademy.bookstorecoupon.categorycoupon.repository.CategoryCouponRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyRequestDTO;
+import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
@@ -43,6 +44,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 		couponPolicyRepository.save(couponPolicy);
 		return new CouponPolicyResponseDTO(
+			couponPolicy.getId(),
 			couponPolicy.getMinOrderPrice(),
 			couponPolicy.getSalePrice(),
 			couponPolicy.getSaleRate(),
@@ -62,6 +64,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 		couponPolicyRepository.save(couponPolicy);
 		return new CouponPolicyResponseDTO(
+			couponPolicy.getId(),
 			couponPolicy.getMinOrderPrice(),
 			couponPolicy.getSalePrice(),
 			couponPolicy.getSaleRate(),
@@ -82,6 +85,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 		couponPolicyRepository.save(couponPolicy);
 		bookCouponRepository.save(BookCoupon.builder().bookId(bookId).couponPolicy(couponPolicy).build());
 		return new CouponPolicyResponseDTO(
+			couponPolicy.getId(),
 			couponPolicy.getMinOrderPrice(),
 			couponPolicy.getSalePrice(),
 			couponPolicy.getSaleRate(),
@@ -102,6 +106,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 		couponPolicyRepository.save(couponPolicy);
 		categoryCouponRepository.save(new CategoryCoupon(couponPolicy, categoryId));
 		return new CouponPolicyResponseDTO(
+			couponPolicy.getId(),
 			couponPolicy.getMinOrderPrice(),
 			couponPolicy.getSalePrice(),
 			couponPolicy.getSaleRate(),
@@ -121,6 +126,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 		couponPolicyRepository.save(couponPolicy);
 		return new CouponPolicyResponseDTO(
+			couponPolicy.getId(),
 			couponPolicy.getMinOrderPrice(),
 			couponPolicy.getSalePrice(),
 			couponPolicy.getSaleRate(),
@@ -134,6 +140,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 		List<CouponPolicy> policies = couponPolicyRepository.findAll();
 		return policies.stream()
 			.map(policy -> new CouponPolicyResponseDTO(
+				policy.getId(),
 				policy.getMinOrderPrice(),
 				policy.getSalePrice(),
 				policy.getSaleRate(),
@@ -149,6 +156,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 		if (optionalPolicy.isPresent()) {
 			CouponPolicy policy = optionalPolicy.get();
 			return new CouponPolicyResponseDTO(
+				policy.getId(),
 				policy.getMinOrderPrice(),
 				policy.getSalePrice(),
 				policy.getSaleRate(),
@@ -160,7 +168,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	}
 
 	@Override
-	public CouponPolicyResponseDTO updateCouponPolicy(Long id, CouponPolicyRequestDTO requestDTO) {
+	public CouponPolicyResponseDTO updateCouponPolicy(Long id, CouponPolicyUpdateRequestDTO requestDTO) {
 		Optional<CouponPolicy> optionalPolicy = couponPolicyRepository.findById(id);
 		if (optionalPolicy.isPresent()) {
 			CouponPolicy policy = optionalPolicy.get();
@@ -168,11 +176,11 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 				requestDTO.minOrderPrice(),
 				requestDTO.salePrice(),
 				requestDTO.saleRate(),
-				requestDTO.maxSalePrice(),
-				requestDTO.type()
+				requestDTO.maxSalePrice()
 			);
 			couponPolicyRepository.save(policy);
 			return new CouponPolicyResponseDTO(
+				policy.getId(),
 				policy.getMinOrderPrice(),
 				policy.getSalePrice(),
 				policy.getSaleRate(),
