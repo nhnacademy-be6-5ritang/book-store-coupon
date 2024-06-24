@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,14 +104,55 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		);
 	}
 
+	// @Override
+	// @Transactional(readOnly = true)
+	// public Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(Pageable pageable) {
+	//
+	// 	int page = pageable.getPageNumber() - 1;
+	// 	int pageSize = 4;
+	//
+	// 	Page<UserAndCoupon> userAndCoupons = userAndCouponRepository.findAll(
+	// 		PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+	//
+	// 	return userAndCoupons.map(userAndCoupon -> new UserAndCouponResponseDTO(userAndCoupon.getId(),
+	// 		new CouponResponseDTO(userAndCoupon.getCoupon().getId(),
+	// 			new CouponPolicyResponseDTO(
+	// 				userAndCoupon.getCoupon().getCouponPolicy().getId(),
+	// 				userAndCoupon.getCoupon().getCouponPolicy().getMinOrderPrice(),
+	// 				userAndCoupon.getCoupon().getCouponPolicy().getSalePrice(),
+	// 				userAndCoupon.getCoupon().getCouponPolicy().getSaleRate(),
+	// 				userAndCoupon.getCoupon().getCouponPolicy().getMaxSalePrice(),
+	// 				userAndCoupon.getCoupon().getCouponPolicy().getType()),
+	// 			userAndCoupon.getCoupon().getExpiredDate(),
+	// 			userAndCoupon.getCoupon().getIssueDate()),
+	// 		userAndCoupon.getUserEmail(),
+	// 		userAndCoupon.getUsedDate(),
+	// 		userAndCoupon.getIsUsed()));
+	// }
+
+
 	@Override
 	@Transactional(readOnly = true)
-	public Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(Pageable pageable) {
-
+	public Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(String userEmail, String type, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 4;
 
-		Page<UserAndCoupon> userAndCoupons = userAndCouponRepository.findAll(
+		// 기본 조건: 모든 UserAndCoupon 가져오기
+		Specification<UserAndCoupon> spec = (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+
+		// userEmail 조건 추가
+		if (userEmail != null && !userEmail.isEmpty()) {
+			spec = spec.and((root, query, criteriaBuilder) ->
+				criteriaBuilder.equal(root.get("userEmail"), userEmail));
+		}
+
+		// type 조건 추가
+		if (type != null && !type.isEmpty()) {
+			spec = spec.and((root, query, criteriaBuilder) ->
+				criteriaBuilder.equal(root.get("coupon").get("couponPolicy").get("type"), type));
+		}
+
+		Page<UserAndCoupon> userAndCoupons = userAndCouponRepository.findAll(spec,
 			PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
 
 		return userAndCoupons.map(userAndCoupon -> new UserAndCouponResponseDTO(userAndCoupon.getId(),

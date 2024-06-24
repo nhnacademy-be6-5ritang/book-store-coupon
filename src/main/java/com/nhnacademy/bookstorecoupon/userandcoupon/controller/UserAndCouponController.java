@@ -38,25 +38,19 @@ public class UserAndCouponController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
-    // @GetMapping("/users")
-    // public ResponseEntity<List<UserAndCouponResponseDTO>> getAllUserAndCoupons() {
-    //     List<UserAndCouponResponseDTO> userAndCoupons = userAndCouponService.getAllUserAndCoupons();
-    //     return ResponseEntity.status(HttpStatus.OK).body(userAndCoupons);
-    // }
+
 
 
 
     @GetMapping("/users")
-    public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponPaging(Pageable pageable)  {
-        Page<UserAndCouponResponseDTO> userAndCoupons = userAndCouponService.getAllUserAndCouponPaging(pageable);
+    public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponPaging(
+         String userEmail,
+       String type,
+        Pageable pageable)  {
+        Page<UserAndCouponResponseDTO> userAndCoupons = userAndCouponService.getAllUserAndCouponPaging(userEmail, type, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(userAndCoupons);
     }
 
-    // @GetMapping("/users/{userId}")
-    // public ResponseEntity<List<UserAndCouponResponseDTO>> getUserAndCouponById( @PathVariable("userId") String userEmail) {
-    //     List<UserAndCouponResponseDTO> userAndCoupon = userAndCouponService.getUserAndCouponById(userEmail);
-    //     return ResponseEntity.status(HttpStatus.OK).body(userAndCoupon);
-    // }
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<Page<UserAndCouponResponseDTO>> getUserAndCouponByIdPaging( @PathVariable("userId") String userEmail, Pageable pageable) {
