@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.UserAndCouponCreateRequestDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
@@ -12,8 +13,11 @@ public interface UserAndCouponService {
 
     UserAndCouponResponseDTO updateUserAndCoupon(String userEmail);
 
-    List<UserAndCouponResponseDTO> getAllUserAndCoupons();
+    // List<UserAndCouponResponseDTO> getAllUserAndCoupons();
 
-    List<UserAndCouponResponseDTO> getUserAndCouponById(String userEmail);
+    Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(Pageable pageable);
+
+    // List<UserAndCouponResponseDTO> getUserAndCouponById(String userEmail);
+    Page<UserAndCouponResponseDTO> getUserAndCouponByIdPaging(String userEmail, Pageable pageable);
 
 }

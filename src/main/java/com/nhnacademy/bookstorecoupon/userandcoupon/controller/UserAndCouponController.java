@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,15 +38,29 @@ public class UserAndCouponController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
+    // @GetMapping("/users")
+    // public ResponseEntity<List<UserAndCouponResponseDTO>> getAllUserAndCoupons() {
+    //     List<UserAndCouponResponseDTO> userAndCoupons = userAndCouponService.getAllUserAndCoupons();
+    //     return ResponseEntity.status(HttpStatus.OK).body(userAndCoupons);
+    // }
+
+
+
     @GetMapping("/users")
-    public ResponseEntity<List<UserAndCouponResponseDTO>> getAllUserAndCoupons() {
-        List<UserAndCouponResponseDTO> userAndCoupons = userAndCouponService.getAllUserAndCoupons();
+    public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponPaging(Pageable pageable)  {
+        Page<UserAndCouponResponseDTO> userAndCoupons = userAndCouponService.getAllUserAndCouponPaging(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(userAndCoupons);
     }
 
+    // @GetMapping("/users/{userId}")
+    // public ResponseEntity<List<UserAndCouponResponseDTO>> getUserAndCouponById( @PathVariable("userId") String userEmail) {
+    //     List<UserAndCouponResponseDTO> userAndCoupon = userAndCouponService.getUserAndCouponById(userEmail);
+    //     return ResponseEntity.status(HttpStatus.OK).body(userAndCoupon);
+    // }
+
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<UserAndCouponResponseDTO>> getUserAndCouponById( @PathVariable("userId") String userEmail) {
-        List<UserAndCouponResponseDTO> userAndCoupon = userAndCouponService.getUserAndCouponById(userEmail);
+    public ResponseEntity<Page<UserAndCouponResponseDTO>> getUserAndCouponByIdPaging( @PathVariable("userId") String userEmail, Pageable pageable) {
+        Page<UserAndCouponResponseDTO> userAndCoupon = userAndCouponService.getUserAndCouponByIdPaging(userEmail, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(userAndCoupon);
     }
 

@@ -3,6 +3,10 @@ package com.nhnacademy.bookstorecoupon.coupon.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,6 +83,27 @@ public class CouponServiceImpl implements CouponService {
 				coupon.getExpiredDate(),
 				coupon.getIssueDate()))
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Page<CouponResponseDTO> getAllCouponPaging(Pageable pageable) {
+		int page=pageable.getPageNumber()-1;
+		int pageSize=4;
+
+
+
+		Page<Coupon> coupons = couponRepository.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+		Page<CouponResponseDTO> couponResponseDTOs = coupons.map(coupon -> new CouponResponseDTO(coupon.getId(), new CouponPolicyResponseDTO(coupon.getCouponPolicy().getId(),
+			coupon.getCouponPolicy().getMinOrderPrice(),
+			coupon.getCouponPolicy().getSalePrice(),
+			coupon.getCouponPolicy().getSaleRate(),
+			coupon.getCouponPolicy().getMaxSalePrice(),
+			coupon.getCouponPolicy().getType()),
+			coupon.getExpiredDate(),
+			coupon.getIssueDate()));
+
+		return couponResponseDTOs;
 	}
 
 	@Override

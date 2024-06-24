@@ -3,6 +3,8 @@ package com.nhnacademy.bookstorecoupon.coupon.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,11 +36,20 @@ public class CouponController {
 
 
 
+	@GetMapping("/issue")
+	public ResponseEntity<Page<CouponResponseDTO>> getAllCouponPaging(Pageable pageable) {
+		Page<CouponResponseDTO> coupons = couponService.getAllCouponPaging(pageable);
+		return ResponseEntity.status(HttpStatus.OK).body(coupons);
+	}
+
+
 	@GetMapping
 	public ResponseEntity<List<CouponResponseDTO>> getAllCoupons() {
 		List<CouponResponseDTO> coupons = couponService.getAllCoupons();
 		return ResponseEntity.status(HttpStatus.OK).body(coupons);
 	}
+
+
 
 	// @GetMapping("/{id}")
 	// public ResponseEntity<CouponResponseDTO> getCouponById(@PathVariable Long id) {
