@@ -1,9 +1,11 @@
 package com.nhnacademy.bookstorecoupon.couponpolicy.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +17,10 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPoli
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
+import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoundException;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.service.CouponPolicyService;
-
-import jakarta.persistence.EntityNotFoundException;
+import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 @Service
 @Transactional
 public class CouponPolicyServiceImpl implements CouponPolicyService {
@@ -163,7 +165,9 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 				policy.getMaxSalePrice(),
 				policy.getType());
 		} else {
-			throw new EntityNotFoundException("Coupon Policy not found with ID: " + id);
+			String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
+			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			throw new CouponPolicyNotFoundException(errorStatus);
 		}
 	}
 
@@ -187,7 +191,9 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 				policy.getMaxSalePrice(),
 				policy.getType());
 		} else {
-			throw new EntityNotFoundException("Coupon Policy not found with ID: " + id);
+			String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
+			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			throw new CouponPolicyNotFoundException(errorStatus);
 		}
 	}
 
@@ -196,7 +202,10 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 		if (couponPolicyRepository.existsById(id)) {
 			couponPolicyRepository.deleteById(id);
 		} else {
-			throw new EntityNotFoundException("Coupon Policy not found with ID: " + id);
+
+			String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
+			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			throw new CouponPolicyNotFoundException(errorStatus);
 		}
 	}
 }

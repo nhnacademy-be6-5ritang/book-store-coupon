@@ -8,20 +8,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nhnacademy.bookstorecoupon.coupon.domain.dto.response.CouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.coupon.domain.entity.Coupon;
+import com.nhnacademy.bookstorecoupon.coupon.exception.CouponNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupon.repository.CouponRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
+import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.UserAndCouponCreateRequestDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
 import com.nhnacademy.bookstorecoupon.userandcoupon.repository.UserAndCouponRepository;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @Transactional
@@ -38,9 +39,13 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 	@Override
 	public UserAndCouponResponseDTO createUserAndCoupon(Long couponId, UserAndCouponCreateRequestDTO requestDTO) {
+		String errorMessage = String.format("해당 쿠폰은 '%d'는 존재하지 않습니다.", couponId);
+		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+
+
 
 		Coupon coupon = couponRepository.findById(couponId)
-			.orElseThrow(() -> new EntityNotFoundException("Coupon not found with ID: " + couponId));
+			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
 
 		UserAndCoupon userAndCoupon = UserAndCoupon.builder()
 			.coupon(coupon)
