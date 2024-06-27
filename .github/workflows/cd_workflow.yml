@@ -3,7 +3,7 @@ name: CD to Ubuntu Server
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   build:
