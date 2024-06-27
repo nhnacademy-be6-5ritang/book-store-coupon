@@ -12,6 +12,7 @@ spring:
     username: be6_5ritang
     password: j2EqdFa0rt.tX]WK
     driver-class-name: com.mysql.cj.jdbc.Driver
+    type: org.apache.commons.dbcp2.BasicDataSource
     dbcp2:
       initial-size: 50    # 초기로 생성할 연결의 수를 설정합니다.
       max-total: 50   # 풀에서 유지할 수 있는 최대 연결 수를 설정합니다.
