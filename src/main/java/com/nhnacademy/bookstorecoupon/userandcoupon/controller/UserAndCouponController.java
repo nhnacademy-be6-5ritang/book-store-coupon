@@ -33,8 +33,8 @@ public class UserAndCouponController {
     }
 
     @PatchMapping("/users/{userId}")
-    public ResponseEntity<UserAndCouponResponseDTO> updateUserAndCoupon(@PathVariable("userId") String userEmail) {
-        UserAndCouponResponseDTO responseDTO = userAndCouponService.updateUserAndCoupon(userEmail);
+    public ResponseEntity<UserAndCouponResponseDTO> updateUserAndCoupon(@PathVariable("userId") Long userId) {
+        UserAndCouponResponseDTO responseDTO = userAndCouponService.updateUserAndCoupon(userId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
@@ -44,17 +44,17 @@ public class UserAndCouponController {
 
     @GetMapping("/users")
     public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponPaging(
-         String userEmail,
+         Long userId,
        String type,
         Pageable pageable)  {
-        Page<UserAndCouponResponseDTO> userAndCoupons = userAndCouponService.getAllUserAndCouponPaging(userEmail, type, pageable);
+        Page<UserAndCouponResponseDTO> userAndCoupons = userAndCouponService.getAllUserAndCouponPaging(userId, type, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(userAndCoupons);
     }
 
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<Page<UserAndCouponResponseDTO>> getUserAndCouponByIdPaging( @PathVariable("userId") String userEmail, Pageable pageable) {
-        Page<UserAndCouponResponseDTO> userAndCoupon = userAndCouponService.getUserAndCouponByIdPaging(userEmail, pageable);
+    public ResponseEntity<Page<UserAndCouponResponseDTO>> getUserAndCouponByIdPaging( @PathVariable("userId") Long userId, Pageable pageable) {
+        Page<UserAndCouponResponseDTO> userAndCoupon = userAndCouponService.getUserAndCouponByIdPaging(userId, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(userAndCoupon);
     }
 

@@ -11,7 +11,7 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
 
 public interface UserAndCouponRepository extends JpaRepository<UserAndCoupon, Long>,
 	JpaSpecificationExecutor<UserAndCoupon> {
-	List<UserAndCoupon> findAllByUserEmail(String userEmail);
-	Page<UserAndCoupon> findByUserEmail(String userEmail, Pageable pageable);
-	UserAndCoupon getByUserEmail(String userEmail);
+	List<UserAndCoupon> findAllByUserId(Long userId);
+	Page<UserAndCoupon> findByUserId(Long userId, Pageable pageable);
+	UserAndCoupon getByUserId(Long userId);
 }

@@ -11,12 +11,12 @@ public interface UserAndCouponService {
 
     UserAndCouponResponseDTO createUserAndCoupon(Long couponId, UserAndCouponCreateRequestDTO requestDTO);
 
-    UserAndCouponResponseDTO updateUserAndCoupon(String userEmail);
+    UserAndCouponResponseDTO updateUserAndCoupon(Long userId);
 
 
     // Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(Pageable pageable);
-    Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(String userEmail, String type,Pageable pageable);
+    Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(Long userId, String type,Pageable pageable);
 
-    Page<UserAndCouponResponseDTO> getUserAndCouponByIdPaging(String userEmail, Pageable pageable);
+    Page<UserAndCouponResponseDTO> getUserAndCouponByIdPaging(Long userId, Pageable pageable);
 
 }

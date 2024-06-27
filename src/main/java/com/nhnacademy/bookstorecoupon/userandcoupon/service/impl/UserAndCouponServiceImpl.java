@@ -12,11 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nhnacademy.bookstorecoupon.coupon.domain.dto.response.CouponResponseDTO;
-import com.nhnacademy.bookstorecoupon.coupon.domain.entity.Coupon;
-import com.nhnacademy.bookstorecoupon.coupon.exception.CouponNotFoundException;
-import com.nhnacademy.bookstorecoupon.coupon.repository.CouponRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
+import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
+import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
+import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.UserAndCouponCreateRequestDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
@@ -29,12 +28,12 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService
 public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 	private final UserAndCouponRepository userAndCouponRepository;
-	private final CouponRepository couponRepository;
+	private final CouponTemplateRepository couponTemplateRepository;
 
 	public UserAndCouponServiceImpl(UserAndCouponRepository userAndCouponRepository,
-		CouponRepository couponRepository) {
+		CouponTemplateRepository couponTemplateRepository) {
 		this.userAndCouponRepository = userAndCouponRepository;
-		this.couponRepository = couponRepository;
+		this.couponTemplateRepository = couponTemplateRepository;
 	}
 
 	@Override
@@ -44,43 +43,42 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 
 
-		Coupon coupon = couponRepository.findById(couponId)
+		CouponTemplate couponTemplate = couponTemplateRepository.findById(couponId)
 			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
 
 		UserAndCoupon userAndCoupon = UserAndCoupon.builder()
-			.coupon(coupon)
-			.userEmail(requestDTO.userEmail())
+			.couponPolicyId(couponTemplate.getCouponPolicy())
+			.userId(requestDTO.userId())
 			.isUsed(requestDTO.isUsed())
+			.expiredDate(couponTemplate.getExpiredDate())
+			.issueDate(couponTemplate.getIssueDate())
 			.build();
 
 		UserAndCoupon savedUserAndCoupon = userAndCouponRepository.save(userAndCoupon);
 
 		return new UserAndCouponResponseDTO(
 			savedUserAndCoupon.getId(),
-			new CouponResponseDTO(
-				savedUserAndCoupon.getCoupon().getId(),
-				new CouponPolicyResponseDTO(
-					savedUserAndCoupon.getCoupon().getCouponPolicy().getId(),
-					savedUserAndCoupon.getCoupon().getCouponPolicy().getMinOrderPrice(),
-					savedUserAndCoupon.getCoupon().getCouponPolicy().getSalePrice(),
-					savedUserAndCoupon.getCoupon().getCouponPolicy().getSaleRate(),
-					savedUserAndCoupon.getCoupon().getCouponPolicy().getMaxSalePrice(),
-					savedUserAndCoupon.getCoupon().getCouponPolicy().getType()
+			new CouponPolicyResponseDTO(
+					savedUserAndCoupon.getCouponPolicyId().getId(),
+					savedUserAndCoupon.getCouponPolicyId().getMinOrderPrice(),
+					savedUserAndCoupon.getCouponPolicyId().getSalePrice(),
+					savedUserAndCoupon.getCouponPolicyId().getSaleRate(),
+					savedUserAndCoupon.getCouponPolicyId().getMaxSalePrice(),
+					savedUserAndCoupon.getCouponPolicyId().getType()
 				),
-				savedUserAndCoupon.getCoupon().getExpiredDate(),
-				savedUserAndCoupon.getCoupon().getIssueDate()
-			),
-			savedUserAndCoupon.getUserEmail(),
+			savedUserAndCoupon.getUserId(),
 			savedUserAndCoupon.getUsedDate(),
-			savedUserAndCoupon.getIsUsed()
+			savedUserAndCoupon.getIsUsed(),
+			savedUserAndCoupon.getExpiredDate(),
+			savedUserAndCoupon.getIssueDate()
 		);
 
 	}
 
 	// TODO : 이게 dto가 필요할까? ! ?  그냥 여기서 로직으로 바꾸면 되는거 아닐까 ?
 	@Override
-	public UserAndCouponResponseDTO updateUserAndCoupon(String userId) {
-		UserAndCoupon userAndCoupon = userAndCouponRepository.getByUserEmail(userId);
+	public UserAndCouponResponseDTO updateUserAndCoupon(Long userId) {
+		UserAndCoupon userAndCoupon = userAndCouponRepository.getByUserId(userId);
 
 		String formattedDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -90,23 +88,21 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 		return new UserAndCouponResponseDTO(
 			updatedUserAndCoupon.getId(),
-			new CouponResponseDTO(
-				updatedUserAndCoupon.getCoupon().getId(),
-				new CouponPolicyResponseDTO(
-					updatedUserAndCoupon.getCoupon().getCouponPolicy().getId(),
-					updatedUserAndCoupon.getCoupon().getCouponPolicy().getMinOrderPrice(),
-					updatedUserAndCoupon.getCoupon().getCouponPolicy().getSalePrice(),
-					updatedUserAndCoupon.getCoupon().getCouponPolicy().getSaleRate(),
-					updatedUserAndCoupon.getCoupon().getCouponPolicy().getMaxSalePrice(),
-					updatedUserAndCoupon.getCoupon().getCouponPolicy().getType()
-				),
-				updatedUserAndCoupon.getCoupon().getExpiredDate(),
-				updatedUserAndCoupon.getCoupon().getIssueDate()
+			new CouponPolicyResponseDTO(
+				updatedUserAndCoupon.getCouponPolicyId().getId(),
+				updatedUserAndCoupon.getCouponPolicyId().getMinOrderPrice(),
+				updatedUserAndCoupon.getCouponPolicyId().getSalePrice(),
+				updatedUserAndCoupon.getCouponPolicyId().getSaleRate(),
+				updatedUserAndCoupon.getCouponPolicyId().getMaxSalePrice(),
+				updatedUserAndCoupon.getCouponPolicyId().getType()
 			),
-			updatedUserAndCoupon.getUserEmail(),
+			updatedUserAndCoupon.getUserId(),
 			updatedUserAndCoupon.getUsedDate(),
-			updatedUserAndCoupon.getIsUsed()
+			updatedUserAndCoupon.getIsUsed(),
+			updatedUserAndCoupon.getExpiredDate(),
+			updatedUserAndCoupon.getIssueDate()
 		);
+
 	}
 
 	// @Override
@@ -138,67 +134,65 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(String userEmail, String type, Pageable pageable) {
+	public Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(Long userId, String type, Pageable pageable) {
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 4;
 
 		// 기본 조건: 모든 UserAndCoupon 가져오기
 		Specification<UserAndCoupon> spec = (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
 
-		// userEmail 조건 추가
-		if (userEmail != null && !userEmail.isEmpty()) {
+		// userId 조건 추가
+		if (userId != null) {
 			spec = spec.and((root, query, criteriaBuilder) ->
-				criteriaBuilder.equal(root.get("userEmail"), userEmail));
+				criteriaBuilder.equal(root.get("userId"), userId));
 		}
 
 		// type 조건 추가
 		if (type != null && !type.isEmpty()) {
 			spec = spec.and((root, query, criteriaBuilder) ->
-				criteriaBuilder.equal(root.get("coupon").get("couponPolicy").get("type"), type));
+				criteriaBuilder.equal(root.get("couponPolicyId").get("type"), type));
 		}
+
 
 		Page<UserAndCoupon> userAndCoupons = userAndCouponRepository.findAll(spec,
 			PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
 
+
 		return userAndCoupons.map(userAndCoupon -> new UserAndCouponResponseDTO(userAndCoupon.getId(),
-			new CouponResponseDTO(userAndCoupon.getCoupon().getId(),
-				new CouponPolicyResponseDTO(
-					userAndCoupon.getCoupon().getCouponPolicy().getId(),
-					userAndCoupon.getCoupon().getCouponPolicy().getMinOrderPrice(),
-					userAndCoupon.getCoupon().getCouponPolicy().getSalePrice(),
-					userAndCoupon.getCoupon().getCouponPolicy().getSaleRate(),
-					userAndCoupon.getCoupon().getCouponPolicy().getMaxSalePrice(),
-					userAndCoupon.getCoupon().getCouponPolicy().getType()),
-				userAndCoupon.getCoupon().getExpiredDate(),
-				userAndCoupon.getCoupon().getIssueDate()),
-			userAndCoupon.getUserEmail(),
+			new CouponPolicyResponseDTO(userAndCoupon.getCouponPolicyId().getId(),
+				userAndCoupon.getCouponPolicyId().getMinOrderPrice(),
+				userAndCoupon.getCouponPolicyId().getSalePrice(),
+				userAndCoupon.getCouponPolicyId().getSaleRate(),
+				userAndCoupon.getCouponPolicyId().getMaxSalePrice(),
+				userAndCoupon.getCouponPolicyId().getType()),
+			userAndCoupon.getUserId(),
 			userAndCoupon.getUsedDate(),
-			userAndCoupon.getIsUsed()));
+			userAndCoupon.getIsUsed(),
+			userAndCoupon.getExpiredDate(),
+			userAndCoupon.getIssueDate()));
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Page<UserAndCouponResponseDTO> getUserAndCouponByIdPaging(String userEmail, Pageable pageable) {
+	public Page<UserAndCouponResponseDTO> getUserAndCouponByIdPaging(Long userId, Pageable pageable) {
 
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 4;
-		Page<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByUserEmail(userEmail,
+		Page<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByUserId(userId,
 			PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
 
 		return userAndCoupons.map(userAndCoupon -> new UserAndCouponResponseDTO(userAndCoupon.getId(),
-			new CouponResponseDTO(userAndCoupon.getCoupon().getId(),
-				new CouponPolicyResponseDTO(
-					userAndCoupon.getCoupon().getCouponPolicy().getId(),
-					userAndCoupon.getCoupon().getCouponPolicy().getMinOrderPrice(),
-					userAndCoupon.getCoupon().getCouponPolicy().getSalePrice(),
-					userAndCoupon.getCoupon().getCouponPolicy().getSaleRate(),
-					userAndCoupon.getCoupon().getCouponPolicy().getMaxSalePrice(),
-					userAndCoupon.getCoupon().getCouponPolicy().getType()),
-				userAndCoupon.getCoupon().getExpiredDate(),
-				userAndCoupon.getCoupon().getIssueDate()),
-			userAndCoupon.getUserEmail(),
-			userAndCoupon.getUsedDate(),
-			userAndCoupon.getIsUsed()));
+			new CouponPolicyResponseDTO(userAndCoupon.getCouponPolicyId().getId(),
+					userAndCoupon.getCouponPolicyId().getMinOrderPrice(),
+					userAndCoupon.getCouponPolicyId().getSalePrice(),
+					userAndCoupon.getCouponPolicyId().getSaleRate(),
+					userAndCoupon.getCouponPolicyId().getMaxSalePrice(),
+					userAndCoupon.getCouponPolicyId().getType()),
+				userAndCoupon.getUserId(),
+				userAndCoupon.getUsedDate(),
+				userAndCoupon.getIsUsed(),
+				userAndCoupon.getExpiredDate(),
+				userAndCoupon.getIssueDate()));
 	}
 
 }

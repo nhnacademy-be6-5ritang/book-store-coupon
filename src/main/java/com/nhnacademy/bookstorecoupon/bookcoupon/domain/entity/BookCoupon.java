@@ -4,6 +4,7 @@ package com.nhnacademy.bookstorecoupon.bookcoupon.domain.entity;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -18,10 +19,12 @@ public class BookCoupon {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "coupon_policy_id", nullable = false)
+	@NotNull
+	@JoinColumn(name = "coupon_policy_id")
 	private CouponPolicy couponPolicy;
 
-	@Column(name = "book_id", nullable = false)
+	@NotNull
+	@Column(name = "book_id")
 	private Long bookId;
 
 	@Builder

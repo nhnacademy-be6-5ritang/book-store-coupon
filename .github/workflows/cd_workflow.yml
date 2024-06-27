@@ -20,6 +20,8 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+        env:
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Copy files via SCP
         uses: appleboy/scp-action@v0.1.7

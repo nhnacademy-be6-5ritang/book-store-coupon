@@ -2,7 +2,7 @@ package com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity;
 
 import java.time.LocalDateTime;
 
-import com.nhnacademy.bookstorecoupon.coupon.domain.entity.Coupon;
+import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,24 +30,40 @@ public class UserAndCoupon {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "coupon_id", nullable = false)
-	private Coupon coupon;
+	@NotNull
+	@JoinColumn(name = "coupon_policy_id")
+	private CouponPolicy couponPolicyId;
 
-	@Column(name = "user_email", nullable = false)
-	private String userEmail;
+	@NotNull
+	@Column(name = "user_id")
+	private Long userId;
 
-	@Column(name = "users_and_coupons_used_date")
+	@Column(name = "user_and_coupon_used_date")
 	private LocalDateTime usedDate;
 
-	@Column(name = "users_and_coupons_is_used", nullable = false)
+	@NotNull
+	@Column(name = "user_and_coupon_is_used")
 	private Boolean isUsed = false;
 
+	@NotNull
+	@Column(name = "user_and_coupon_expired_date")
+	private LocalDateTime expiredDate;
+
+	@NotNull
+	@Column(name = "user_and_coupon_issue_date")
+	private LocalDateTime issueDate;
+
+
+
 	@Builder
-	public UserAndCoupon(Coupon coupon, String userEmail, LocalDateTime usedDate, Boolean isUsed) {
-		this.coupon = coupon;
-		this.userEmail = userEmail;
+	public UserAndCoupon(CouponPolicy couponPolicyId, Long userId, LocalDateTime usedDate, Boolean isUsed, LocalDateTime expiredDate, LocalDateTime issueDate) {
+		this.couponPolicyId = couponPolicyId;
+		this.userId = userId;
 		this.usedDate = usedDate;
 		this.isUsed = isUsed;
+		this.expiredDate=expiredDate;
+		this.issueDate=issueDate;
+
 	}
 
 	public void update(LocalDateTime usedDate, Boolean isUsed) {

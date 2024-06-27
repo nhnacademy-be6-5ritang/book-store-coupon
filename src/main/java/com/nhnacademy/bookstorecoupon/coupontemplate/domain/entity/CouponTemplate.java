@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorecoupon.coupon.domain.entity;
+package com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity;
 
 import java.time.LocalDateTime;
 
@@ -21,12 +21,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "coupons")
-public class Coupon {
+@Table(name = "coupons_templates")
+public class CouponTemplate {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "coupon_id")
+	@Column(name = "coupon_template_id")
 	private Long id;
 
 	@ManyToOne
@@ -35,15 +35,15 @@ public class Coupon {
 	private CouponPolicy couponPolicy;
 
 	@NotNull
-	@Column(name = "coupon_expired_date", nullable = false)
+	@Column(name = "coupon_template_expired_date", nullable = false)
 	private LocalDateTime expiredDate;
 
 	@NotNull
-	@Column(name = "coupon_issue_date", nullable = false)
+	@Column(name = "coupon_template_issue_date", nullable = false)
 	private LocalDateTime issueDate;
 
 	@Builder
-	public Coupon(CouponPolicy couponPolicy, LocalDateTime expiredDate, LocalDateTime issueDate) {
+	public CouponTemplate(CouponPolicy couponPolicy, LocalDateTime expiredDate, LocalDateTime issueDate) {
 		this.couponPolicy = couponPolicy;
 		this.expiredDate = expiredDate;
 		this.issueDate = issueDate;

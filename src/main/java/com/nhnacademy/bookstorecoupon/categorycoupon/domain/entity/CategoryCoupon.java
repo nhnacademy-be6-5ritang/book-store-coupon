@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,10 +28,12 @@ public class CategoryCoupon {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "coupon_policy_id", nullable = false)
+	@NotNull
+	@JoinColumn(name = "coupon_policy_id")
 	private CouponPolicy couponPolicy;
 
-	@Column(name = "category_id", nullable = false)
+	@NotNull
+	@Column(name = "category_id")
 	private Long categoryId;
 
 	@Builder
