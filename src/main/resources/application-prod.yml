@@ -1,4 +1,12 @@
 
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://admin:1234@133.186.150.78:8761/eureka
+  instance:
+    prefer-ip-address: true
 
 spring:
 
