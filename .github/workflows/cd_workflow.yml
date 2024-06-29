@@ -63,5 +63,5 @@ jobs:
           script: |
             echo "Starting new application..."
             source ~/.bashrc
-            nohup java -jar ~/target/BOOK-STORE-COUPON-TEMPLATE.jar  --server.pofiles.active=${{secrets.SPRING_PROFILE}}  --server.port=${{ secrets.COUPON_PORT }} > app.log 2>&1 &
+            nohup java -jar ~/target/BOOK-STORE-COUPON.jar  --server.pofiles.active=${{secrets.SPRING_PROFILE}}  --server.port=${{ secrets.COUPON_PORT }} > app.log 2>&1 &
             echo "New application started. Check app.log for details."
