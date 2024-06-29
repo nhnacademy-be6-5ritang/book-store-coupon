@@ -21,6 +21,7 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
         env:
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Copy files via SCP
@@ -62,5 +63,6 @@ jobs:
           script_stop: true
           script: |
             echo "Starting new application..."
-            nohup java -jar ~/target/BOOK-STORE-FRONT.jar  --server.pofiles.active=${{secrets.SPRING_PROFILE}}  --server.port=${{ secrets.COUPON_PORT }} > app.log 2>&1 &
+            source ~/.bashrc
+            nohup java -jar ~/target/BOOK-STORE-COUPON.jar  --server.pofiles.active=${{secrets.SPRING_PROFILE}}  --server.port=${{ secrets.COUPON_PORT }} --spring.datasource.password=${{ secrets.MYSQL_PASSWORD }} --spring.redis.password=${{ secrets.REDIS_PASSWORD }} > app.log 2>&1 &
             echo "New application started. Check app.log for details."
