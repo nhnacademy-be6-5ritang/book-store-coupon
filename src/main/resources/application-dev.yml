@@ -1,4 +1,12 @@
 
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://admin:1234@localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
 spring:
 
 
@@ -24,8 +32,8 @@ logging:
     org.hibernate.orm.jdbc.bind: trace
     org.springframework.transaction.interceptor: trace
 
-
-
+#
+#
 #    shutdown: graceful
 #
 #  eureka:

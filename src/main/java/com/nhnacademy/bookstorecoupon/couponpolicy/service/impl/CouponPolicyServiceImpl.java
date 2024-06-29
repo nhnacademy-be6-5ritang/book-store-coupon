@@ -182,7 +182,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 				requestDTO.saleRate(),
 				requestDTO.maxSalePrice()
 			);
-			couponPolicyRepository.save(policy);
+			couponPolicyRepository.save(policy); // TODO : 굳이이걸해야하는지 ?????
 			return new CouponPolicyResponseDTO(
 				policy.getId(),
 				policy.getMinOrderPrice(),
