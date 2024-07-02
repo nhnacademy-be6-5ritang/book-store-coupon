@@ -1,9 +1,9 @@
 package com.nhnacademy.bookstorecoupon.couponpolicy.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupo
 import com.nhnacademy.bookstorecoupon.categorycoupon.repository.CategoryCouponRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
-import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
+import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO2;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoundException;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
@@ -84,11 +84,34 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<CouponPolicyResponseDTO> getAllCouponPolicies() {
+	public List<CouponPolicyResponseDTO2> getAllCouponPolicies() {
 		List<CouponPolicy> policies = couponPolicyRepository.findAll();
-		return policies.stream()
-			.map(CouponPolicyResponseDTO::fromCouponPolicy)
-			.collect(Collectors.toList());
+		List<CouponPolicyResponseDTO2> dtos = new ArrayList<>();
+
+		for (CouponPolicy policy : policies) {
+			Long bookId = null;
+			Long categoryId = null;
+
+			// 쿠폰 정책의 종류(type)에 따라서 bookId 또는 categoryId 설정
+			if ("book".equals(policy.getType())) {
+				BookCoupon bookCoupon = bookCouponRepository.findByCouponPolicy(policy);
+				if (bookCoupon != null) {
+					bookId = bookCoupon.getBookId();
+				}
+			}
+			if ("category".equals(policy.getType())) {
+				CategoryCoupon categoryCoupon = categoryCouponRepository.findByCouponPolicy(policy);
+				if (categoryCoupon != null) {
+					categoryId = categoryCoupon.getCategoryId();
+				}
+			}
+
+			// CouponPolicyResponseDTO 객체 생성 및 리스트에 추가
+			CouponPolicyResponseDTO2 dto = CouponPolicyResponseDTO2.fromCouponPolicy(policy, bookId, categoryId);
+			dtos.add(dto);
+		}
+
+		return dtos;
 	}
 
 
@@ -120,7 +143,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
 			throw new CouponPolicyNotFoundException(errorStatus);
 		}
-		//	 couponPolicyRepository.save(policy);
+
 
 
 		}
