@@ -62,11 +62,7 @@ public class CouponPolicyController {
 		return ResponseEntity.status(HttpStatus.OK).body(policies);
 	}
 
-	@GetMapping("/{couponPolicyId}")
-	public ResponseEntity<CouponPolicyResponseDTO> getCouponPolicyById(@PathVariable("couponPolicyId") Long couponPolicyId) {
-		CouponPolicyResponseDTO policy = couponPolicyService.getCouponPolicyById(couponPolicyId);
-		return ResponseEntity.status(HttpStatus.OK).body(policy);
-	}
+
 
 	@PatchMapping("/{couponPolicyId}")
 	public ResponseEntity<CouponPolicyResponseDTO> updateCouponPolicy(@PathVariable Long couponPolicyId, @RequestBody CouponPolicyUpdateRequestDTO requestDTO) {

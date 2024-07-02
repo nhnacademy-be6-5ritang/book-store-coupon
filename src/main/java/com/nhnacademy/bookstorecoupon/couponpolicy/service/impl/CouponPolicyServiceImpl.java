@@ -91,19 +91,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			.collect(Collectors.toList());
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public CouponPolicyResponseDTO getCouponPolicyById(Long id) {
-		Optional<CouponPolicy> optionalPolicy = couponPolicyRepository.findById(id);
-		if (optionalPolicy.isPresent()) {
-			CouponPolicy policy = optionalPolicy.get();
-			return CouponPolicyResponseDTO.fromCouponPolicy(policy);
-		} else {
-			String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
-			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
-			throw new CouponPolicyNotFoundException(errorStatus);
-		}
-	}
 
 	@Override
 	public void updateCouponPolicy(Long id, CouponPolicyUpdateRequestDTO requestDTO) {
@@ -117,9 +104,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 				requestDTO.maxSalePrice(),
 				requestDTO.isUsed()
 			);
-
-		//	 couponPolicyRepository.save(policy);
-
 			if (requestDTO.isUsed() == Boolean.FALSE) {
 				List<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByCouponPolicy(policy);
 
@@ -128,12 +112,18 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 					userAndCoupon.update(LocalDateTime.now(), true);
 				}
 
-			} else {
-				String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
-				ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
-				throw new CouponPolicyNotFoundException(errorStatus);
 			}
+
+
+		} else {
+			String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
+			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			throw new CouponPolicyNotFoundException(errorStatus);
+		}
+		//	 couponPolicyRepository.save(policy);
+
+
 		}
 	}
-}
+
 

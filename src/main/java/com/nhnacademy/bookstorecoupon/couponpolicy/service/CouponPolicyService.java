@@ -19,7 +19,7 @@ public interface CouponPolicyService {
 
 	List<CouponPolicyResponseDTO> getAllCouponPolicies();
 
-	CouponPolicyResponseDTO getCouponPolicyById(Long id);
+
 
 	void updateCouponPolicy(Long id, CouponPolicyUpdateRequestDTO requestDTO);
 
