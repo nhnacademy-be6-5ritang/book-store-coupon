@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
+import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoundException;
+import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.request.CouponTemplateRequestDTO;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response.CouponTemplateResponseDTO;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
@@ -19,10 +22,6 @@ import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponAddErrorExc
 import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.coupontemplate.service.CouponTemplateService;
-import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
-import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
-import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoundException;
-import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 
 @Service
@@ -38,7 +37,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 	}
 
 	@Override
-	public CouponTemplateResponseDTO createCouponTemplate(CouponTemplateRequestDTO requestDTO) {
+	public void createCouponTemplate(CouponTemplateRequestDTO requestDTO) {
 		String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", requestDTO.couponPolicyId());
 		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
 
@@ -61,21 +60,6 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 		couponTemplateRepository.save(couponTemplate);
 
 
-		CouponTemplate savedCouponTemplate = couponTemplateRepository.save(couponTemplate);
-
-		return new CouponTemplateResponseDTO(
-			savedCouponTemplate.getId(),
-			new CouponPolicyResponseDTO(
-				savedCouponTemplate.getCouponPolicy().getId(),
-				savedCouponTemplate.getCouponPolicy().getMinOrderPrice(),
-				savedCouponTemplate.getCouponPolicy().getSalePrice(),
-				savedCouponTemplate.getCouponPolicy().getSaleRate(),
-				savedCouponTemplate.getCouponPolicy().getMaxSalePrice(),
-				savedCouponTemplate.getCouponPolicy().getType()
-			),
-			savedCouponTemplate.getExpiredDate(),
-			savedCouponTemplate.getIssueDate()
-		);
 	}
 
 
@@ -84,17 +68,9 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 	@Transactional(readOnly = true)
 	public List<CouponTemplateResponseDTO> getAllCouponTemplates() {
 		List<CouponTemplate> couponTemplates = couponTemplateRepository.findAll();
-		return couponTemplates.stream()
-			.map(couponTemplate -> new CouponTemplateResponseDTO(couponTemplate.getId(),
-				new CouponPolicyResponseDTO(
-					couponTemplate.getCouponPolicy().getId(),
-					couponTemplate.getCouponPolicy().getMinOrderPrice(),
-					couponTemplate.getCouponPolicy().getSalePrice(),
-					couponTemplate.getCouponPolicy().getSaleRate(),
-					couponTemplate.getCouponPolicy().getMaxSalePrice(),
-					couponTemplate.getCouponPolicy().getType()),
-				couponTemplate.getExpiredDate(),
-				couponTemplate.getIssueDate()))
+
+	    return	couponTemplates.stream()
+			.map(CouponTemplateResponseDTO::fromCouponTemplate)
 			.collect(Collectors.toList());
 	}
 
@@ -106,18 +82,9 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 
 
 		List<String> types = List.of("sale", "book", "category");
-		Page<CouponTemplate> coupons = couponTemplateRepository.findByCouponPolicyTypes(types, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
-		Page<CouponTemplateResponseDTO> couponResponseDTOs = coupons.map(couponTemplate -> new CouponTemplateResponseDTO(
-			couponTemplate.getId(), new CouponPolicyResponseDTO(couponTemplate.getCouponPolicy().getId(),
-			couponTemplate.getCouponPolicy().getMinOrderPrice(),
-			couponTemplate.getCouponPolicy().getSalePrice(),
-			couponTemplate.getCouponPolicy().getSaleRate(),
-			couponTemplate.getCouponPolicy().getMaxSalePrice(),
-			couponTemplate.getCouponPolicy().getType()),
-			couponTemplate.getExpiredDate(),
-			couponTemplate.getIssueDate()));
+		Page<CouponTemplate> coupons = couponTemplateRepository.findByCouponPolicyIsUsedTrueAndCouponPolicyTypeIn(types, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
 
-		return couponResponseDTOs;
+		return coupons.map(CouponTemplateResponseDTO::fromCouponTemplate);
 	}
 
 	@Override
@@ -130,16 +97,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 		CouponTemplate couponTemplate = couponTemplateRepository.findById(id)
 			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
 
-		return new CouponTemplateResponseDTO(couponTemplate.getId(),
-			new CouponPolicyResponseDTO(
-				couponTemplate.getCouponPolicy().getId(),
-				couponTemplate.getCouponPolicy().getMinOrderPrice(),
-				couponTemplate.getCouponPolicy().getSalePrice(),
-				couponTemplate.getCouponPolicy().getSaleRate(),
-				couponTemplate.getCouponPolicy().getMaxSalePrice(),
-				couponTemplate.getCouponPolicy().getType()),
-			couponTemplate.getExpiredDate(),
-			couponTemplate.getIssueDate());
+		return CouponTemplateResponseDTO.fromCouponTemplate(couponTemplate);
 	}
 
 

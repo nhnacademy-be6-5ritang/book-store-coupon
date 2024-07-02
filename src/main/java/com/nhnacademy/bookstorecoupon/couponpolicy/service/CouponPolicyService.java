@@ -7,22 +7,21 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPoli
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
 
 public interface CouponPolicyService {
-	CouponPolicyResponseDTO issueWelcomeCoupon(CouponPolicyRequestDTO requestDTO);
+	void issueWelcomeCoupon(CouponPolicyRequestDTO requestDTO);
 
-	CouponPolicyResponseDTO issueBirthdayCoupon(CouponPolicyRequestDTO requestDTO);
+	void issueBirthdayCoupon(CouponPolicyRequestDTO requestDTO);
 
-	CouponPolicyResponseDTO issueSpecificBookCoupon(Long bookId, CouponPolicyRequestDTO requestDTO);
+	void issueSpecificBookCoupon(Long bookId, CouponPolicyRequestDTO requestDTO);
 
-	CouponPolicyResponseDTO issueSpecificCategoryCoupon(Long categoryId, CouponPolicyRequestDTO requestDTO);
+	void issueSpecificCategoryCoupon(Long categoryId, CouponPolicyRequestDTO requestDTO);
 
-	CouponPolicyResponseDTO issueDiscountCoupon(CouponPolicyRequestDTO requestDTO);
+	void issueDiscountCoupon(CouponPolicyRequestDTO requestDTO);
 
 	List<CouponPolicyResponseDTO> getAllCouponPolicies();
 
 	CouponPolicyResponseDTO getCouponPolicyById(Long id);
 
-	CouponPolicyResponseDTO updateCouponPolicy(Long id, CouponPolicyUpdateRequestDTO requestDTO);
+	void updateCouponPolicy(Long id, CouponPolicyUpdateRequestDTO requestDTO);
 
-	void deleteCouponPolicy(Long id);
 
 }

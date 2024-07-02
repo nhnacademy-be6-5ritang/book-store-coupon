@@ -21,119 +21,65 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoun
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.service.CouponPolicyService;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
+import com.nhnacademy.bookstorecoupon.userandcoupon.repository.UserAndCouponRepository;
+
 @Service
 @Transactional
 public class CouponPolicyServiceImpl implements CouponPolicyService {
 	private final CouponPolicyRepository couponPolicyRepository;
 	private final BookCouponRepository bookCouponRepository;
 	private final CategoryCouponRepository categoryCouponRepository;
+	private final UserAndCouponRepository userAndCouponRepository;
 
 	public CouponPolicyServiceImpl(CouponPolicyRepository couponPolicyRepository,
-		BookCouponRepository bookCouponRepository, CategoryCouponRepository categoryCouponRepository) {
+		BookCouponRepository bookCouponRepository, CategoryCouponRepository categoryCouponRepository,
+		UserAndCouponRepository userAndCouponRepository) {
 		this.couponPolicyRepository = couponPolicyRepository;
 		this.bookCouponRepository = bookCouponRepository;
 		this.categoryCouponRepository = categoryCouponRepository;
+		this.userAndCouponRepository = userAndCouponRepository;
 	}
+
 	@Override
-	public CouponPolicyResponseDTO issueWelcomeCoupon(CouponPolicyRequestDTO requestDTO) {
-		CouponPolicy couponPolicy = CouponPolicy.builder()
-			.minOrderPrice(requestDTO.minOrderPrice())
-			.salePrice(requestDTO.salePrice())
-			.saleRate(requestDTO.saleRate())
-			.maxSalePrice(requestDTO.maxSalePrice())
-			.type(requestDTO.type())
-			.build();
+	public void issueWelcomeCoupon(CouponPolicyRequestDTO requestDTO) {
+		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
 
 		couponPolicyRepository.save(couponPolicy);
-		return new CouponPolicyResponseDTO(
-			couponPolicy.getId(),
-			couponPolicy.getMinOrderPrice(),
-			couponPolicy.getSalePrice(),
-			couponPolicy.getSaleRate(),
-			couponPolicy.getMaxSalePrice(),
-			couponPolicy.getType());
+
 	}
 
 	@Override
-	public CouponPolicyResponseDTO issueBirthdayCoupon(CouponPolicyRequestDTO requestDTO) {
-		CouponPolicy couponPolicy = CouponPolicy.builder()
-			.minOrderPrice(requestDTO.minOrderPrice())
-			.salePrice(requestDTO.salePrice())
-			.saleRate(requestDTO.saleRate())
-			.maxSalePrice(requestDTO.maxSalePrice())
-			.type(requestDTO.type())
-			.build();
-
+	public void issueBirthdayCoupon(CouponPolicyRequestDTO requestDTO) {
+		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
 		couponPolicyRepository.save(couponPolicy);
-		return new CouponPolicyResponseDTO(
-			couponPolicy.getId(),
-			couponPolicy.getMinOrderPrice(),
-			couponPolicy.getSalePrice(),
-			couponPolicy.getSaleRate(),
-			couponPolicy.getMaxSalePrice(),
-			couponPolicy.getType());
+
 	}
 
 	@Override
-	public CouponPolicyResponseDTO issueSpecificBookCoupon(Long bookId, CouponPolicyRequestDTO requestDTO) {
-		CouponPolicy couponPolicy = CouponPolicy.builder()
-			.minOrderPrice(requestDTO.minOrderPrice())
-			.salePrice(requestDTO.salePrice())
-			.saleRate(requestDTO.saleRate())
-			.maxSalePrice(requestDTO.maxSalePrice())
-			.type(requestDTO.type())
-			.build();
+	public void issueSpecificBookCoupon(Long bookId, CouponPolicyRequestDTO requestDTO) {
+		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
 
 		couponPolicyRepository.save(couponPolicy);
 		bookCouponRepository.save(BookCoupon.builder().bookId(bookId).couponPolicy(couponPolicy).build());
-		return new CouponPolicyResponseDTO(
-			couponPolicy.getId(),
-			couponPolicy.getMinOrderPrice(),
-			couponPolicy.getSalePrice(),
-			couponPolicy.getSaleRate(),
-			couponPolicy.getMaxSalePrice(),
-			couponPolicy.getType());
+
 	}
 
 	@Override
-	public CouponPolicyResponseDTO issueSpecificCategoryCoupon(Long categoryId, CouponPolicyRequestDTO requestDTO) {
-		CouponPolicy couponPolicy = CouponPolicy.builder()
-			.minOrderPrice(requestDTO.minOrderPrice())
-			.salePrice(requestDTO.salePrice())
-			.saleRate(requestDTO.saleRate())
-			.maxSalePrice(requestDTO.maxSalePrice())
-			.type(requestDTO.type())
-			.build();
+	public void issueSpecificCategoryCoupon(Long categoryId, CouponPolicyRequestDTO requestDTO) {
+		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
 
 		couponPolicyRepository.save(couponPolicy);
 		categoryCouponRepository.save(new CategoryCoupon(couponPolicy, categoryId));
-		return new CouponPolicyResponseDTO(
-			couponPolicy.getId(),
-			couponPolicy.getMinOrderPrice(),
-			couponPolicy.getSalePrice(),
-			couponPolicy.getSaleRate(),
-			couponPolicy.getMaxSalePrice(),
-			couponPolicy.getType());
+
 	}
 
 	@Override
-	public CouponPolicyResponseDTO issueDiscountCoupon(CouponPolicyRequestDTO requestDTO) {
-		CouponPolicy couponPolicy = CouponPolicy.builder()
-			.minOrderPrice(requestDTO.minOrderPrice())
-			.salePrice(requestDTO.salePrice())
-			.saleRate(requestDTO.saleRate())
-			.maxSalePrice(requestDTO.maxSalePrice())
-			.type(requestDTO.type())
-			.build();
+	public void issueDiscountCoupon(CouponPolicyRequestDTO requestDTO) {
+		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
 
 		couponPolicyRepository.save(couponPolicy);
-		return new CouponPolicyResponseDTO(
-			couponPolicy.getId(),
-			couponPolicy.getMinOrderPrice(),
-			couponPolicy.getSalePrice(),
-			couponPolicy.getSaleRate(),
-			couponPolicy.getMaxSalePrice(),
-			couponPolicy.getType());
+
 	}
 
 	@Override
@@ -141,13 +87,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	public List<CouponPolicyResponseDTO> getAllCouponPolicies() {
 		List<CouponPolicy> policies = couponPolicyRepository.findAll();
 		return policies.stream()
-			.map(policy -> new CouponPolicyResponseDTO(
-				policy.getId(),
-				policy.getMinOrderPrice(),
-				policy.getSalePrice(),
-				policy.getSaleRate(),
-				policy.getMaxSalePrice(),
-				policy.getType()))
+			.map(CouponPolicyResponseDTO::fromCouponPolicy)
 			.collect(Collectors.toList());
 	}
 
@@ -157,13 +97,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 		Optional<CouponPolicy> optionalPolicy = couponPolicyRepository.findById(id);
 		if (optionalPolicy.isPresent()) {
 			CouponPolicy policy = optionalPolicy.get();
-			return new CouponPolicyResponseDTO(
-				policy.getId(),
-				policy.getMinOrderPrice(),
-				policy.getSalePrice(),
-				policy.getSaleRate(),
-				policy.getMaxSalePrice(),
-				policy.getType());
+			return CouponPolicyResponseDTO.fromCouponPolicy(policy);
 		} else {
 			String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
 			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
@@ -172,7 +106,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	}
 
 	@Override
-	public CouponPolicyResponseDTO updateCouponPolicy(Long id, CouponPolicyUpdateRequestDTO requestDTO) {
+	public void updateCouponPolicy(Long id, CouponPolicyUpdateRequestDTO requestDTO) {
 		Optional<CouponPolicy> optionalPolicy = couponPolicyRepository.findById(id);
 		if (optionalPolicy.isPresent()) {
 			CouponPolicy policy = optionalPolicy.get();
@@ -180,32 +114,26 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 				requestDTO.minOrderPrice(),
 				requestDTO.salePrice(),
 				requestDTO.saleRate(),
-				requestDTO.maxSalePrice()
+				requestDTO.maxSalePrice(),
+				requestDTO.isUsed()
 			);
-		//	couponPolicyRepository.save(policy); // TODO : 굳이이걸해야하는지 ?????
-			return new CouponPolicyResponseDTO(
-				policy.getId(),
-				policy.getMinOrderPrice(),
-				policy.getSalePrice(),
-				policy.getSaleRate(),
-				policy.getMaxSalePrice(),
-				policy.getType());
-		} else {
-			String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
-			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
-			throw new CouponPolicyNotFoundException(errorStatus);
-		}
-	}
 
-	@Override
-	public void deleteCouponPolicy(Long id) {
-		if (couponPolicyRepository.existsById(id)) {
-			couponPolicyRepository.deleteById(id);
-		} else {
+		//	 couponPolicyRepository.save(policy);
 
-			String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
-			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
-			throw new CouponPolicyNotFoundException(errorStatus);
+			if (requestDTO.isUsed() == Boolean.FALSE) {
+				List<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByCouponPolicy(policy);
+
+
+				for (UserAndCoupon userAndCoupon : userAndCoupons) {
+					userAndCoupon.update(LocalDateTime.now(), true);
+				}
+
+			} else {
+				String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
+				ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+				throw new CouponPolicyNotFoundException(errorStatus);
+			}
 		}
 	}
 }
+

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
 
 public record UserAndCouponResponseDTO(
 	Long id,
@@ -21,4 +22,16 @@ public record UserAndCouponResponseDTO(
 	LocalDateTime issueDate
 
 ) {
+
+	public static UserAndCouponResponseDTO fromUserAndCoupon(UserAndCoupon savedUserAndCoupon) {
+		return new UserAndCouponResponseDTO(
+			savedUserAndCoupon.getId(),
+			CouponPolicyResponseDTO.fromCouponPolicy(savedUserAndCoupon.getCouponPolicy()),
+			savedUserAndCoupon.getUserId(),
+			savedUserAndCoupon.getUsedDate(),
+			savedUserAndCoupon.getIsUsed(),
+			savedUserAndCoupon.getExpiredDate(),
+			savedUserAndCoupon.getIssueDate()
+		);
+	}
 }

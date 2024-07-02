@@ -29,9 +29,9 @@ public class CouponTemplateController {
 	}
 
 	@PostMapping
-	public ResponseEntity<CouponTemplateResponseDTO> createCouponTemplate(@RequestBody CouponTemplateRequestDTO requestDTO) {
-		CouponTemplateResponseDTO couponTemplateResponseDTO = couponTemplateService.createCouponTemplate(requestDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(couponTemplateResponseDTO);
+	public ResponseEntity<Void> createCouponTemplate(@RequestBody CouponTemplateRequestDTO requestDTO) {
+		couponTemplateService.createCouponTemplate(requestDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 
@@ -50,12 +50,6 @@ public class CouponTemplateController {
 	}
 
 
-
-	// @GetMapping("/{id}")
-	// public ResponseEntity<CouponResponseDTO> getCouponById(@PathVariable Long id) {
-	// 	CouponResponseDTO coupon = couponService.getCouponById(id);
-	// 	return ResponseEntity.status(HttpStatus.OK).body(coupon);
-	// }
 
 
 }

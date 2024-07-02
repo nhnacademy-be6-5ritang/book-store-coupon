@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.service.impl;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
 import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
@@ -47,7 +45,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
 
 		UserAndCoupon userAndCoupon = UserAndCoupon.builder()
-			.couponPolicyId(couponTemplate.getCouponPolicy())
+			.couponPolicy(couponTemplate.getCouponPolicy())
 			.userId(requestDTO.userId())
 			.isUsed(requestDTO.isUsed())
 			.expiredDate(couponTemplate.getExpiredDate())
@@ -56,80 +54,23 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 		UserAndCoupon savedUserAndCoupon = userAndCouponRepository.save(userAndCoupon);
 
-		return new UserAndCouponResponseDTO(
-			savedUserAndCoupon.getId(),
-			new CouponPolicyResponseDTO(
-					savedUserAndCoupon.getCouponPolicyId().getId(),
-					savedUserAndCoupon.getCouponPolicyId().getMinOrderPrice(),
-					savedUserAndCoupon.getCouponPolicyId().getSalePrice(),
-					savedUserAndCoupon.getCouponPolicyId().getSaleRate(),
-					savedUserAndCoupon.getCouponPolicyId().getMaxSalePrice(),
-					savedUserAndCoupon.getCouponPolicyId().getType()
-				),
-			savedUserAndCoupon.getUserId(),
-			savedUserAndCoupon.getUsedDate(),
-			savedUserAndCoupon.getIsUsed(),
-			savedUserAndCoupon.getExpiredDate(),
-			savedUserAndCoupon.getIssueDate()
-		);
+		return UserAndCouponResponseDTO.fromUserAndCoupon(savedUserAndCoupon);
 
 	}
 
-	// TODO : 이게 dto가 필요할까? ! ?  그냥 여기서 로직으로 바꾸면 되는거 아닐까 ?
 	@Override
-	public UserAndCouponResponseDTO updateUserAndCoupon(Long userId) {
+	public void updateUserAndCoupon(Long userId) {
 		UserAndCoupon userAndCoupon = userAndCouponRepository.getByUserId(userId);
 
-		String formattedDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-		userAndCoupon.update(LocalDateTime.parse(formattedDateTime), true);
 
-		UserAndCoupon updatedUserAndCoupon = userAndCouponRepository.save(userAndCoupon);
+		userAndCoupon.update(LocalDateTime.now(), true);
+			//TODO :이걸 꼭 붙혀야하나?
+		// userAndCouponRepository.save(userAndCoupon);
 
-		return new UserAndCouponResponseDTO(
-			updatedUserAndCoupon.getId(),
-			new CouponPolicyResponseDTO(
-				updatedUserAndCoupon.getCouponPolicyId().getId(),
-				updatedUserAndCoupon.getCouponPolicyId().getMinOrderPrice(),
-				updatedUserAndCoupon.getCouponPolicyId().getSalePrice(),
-				updatedUserAndCoupon.getCouponPolicyId().getSaleRate(),
-				updatedUserAndCoupon.getCouponPolicyId().getMaxSalePrice(),
-				updatedUserAndCoupon.getCouponPolicyId().getType()
-			),
-			updatedUserAndCoupon.getUserId(),
-			updatedUserAndCoupon.getUsedDate(),
-			updatedUserAndCoupon.getIsUsed(),
-			updatedUserAndCoupon.getExpiredDate(),
-			updatedUserAndCoupon.getIssueDate()
-		);
 
 	}
 
-	// @Override
-	// @Transactional(readOnly = true)
-	// public Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(Pageable pageable) {
-	//
-	// 	int page = pageable.getPageNumber() - 1;
-	// 	int pageSize = 4;
-	//
-	// 	Page<UserAndCoupon> userAndCoupons = userAndCouponRepository.findAll(
-	// 		PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
-	//
-	// 	return userAndCoupons.map(userAndCoupon -> new UserAndCouponResponseDTO(userAndCoupon.getId(),
-	// 		new CouponResponseDTO(userAndCoupon.getCoupon().getId(),
-	// 			new CouponPolicyResponseDTO(
-	// 				userAndCoupon.getCoupon().getCouponPolicy().getId(),
-	// 				userAndCoupon.getCoupon().getCouponPolicy().getMinOrderPrice(),
-	// 				userAndCoupon.getCoupon().getCouponPolicy().getSalePrice(),
-	// 				userAndCoupon.getCoupon().getCouponPolicy().getSaleRate(),
-	// 				userAndCoupon.getCoupon().getCouponPolicy().getMaxSalePrice(),
-	// 				userAndCoupon.getCoupon().getCouponPolicy().getType()),
-	// 			userAndCoupon.getCoupon().getExpiredDate(),
-	// 			userAndCoupon.getCoupon().getIssueDate()),
-	// 		userAndCoupon.getUserEmail(),
-	// 		userAndCoupon.getUsedDate(),
-	// 		userAndCoupon.getIsUsed()));
-	// }
 
 
 	@Override
@@ -150,7 +91,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		// type 조건 추가
 		if (type != null && !type.isEmpty()) {
 			spec = spec.and((root, query, criteriaBuilder) ->
-				criteriaBuilder.equal(root.get("couponPolicyId").get("type"), type));
+				criteriaBuilder.equal(root.get("couponPolicy").get("type"), type));
 		}
 
 
@@ -158,18 +99,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
 
 
-		return userAndCoupons.map(userAndCoupon -> new UserAndCouponResponseDTO(userAndCoupon.getId(),
-			new CouponPolicyResponseDTO(userAndCoupon.getCouponPolicyId().getId(),
-				userAndCoupon.getCouponPolicyId().getMinOrderPrice(),
-				userAndCoupon.getCouponPolicyId().getSalePrice(),
-				userAndCoupon.getCouponPolicyId().getSaleRate(),
-				userAndCoupon.getCouponPolicyId().getMaxSalePrice(),
-				userAndCoupon.getCouponPolicyId().getType()),
-			userAndCoupon.getUserId(),
-			userAndCoupon.getUsedDate(),
-			userAndCoupon.getIsUsed(),
-			userAndCoupon.getExpiredDate(),
-			userAndCoupon.getIssueDate()));
+		return userAndCoupons.map(UserAndCouponResponseDTO::fromUserAndCoupon);
 	}
 
 	@Override
@@ -178,21 +108,15 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 		int page = pageable.getPageNumber() - 1;
 		int pageSize = 4;
-		Page<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByUserId(userId,
+
+
+		// TODO 만약 없을경우 없는 것도  문제없이 페이지 띄우기
+
+		Page<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByUserIdAndIsUsedFalse(userId,
 			PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
 
-		return userAndCoupons.map(userAndCoupon -> new UserAndCouponResponseDTO(userAndCoupon.getId(),
-			new CouponPolicyResponseDTO(userAndCoupon.getCouponPolicyId().getId(),
-					userAndCoupon.getCouponPolicyId().getMinOrderPrice(),
-					userAndCoupon.getCouponPolicyId().getSalePrice(),
-					userAndCoupon.getCouponPolicyId().getSaleRate(),
-					userAndCoupon.getCouponPolicyId().getMaxSalePrice(),
-					userAndCoupon.getCouponPolicyId().getType()),
-				userAndCoupon.getUserId(),
-				userAndCoupon.getUsedDate(),
-				userAndCoupon.getIsUsed(),
-				userAndCoupon.getExpiredDate(),
-				userAndCoupon.getIssueDate()));
+
+		return userAndCoupons.map(UserAndCouponResponseDTO::fromUserAndCoupon);
 	}
 
 }

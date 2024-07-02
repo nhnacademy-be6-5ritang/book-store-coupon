@@ -33,7 +33,7 @@ public class UserAndCoupon {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@NotNull
 	@JoinColumn(name = "coupon_policy_id")
-	private CouponPolicy couponPolicyId;
+	private CouponPolicy couponPolicy;
 
 	@NotNull
 	@Column(name = "user_id")
@@ -57,8 +57,8 @@ public class UserAndCoupon {
 
 
 	@Builder
-	public UserAndCoupon(CouponPolicy couponPolicyId, Long userId, LocalDateTime usedDate, Boolean isUsed, LocalDateTime expiredDate, LocalDateTime issueDate) {
-		this.couponPolicyId = couponPolicyId;
+	public UserAndCoupon(CouponPolicy couponPolicy, Long userId, LocalDateTime usedDate, Boolean isUsed, LocalDateTime expiredDate, LocalDateTime issueDate) {
+		this.couponPolicy = couponPolicy;
 		this.userId = userId;
 		this.usedDate = usedDate;
 		this.isUsed = isUsed;

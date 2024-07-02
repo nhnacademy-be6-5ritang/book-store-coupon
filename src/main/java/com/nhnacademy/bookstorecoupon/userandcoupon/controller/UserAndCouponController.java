@@ -33,9 +33,9 @@ public class UserAndCouponController {
     }
 
     @PatchMapping("/users/{userId}")
-    public ResponseEntity<UserAndCouponResponseDTO> updateUserAndCoupon(@PathVariable("userId") Long userId) {
-        UserAndCouponResponseDTO responseDTO = userAndCouponService.updateUserAndCoupon(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    public ResponseEntity<Void> updateUserAndCoupon(@PathVariable("userId") Long userId) {
+        userAndCouponService.updateUserAndCoupon(userId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 
