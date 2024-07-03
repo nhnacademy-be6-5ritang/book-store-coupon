@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstorecoupon.couponpolicy.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupo
 import com.nhnacademy.bookstorecoupon.categorycoupon.repository.CategoryCouponRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
-import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO2;
+import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoundException;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
@@ -30,15 +30,16 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	private final CouponPolicyRepository couponPolicyRepository;
 	private final BookCouponRepository bookCouponRepository;
 	private final CategoryCouponRepository categoryCouponRepository;
-	private final UserAndCouponRepository userAndCouponRepository;
+	 private final UserAndCouponRepository userAndCouponRepository;
 
 	public CouponPolicyServiceImpl(CouponPolicyRepository couponPolicyRepository,
 		BookCouponRepository bookCouponRepository, CategoryCouponRepository categoryCouponRepository,
-		UserAndCouponRepository userAndCouponRepository) {
+		 UserAndCouponRepository userAndCouponRepository
+		) {
 		this.couponPolicyRepository = couponPolicyRepository;
 		this.bookCouponRepository = bookCouponRepository;
 		this.categoryCouponRepository = categoryCouponRepository;
-		this.userAndCouponRepository = userAndCouponRepository;
+		 this.userAndCouponRepository = userAndCouponRepository;
 	}
 
 	@Override
@@ -84,34 +85,11 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<CouponPolicyResponseDTO2> getAllCouponPolicies() {
-		List<CouponPolicy> policies = couponPolicyRepository.findAll();
-		List<CouponPolicyResponseDTO2> dtos = new ArrayList<>();
+	public List<CouponPolicyResponseDTO> getAllCouponPolicies() {
+		Map<Long, Long> bookIdMap = bookCouponRepository.fetchBookIdMap();
+		Map<Long, Long> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
 
-		for (CouponPolicy policy : policies) {
-			Long bookId = null;
-			Long categoryId = null;
-
-			// 쿠폰 정책의 종류(type)에 따라서 bookId 또는 categoryId 설정
-			if ("book".equals(policy.getType())) {
-				BookCoupon bookCoupon = bookCouponRepository.findByCouponPolicy(policy);
-				if (bookCoupon != null) {
-					bookId = bookCoupon.getBookId();
-				}
-			}
-			if ("category".equals(policy.getType())) {
-				CategoryCoupon categoryCoupon = categoryCouponRepository.findByCouponPolicy(policy);
-				if (categoryCoupon != null) {
-					categoryId = categoryCoupon.getCategoryId();
-				}
-			}
-
-			// CouponPolicyResponseDTO 객체 생성 및 리스트에 추가
-			CouponPolicyResponseDTO2 dto = CouponPolicyResponseDTO2.fromCouponPolicy(policy, bookId, categoryId);
-			dtos.add(dto);
-		}
-
-		return dtos;
+		return couponPolicyRepository.findAllWithBooksAndCategories(bookIdMap, categoryIdMap);
 	}
 
 
@@ -135,7 +113,17 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 					userAndCoupon.update(LocalDateTime.now(), true);
 				}
 
+			} else 	{
+				List<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByCouponPolicy(policy);
+
+
+				for (UserAndCoupon userAndCoupon : userAndCoupons) {
+					userAndCoupon.update(null, false);
+				}
+
 			}
+
+
 
 
 		} else {

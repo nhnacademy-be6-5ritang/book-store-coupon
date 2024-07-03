@@ -1,17 +1,17 @@
 package com.nhnacademy.bookstorecoupon.coupontemplate.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nhnacademy.bookstorecoupon.bookcoupon.repository.BookCouponRepository;
+import com.nhnacademy.bookstorecoupon.categorycoupon.repository.CategoryCouponRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoundException;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
@@ -19,7 +19,6 @@ import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.request.CouponTe
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response.CouponTemplateResponseDTO;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
 import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponAddErrorException;
-import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.coupontemplate.service.CouponTemplateService;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
@@ -31,10 +30,18 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 	private final CouponTemplateRepository couponTemplateRepository;
 	private final CouponPolicyRepository couponPolicyRepository;
 
-	public CouponTemplateServiceImpl(CouponTemplateRepository couponTemplateRepository, CouponPolicyRepository couponPolicyRepository) {
+	private final BookCouponRepository bookCouponRepository;
+	private final CategoryCouponRepository categoryCouponRepository;
+
+
+	public CouponTemplateServiceImpl(CouponTemplateRepository couponTemplateRepository, CouponPolicyRepository couponPolicyRepository, BookCouponRepository bookCouponRepository, CategoryCouponRepository categoryCouponRepository) {
 		this.couponTemplateRepository = couponTemplateRepository;
 		this.couponPolicyRepository = couponPolicyRepository;
+		this.bookCouponRepository = bookCouponRepository;
+		this.categoryCouponRepository = categoryCouponRepository;
 	}
+
+
 
 	@Override
 	public void createCouponTemplate(CouponTemplateRequestDTO requestDTO) {
@@ -63,41 +70,28 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 	}
 
 
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<CouponTemplateResponseDTO> getAllCouponTemplates() {
-		List<CouponTemplate> couponTemplates = couponTemplateRepository.findAll();
-
-	    return	couponTemplates.stream()
-			.map(CouponTemplateResponseDTO::fromCouponTemplate)
-			.collect(Collectors.toList());
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public Page<CouponTemplateResponseDTO> getAllCouponTemplatePaging(Pageable pageable) {
+	public Page<CouponTemplateResponseDTO> getAllCouponTemplatesByManagerPaging(Pageable pageable) {
+		// Fetch necessary maps
 		int page=pageable.getPageNumber()-1;
-		int pageSize=4;
+		int pageSize=pageable.getPageSize();
+		Map<Long, Long> bookIdMap = bookCouponRepository.fetchBookIdMap();
+		Map<Long, Long> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
 
-
-		List<String> types = List.of("sale", "book", "category");
-		Page<CouponTemplate> coupons = couponTemplateRepository.findByCouponPolicyIsUsedTrueAndCouponPolicyTypeIn(types, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
-
-		return coupons.map(CouponTemplateResponseDTO::fromCouponTemplate);
+		// Query templates
+		return couponTemplateRepository.findAllTemplatesByManagerPaging(PageRequest.of(page, pageSize), bookIdMap, categoryIdMap);
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public CouponTemplateResponseDTO getCouponTemplateById(Long id) {
-		String errorMessage = String.format("해당 쿠폰은 '%d'는 존재하지 않습니다.", id);
-		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+	public Page<CouponTemplateResponseDTO> getAllCouponTemplatesByUserPaging(Pageable pageable
+		) {
 
+		int page=pageable.getPageNumber()-1;
+		int pageSize=pageable.getPageSize();
+		// Fetch necessary maps
+		Map<Long, Long> bookIdMap = bookCouponRepository.fetchBookIdMap();
+		Map<Long, Long> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
 
-		CouponTemplate couponTemplate = couponTemplateRepository.findById(id)
-			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
-
-		return CouponTemplateResponseDTO.fromCouponTemplate(couponTemplate);
+		// Query templates
+		return couponTemplateRepository.findAllTemplatesByUserPaging(PageRequest.of(page, pageSize), bookIdMap, categoryIdMap);
 	}
 
 

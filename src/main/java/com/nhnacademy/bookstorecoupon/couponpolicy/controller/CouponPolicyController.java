@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
-import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO2;
+import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.service.impl.CouponPolicyServiceImpl;
 
 @RestController
@@ -57,8 +57,8 @@ public class CouponPolicyController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<CouponPolicyResponseDTO2>> getAllCouponPolicies() {
-		List<CouponPolicyResponseDTO2> policies = couponPolicyService.getAllCouponPolicies();
+	public ResponseEntity<List<CouponPolicyResponseDTO>> getAllCouponPolicies() {
+		List<CouponPolicyResponseDTO> policies = couponPolicyService.getAllCouponPolicies();
 		return ResponseEntity.status(HttpStatus.OK).body(policies);
 	}
 

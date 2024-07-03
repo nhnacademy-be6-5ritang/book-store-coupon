@@ -3,11 +3,9 @@ package com.nhnacademy.bookstorecoupon.bookcoupon.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.nhnacademy.bookstorecoupon.bookcoupon.domain.entity.BookCoupon;
-import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 
-public interface BookCouponRepository extends JpaRepository<BookCoupon, Long> {
+public interface BookCouponRepository extends JpaRepository<BookCoupon, Long>, CustomBookCouponRepository {
 
-	BookCoupon findByCouponPolicy(CouponPolicy couponPolicy);
 }
 
 

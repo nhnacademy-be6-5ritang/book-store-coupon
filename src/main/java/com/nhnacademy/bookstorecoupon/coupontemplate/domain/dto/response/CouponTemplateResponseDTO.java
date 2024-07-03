@@ -1,33 +1,24 @@
 package com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
-import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
+import lombok.Builder;
 
+@Builder
 public record CouponTemplateResponseDTO(
-        Long id,
-        CouponPolicyResponseDTO couponPolicy,
-
-
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-        LocalDateTime expiredDate,
-
-
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-        LocalDateTime issueDate
+	Long id,
+	Long couponPolicyId,
+	BigDecimal minOrderPrice,
+	BigDecimal salePrice,
+	BigDecimal saleRate,
+	BigDecimal maxSalePrice,
+	String type,
+	Boolean isUsed,
+	Long bookId,
+	Long categoryId,
+	LocalDateTime expiredDate,
+	LocalDateTime issueDate
 ) {
-
-	public static CouponTemplateResponseDTO fromCouponTemplate(CouponTemplate couponTemplate) {
-		return new CouponTemplateResponseDTO(
-			couponTemplate.getId(),
-			CouponPolicyResponseDTO.fromCouponPolicy(couponTemplate.getCouponPolicy()),
-			couponTemplate.getExpiredDate(),
-			couponTemplate.getIssueDate()
-
-		);
-	}
-
 
 }
