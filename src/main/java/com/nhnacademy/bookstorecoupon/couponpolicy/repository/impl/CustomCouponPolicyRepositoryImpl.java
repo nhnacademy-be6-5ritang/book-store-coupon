@@ -2,7 +2,12 @@ package com.nhnacademy.bookstorecoupon.couponpolicy.repository.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.QCouponPolicy;
@@ -16,13 +21,16 @@ public class CustomCouponPolicyRepositoryImpl implements CustomCouponPolicyRepos
 		this.queryFactory = queryFactory;
 	}
 
-
 	@Override
-	public List<CouponPolicyResponseDTO> findAllWithBooksAndCategories(Map<Long, Long> bookIdMap, Map<Long, Long> categoryIdMap) {
+	public Page<CouponPolicyResponseDTO> findAllWithBooksAndCategories(Pageable pageable, Map<Long, Long> bookIdMap,
+		Map<Long, Long> categoryIdMap) {
 		QCouponPolicy couponPolicy = QCouponPolicy.couponPolicy;
-
-		return queryFactory
+		// Fetch coupon policies with pagination and ordering
+		List<CouponPolicyResponseDTO> couponPolicies = queryFactory
 			.selectFrom(couponPolicy)
+			.orderBy(couponPolicy.id.desc()) // Add orderBy for descending policy id
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
 			.fetch()
 			.stream()
 			.map(policy -> CouponPolicyResponseDTO.builder()
@@ -37,5 +45,14 @@ public class CustomCouponPolicyRepositoryImpl implements CustomCouponPolicyRepos
 				.categoryId(categoryIdMap.get(policy.getId()))  // Single categoryId
 				.build()
 			).collect(Collectors.toList());
+
+		// Count total number of coupon policies
+		long totalCount = Optional.ofNullable(queryFactory
+				.select(couponPolicy.count())
+				.from(couponPolicy)
+				.fetchOne())
+			.orElse(0L);
+
+		return new PageImpl<>(couponPolicies, pageable, totalCount);
 	}
 }

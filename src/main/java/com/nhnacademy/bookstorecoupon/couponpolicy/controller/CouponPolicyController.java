@@ -1,7 +1,8 @@
 package com.nhnacademy.bookstorecoupon.couponpolicy.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,8 +58,8 @@ public class CouponPolicyController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<CouponPolicyResponseDTO>> getAllCouponPolicies() {
-		List<CouponPolicyResponseDTO> policies = couponPolicyService.getAllCouponPolicies();
+	public ResponseEntity<Page<CouponPolicyResponseDTO>> getAllCouponPolicies(@PageableDefault(page = 1, size = 3) Pageable pageable) {
+		Page<CouponPolicyResponseDTO> policies = couponPolicyService.getAllCouponPolicies(pageable);
 		return ResponseEntity.status(HttpStatus.OK).body(policies);
 	}
 

@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstorecoupon.couponpolicy.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
@@ -17,7 +18,7 @@ public interface CouponPolicyService {
 
 	void issueDiscountCoupon(CouponPolicyRequestDTO requestDTO);
 
-	List<CouponPolicyResponseDTO> getAllCouponPolicies();
+	Page<CouponPolicyResponseDTO> getAllCouponPolicies(Pageable pageable);
 
 
 

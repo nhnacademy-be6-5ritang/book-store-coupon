@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,11 +88,13 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<CouponPolicyResponseDTO> getAllCouponPolicies() {
+	public Page<CouponPolicyResponseDTO> getAllCouponPolicies(Pageable pageable) {
+		int page=pageable.getPageNumber()-1;
+		int pageSize=pageable.getPageSize();
 		Map<Long, Long> bookIdMap = bookCouponRepository.fetchBookIdMap();
 		Map<Long, Long> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
 
-		return couponPolicyRepository.findAllWithBooksAndCategories(bookIdMap, categoryIdMap);
+		return couponPolicyRepository.findAllWithBooksAndCategories(PageRequest.of(page, pageSize),bookIdMap, categoryIdMap);
 	}
 
 
