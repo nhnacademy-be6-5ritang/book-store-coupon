@@ -50,7 +50,7 @@ public class CustomCouponPolicyRepositoryImpl implements CustomCouponPolicyRepos
 		long totalCount = Optional.ofNullable(queryFactory
 				.select(couponPolicy.count())
 				.from(couponPolicy)
-				.fetchOne())
+				.fetchFirst())
 			.orElse(0L);
 
 		return new PageImpl<>(couponPolicies, pageable, totalCount);

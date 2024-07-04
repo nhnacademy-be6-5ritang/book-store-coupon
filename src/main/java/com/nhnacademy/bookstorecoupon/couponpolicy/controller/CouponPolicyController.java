@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
-import com.nhnacademy.bookstorecoupon.couponpolicy.service.impl.CouponPolicyServiceImpl;
+import com.nhnacademy.bookstorecoupon.couponpolicy.service.CouponPolicyService;
 
 @RestController
 @RequestMapping("/coupons/policies")
 public class CouponPolicyController {
-	private final CouponPolicyServiceImpl couponPolicyService;
+	private final CouponPolicyService couponPolicyService;
 
-	public CouponPolicyController(CouponPolicyServiceImpl couponPolicyService) {
+	public CouponPolicyController(CouponPolicyService couponPolicyService) {
 		this.couponPolicyService = couponPolicyService;
 	}
 

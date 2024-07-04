@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorecoupon.coupontemplate.repository.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -67,13 +68,14 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 			.collect(Collectors.toList());
 
 		// 전체 카운트 조회
-		long totalCount = queryFactory
-			.select(QCouponTemplate.couponTemplate.id)
+		long totalCount = Optional.ofNullable(queryFactory
+			.select(QCouponTemplate.couponTemplate.id.count())
 			.from(QCouponTemplate.couponTemplate)
-			.fetchCount();
+			.fetchOne()).orElse(0L);
 
 		return new PageImpl<>(templates, pageable, totalCount);
 	}
+
 
 	@Override
 	public Page<CouponTemplateResponseDTO> findAllTemplatesByUserPaging(Pageable pageable,
@@ -123,13 +125,15 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 			.collect(Collectors.toList());
 
 		// Count total
-		long totalCount = queryFactory
-			.select(QCouponTemplate.couponTemplate.id)
+		long totalCount = Optional.ofNullable(queryFactory
+			.select(QCouponTemplate.couponTemplate.id.count())
 			.from(QCouponTemplate.couponTemplate)
 			.join(QCouponTemplate.couponTemplate.couponPolicy, QCouponPolicy.couponPolicy)
 			.where(QCouponPolicy.couponPolicy.isUsed.isTrue()
 				.and(QCouponPolicy.couponPolicy.type.in(types)))
-			.fetchCount();
+			.fetchOne()).orElse(0L);
+
+
 
 		return new PageImpl<>(templates, pageable, totalCount);
 	}

@@ -3,6 +3,7 @@ package com.nhnacademy.bookstorecoupon.userandcoupon.repository.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -78,15 +79,14 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
             ))
             .collect(Collectors.toList());
 
-        // Count total
-        long totalCount = queryFactory
-            .select(QUserAndCoupon.userAndCoupon.id)
+
+        long totalCount = Optional.ofNullable(queryFactory
+            .select(QUserAndCoupon.userAndCoupon.id.count())
             .from(QUserAndCoupon.userAndCoupon)
-            .where(
-                QUserAndCoupon.userAndCoupon.isUsed.eq(false)
-                    .and(QUserAndCoupon.userAndCoupon.userId.eq(userId)) // 필터링 조건 추가
-            )
-            .fetchCount();
+            .where(  QUserAndCoupon.userAndCoupon.isUsed.eq(false)
+                .and(QUserAndCoupon.userAndCoupon.userId.eq(userId)))
+            .fetchOne()).orElse(0L);
+
 
         return new PageImpl<>(results, pageable, totalCount);
     }
@@ -148,11 +148,12 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
             .collect(Collectors.toList());
 
         // Count total
-        long totalCount = queryFactory
-            .select(QUserAndCoupon.userAndCoupon.id)
+        long totalCount = Optional.ofNullable(queryFactory
+            .select(QUserAndCoupon.userAndCoupon.id.count())
             .from(QUserAndCoupon.userAndCoupon)
+            .join(QUserAndCoupon.userAndCoupon.couponPolicy, QCouponPolicy.couponPolicy)
             .where(whereClause)
-            .fetchCount();
+            .fetchOne()).orElse(0L);
 
         return new PageImpl<>(results, pageable, totalCount);
     }
