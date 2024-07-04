@@ -89,7 +89,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	@Override
 	@Transactional(readOnly = true)
 	public Page<CouponPolicyResponseDTO> getAllCouponPolicies(Pageable pageable) {
-		int page=pageable.getPageNumber()-1;
+		int page= Math.max(pageable.getPageNumber() - 1, 0);
 		int pageSize=pageable.getPageSize();
 		Map<Long, Long> bookIdMap = bookCouponRepository.fetchBookIdMap();
 		Map<Long, Long> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
