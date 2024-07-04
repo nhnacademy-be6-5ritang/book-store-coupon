@@ -4,6 +4,7 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +28,7 @@ public class CategoryCoupon {
 	@Column(name = "category_coupon_id")
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@NotNull
 	@JoinColumn(name = "coupon_policy_id")
 	private CouponPolicy couponPolicy;

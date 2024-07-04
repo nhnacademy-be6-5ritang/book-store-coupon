@@ -18,7 +18,7 @@ public class BookCoupon {
 	@Column(name = "book_coupon_id")
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@NotNull
 	@JoinColumn(name = "coupon_policy_id")
 	private CouponPolicy couponPolicy;

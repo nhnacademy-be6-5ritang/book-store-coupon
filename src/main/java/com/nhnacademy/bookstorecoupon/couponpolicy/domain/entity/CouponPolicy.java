@@ -2,6 +2,8 @@ package com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity;
 
 import java.math.BigDecimal;
 
+import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyRequestDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,6 +44,10 @@ public class CouponPolicy {
 	@Column(name = "coupon_policy_type", length = 10)
 	private String type;
 
+	@NotNull
+	@Column(name="coupon_policy_is_used")
+	private Boolean isUsed=true;
+
 	@Builder
 	public CouponPolicy(BigDecimal minOrderPrice, BigDecimal salePrice, BigDecimal saleRate, BigDecimal maxSalePrice,
 		String type) {
@@ -52,12 +58,25 @@ public class CouponPolicy {
 		this.type = type;
 	}
 
-	public void update(BigDecimal minOrderPrice, BigDecimal salePrice, BigDecimal saleRate, BigDecimal maxSalePrice)
+	public void update(BigDecimal minOrderPrice, BigDecimal salePrice, BigDecimal saleRate, BigDecimal maxSalePrice,Boolean isUsed)
 		 {
 		this.minOrderPrice = minOrderPrice;
 		this.salePrice = salePrice;
 		this.saleRate = saleRate;
 		this.maxSalePrice = maxSalePrice;
+		this.isUsed = isUsed;
+	}
+
+
+
+	public static CouponPolicy createFromRequestDTO(CouponPolicyRequestDTO requestDTO) {
+		return CouponPolicy.builder()
+			.minOrderPrice(requestDTO.minOrderPrice())
+			.salePrice(requestDTO.salePrice())
+			.saleRate(requestDTO.saleRate())
+			.maxSalePrice(requestDTO.maxSalePrice())
+			.type(requestDTO.type())
+			.build();
 	}
 
 }

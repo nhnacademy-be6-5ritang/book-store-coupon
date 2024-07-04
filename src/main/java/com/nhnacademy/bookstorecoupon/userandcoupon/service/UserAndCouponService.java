@@ -9,14 +9,12 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndC
 public interface UserAndCouponService {
 
 
-    UserAndCouponResponseDTO createUserAndCoupon(Long couponId, UserAndCouponCreateRequestDTO requestDTO);
+    void createUserAndCoupon(Long couponId, UserAndCouponCreateRequestDTO requestDTO);
 
-    UserAndCouponResponseDTO updateUserAndCoupon(Long userId);
+    void updateUserAndCoupon(Long userId);
 
+    Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByUserPaging(Long userId, Pageable pageable);
+    Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByManagerPaging(Pageable pageable, String type, Long userId);
 
-    // Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(Pageable pageable);
-    Page<UserAndCouponResponseDTO> getAllUserAndCouponPaging(Long userId, String type,Pageable pageable);
-
-    Page<UserAndCouponResponseDTO> getUserAndCouponByIdPaging(Long userId, Pageable pageable);
 
 }

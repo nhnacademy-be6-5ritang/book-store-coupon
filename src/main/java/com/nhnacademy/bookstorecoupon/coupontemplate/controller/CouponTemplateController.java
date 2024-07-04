@@ -1,10 +1,9 @@
 package com.nhnacademy.bookstorecoupon.coupontemplate.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,33 +28,31 @@ public class CouponTemplateController {
 	}
 
 	@PostMapping
-	public ResponseEntity<CouponTemplateResponseDTO> createCouponTemplate(@RequestBody CouponTemplateRequestDTO requestDTO) {
-		CouponTemplateResponseDTO couponTemplateResponseDTO = couponTemplateService.createCouponTemplate(requestDTO);
-		return ResponseEntity.status(HttpStatus.CREATED).body(couponTemplateResponseDTO);
+	public ResponseEntity<Void> createCouponTemplate(@RequestBody CouponTemplateRequestDTO requestDTO) {
+		couponTemplateService.createCouponTemplate(requestDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 
 
 	@GetMapping("/issue")
-	public ResponseEntity<Page<CouponTemplateResponseDTO>> getAllCouponTemplatePaging(Pageable pageable) {
-		Page<CouponTemplateResponseDTO> coupons = couponTemplateService.getAllCouponTemplatePaging(pageable);
+	public ResponseEntity<Page<CouponTemplateResponseDTO>> getAllCouponTemplatesByUserPaging(@PageableDefault(page = 1, size = 3)Pageable pageable) {
+		Page<CouponTemplateResponseDTO> coupons = couponTemplateService.getAllCouponTemplatesByUserPaging(pageable);
 		return ResponseEntity.status(HttpStatus.OK).body(coupons);
+
+
 	}
 
 
 	@GetMapping
-	public ResponseEntity<List<CouponTemplateResponseDTO>> getAllCouponTemplates() {
-		List<CouponTemplateResponseDTO> coupons = couponTemplateService.getAllCouponTemplates();
+	public ResponseEntity<Page<CouponTemplateResponseDTO>> getAllCouponTemplatesByManagerPaging(@PageableDefault(page = 1, size = 3) Pageable pageable
+		) {
+
+		Page<CouponTemplateResponseDTO> coupons = couponTemplateService.getAllCouponTemplatesByManagerPaging(pageable);
 		return ResponseEntity.status(HttpStatus.OK).body(coupons);
 	}
 
 
-
-	// @GetMapping("/{id}")
-	// public ResponseEntity<CouponResponseDTO> getCouponById(@PathVariable Long id) {
-	// 	CouponResponseDTO coupon = couponService.getCouponById(id);
-	// 	return ResponseEntity.status(HttpStatus.OK).body(coupon);
-	// }
 
 
 }
