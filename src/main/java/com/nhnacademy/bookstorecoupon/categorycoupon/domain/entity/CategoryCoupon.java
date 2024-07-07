@@ -37,9 +37,27 @@ public class CategoryCoupon {
 	@Column(name = "category_id")
 	private Long categoryId;
 
+
+	@NotNull
+	@Column(name = "category_name", length = 20)
+	private String categoryName;
+
+
 	@Builder
-	public CategoryCoupon(CouponPolicy couponPolicy, Long categoryId) {
+	public CategoryCoupon(CouponPolicy couponPolicy, Long categoryId, String categoryName) {
 		this.couponPolicy = couponPolicy;
 		this.categoryId = categoryId;
+		this.categoryName=categoryName;
+	}
+
+	// 헬퍼 클래스
+	public static class CategoryInfo {
+		public final Long categoryId;
+		public final String categoryName;
+
+		public CategoryInfo(Long categoryId, String categoryName) {
+			this.categoryId = categoryId;
+			this.categoryName = categoryName;
+		}
 	}
 }

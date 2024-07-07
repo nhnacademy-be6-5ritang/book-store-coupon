@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nhnacademy.bookstorecoupon.bookcoupon.domain.entity.BookCoupon;
 import com.nhnacademy.bookstorecoupon.bookcoupon.repository.BookCouponRepository;
+import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupon;
 import com.nhnacademy.bookstorecoupon.categorycoupon.repository.CategoryCouponRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoundException;
@@ -74,8 +76,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 		// Fetch necessary maps
 		int page= Math.max(pageable.getPageNumber() - 1, 0);
 		int pageSize=pageable.getPageSize();
-		Map<Long, Long> bookIdMap = bookCouponRepository.fetchBookIdMap();
-		Map<Long, Long> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
+		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
+		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
 
 		// Query templates
 		return couponTemplateRepository.findAllTemplatesByManagerPaging(PageRequest.of(page, pageSize), bookIdMap, categoryIdMap);
@@ -87,8 +89,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 		int page= Math.max(pageable.getPageNumber() - 1, 0);
 		int pageSize=pageable.getPageSize();
 		// Fetch necessary maps
-		Map<Long, Long> bookIdMap = bookCouponRepository.fetchBookIdMap();
-		Map<Long, Long> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
+		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
+		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
 
 		// Query templates
 		return couponTemplateRepository.findAllTemplatesByUserPaging(PageRequest.of(page, pageSize), bookIdMap, categoryIdMap);

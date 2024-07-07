@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nhnacademy.bookstorecoupon.bookcoupon.domain.entity.BookCoupon;
 import com.nhnacademy.bookstorecoupon.bookcoupon.repository.BookCouponRepository;
+import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupon;
 import com.nhnacademy.bookstorecoupon.categorycoupon.repository.CategoryCouponRepository;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
 import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
@@ -79,8 +81,8 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	public Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByUserPaging(Long userId, Pageable pageable) {
 		int page= Math.max(pageable.getPageNumber() - 1, 0);
 		int pageSize=pageable.getPageSize();
-		Map<Long, Long> bookIdMap = bookCouponRepository.fetchBookIdMap();
-		Map<Long, Long> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
+		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
+		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
 		return userAndCouponRepository.findAllByUserPaging(PageRequest.of(page, pageSize), userId,bookIdMap, categoryIdMap);
 	}
 
@@ -88,8 +90,8 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	public Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByManagerPaging(Pageable pageable, String type, Long userId) {
 		int page= Math.max(pageable.getPageNumber() - 1, 0);
 		int pageSize=pageable.getPageSize();
-		Map<Long, Long> bookIdMap = bookCouponRepository.fetchBookIdMap();
-		Map<Long, Long> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
+		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
+		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
 		return userAndCouponRepository.findAllByManagerPaging(PageRequest.of(page, pageSize), type , userId,bookIdMap,  categoryIdMap);
 	}
 

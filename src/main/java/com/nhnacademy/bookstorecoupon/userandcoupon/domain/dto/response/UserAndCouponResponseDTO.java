@@ -22,7 +22,9 @@ public record UserAndCouponResponseDTO(
 	String type,
 	Boolean policyIsUsed,
 	Long bookId,
-	Long categoryId
+	String bookTitle,
+	Long categoryId,
+	String categoryName
 
 
 ) {

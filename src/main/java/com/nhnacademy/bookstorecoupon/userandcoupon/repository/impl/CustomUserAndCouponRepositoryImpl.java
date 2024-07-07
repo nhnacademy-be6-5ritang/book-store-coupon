@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import com.nhnacademy.bookstorecoupon.bookcoupon.domain.entity.BookCoupon;
+import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupon;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.QCouponPolicy;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.QUserAndCoupon;
@@ -30,7 +32,7 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
 
 
     @Override
-    public Page<UserAndCouponResponseDTO> findAllByUserPaging(Pageable pageable, Long userId, Map<Long, Long> bookIdMap, Map<Long, Long> categoryIdMap) {
+    public Page<UserAndCouponResponseDTO> findAllByUserPaging(Pageable pageable, Long userId, Map<Long, BookCoupon.BookInfo> bookIdMap, Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap) {
         // Fetch tuples
         List<Tuple> tuples = queryFactory
             .select(
@@ -61,22 +63,30 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
 
         // Map tuples to DTOs
         List<UserAndCouponResponseDTO> results = tuples.stream()
-            .map(tuple -> new UserAndCouponResponseDTO(
-                tuple.get(QUserAndCoupon.userAndCoupon.id),
-                tuple.get(QUserAndCoupon.userAndCoupon.userId),
-                tuple.get(QUserAndCoupon.userAndCoupon.usedDate),
-                tuple.get(QUserAndCoupon.userAndCoupon.isUsed),
-                tuple.get(QUserAndCoupon.userAndCoupon.expiredDate),
-                tuple.get(QUserAndCoupon.userAndCoupon.issueDate),
-                tuple.get(QCouponPolicy.couponPolicy.minOrderPrice),
-                tuple.get(QCouponPolicy.couponPolicy.salePrice),
-                tuple.get(QCouponPolicy.couponPolicy.saleRate),
-                tuple.get(QCouponPolicy.couponPolicy.maxSalePrice),
-                tuple.get(QCouponPolicy.couponPolicy.type),
-                tuple.get(QCouponPolicy.couponPolicy.isUsed),
-                bookIdMap.getOrDefault(tuple.get(QCouponPolicy.couponPolicy.id), null), // Fetch bookId from map
-                categoryIdMap.getOrDefault(tuple.get(QCouponPolicy.couponPolicy.id), null) // Fetch categoryId from map
-            ))
+            .map(tuple -> {
+                BookCoupon.BookInfo bookInfo = bookIdMap.getOrDefault(tuple.get(QCouponPolicy.couponPolicy.id), null);
+                CategoryCoupon.CategoryInfo categoryInfo = categoryIdMap.getOrDefault(tuple.get(QCouponPolicy.couponPolicy.id), null);
+
+
+                return new UserAndCouponResponseDTO(
+                    tuple.get(QUserAndCoupon.userAndCoupon.id),
+                    tuple.get(QUserAndCoupon.userAndCoupon.userId),
+                    tuple.get(QUserAndCoupon.userAndCoupon.usedDate),
+                    tuple.get(QUserAndCoupon.userAndCoupon.isUsed),
+                    tuple.get(QUserAndCoupon.userAndCoupon.expiredDate),
+                    tuple.get(QUserAndCoupon.userAndCoupon.issueDate),
+                    tuple.get(QCouponPolicy.couponPolicy.minOrderPrice),
+                    tuple.get(QCouponPolicy.couponPolicy.salePrice),
+                    tuple.get(QCouponPolicy.couponPolicy.saleRate),
+                    tuple.get(QCouponPolicy.couponPolicy.maxSalePrice),
+                    tuple.get(QCouponPolicy.couponPolicy.type),
+                    tuple.get(QCouponPolicy.couponPolicy.isUsed),
+                    (bookInfo != null) ? bookInfo.bookId : null, // Check for null before accessing fields
+                    (bookInfo != null) ? bookInfo.bookTitle : null,
+                    (categoryInfo != null) ? categoryInfo.categoryId : null,
+                    (categoryInfo != null) ? categoryInfo.categoryName : null
+                );
+            })
             .collect(Collectors.toList());
 
 
@@ -92,7 +102,7 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
     }
 
     @Override
-    public Page<UserAndCouponResponseDTO> findAllByManagerPaging(Pageable pageable, String type, Long userId, Map<Long, Long> bookIdMap, Map<Long, Long> categoryIdMap) {
+    public Page<UserAndCouponResponseDTO> findAllByManagerPaging(Pageable pageable, String type, Long userId, Map<Long, BookCoupon.BookInfo> bookIdMap, Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap) {
         // Define where clause
         BooleanExpression whereClause = QUserAndCoupon.userAndCoupon.isNotNull();
         if (type != null && !type.isEmpty()) {
@@ -129,7 +139,11 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
 
         // Map tuples to DTOs
         List<UserAndCouponResponseDTO> results = tuples.stream()
-            .map(tuple -> new UserAndCouponResponseDTO(
+            .map(tuple -> {
+                BookCoupon.BookInfo bookInfo = bookIdMap.getOrDefault(tuple.get(QCouponPolicy.couponPolicy.id), null);
+                CategoryCoupon.CategoryInfo categoryInfo = categoryIdMap.getOrDefault(tuple.get(QCouponPolicy.couponPolicy.id), null);
+
+             return new UserAndCouponResponseDTO(
                 tuple.get(QUserAndCoupon.userAndCoupon.id),
                 tuple.get(QUserAndCoupon.userAndCoupon.userId),
                 tuple.get(QUserAndCoupon.userAndCoupon.usedDate),
@@ -142,9 +156,12 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
                 tuple.get(QCouponPolicy.couponPolicy.maxSalePrice),
                 tuple.get(QCouponPolicy.couponPolicy.type),
                 tuple.get(QCouponPolicy.couponPolicy.isUsed),
-                bookIdMap.getOrDefault(tuple.get(QCouponPolicy.couponPolicy.id), null), // Fetch bookId from map
-                categoryIdMap.getOrDefault(tuple.get(QCouponPolicy.couponPolicy.id), null) // Fetch categoryId from map
-            ))
+                 (bookInfo != null) ? bookInfo.bookId : null, // Check for null before accessing fields
+                 (bookInfo != null) ? bookInfo.bookTitle : null,
+                 (categoryInfo != null) ? categoryInfo.categoryId : null,
+                 (categoryInfo != null) ? categoryInfo.categoryName : null
+             );
+            })
             .collect(Collectors.toList());
 
         // Count total

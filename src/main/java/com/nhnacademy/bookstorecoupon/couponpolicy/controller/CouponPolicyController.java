@@ -39,15 +39,15 @@ public class CouponPolicyController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@PostMapping("/books/{bookId}")
-	public ResponseEntity<Void> issueSpecificBookCoupon(@PathVariable("bookId") Long bookId, @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
-		couponPolicyService.issueSpecificBookCoupon(bookId, couponPolicyRequestDTO);
+	@PostMapping("/books")
+	public ResponseEntity<Void> issueSpecificBookCoupon( @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		couponPolicyService.issueSpecificBookCoupon(couponPolicyRequestDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@PostMapping("/categories/{categoryId}")
-	public ResponseEntity<Void> issueSpecificCategoryCoupon(@PathVariable("categoryId") Long categoryId, @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
-		couponPolicyService.issueSpecificCategoryCoupon(categoryId, couponPolicyRequestDTO);
+	@PostMapping("/categories")
+	public ResponseEntity<Void> issueSpecificCategoryCoupon(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		couponPolicyService.issueSpecificCategoryCoupon(couponPolicyRequestDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 

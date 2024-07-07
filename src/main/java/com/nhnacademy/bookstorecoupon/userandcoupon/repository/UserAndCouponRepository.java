@@ -11,5 +11,6 @@ public interface UserAndCouponRepository extends JpaRepository<UserAndCoupon, Lo
 	 {
 
 	UserAndCoupon getByUserId(Long userId);
+
 	List<UserAndCoupon> findByCouponPolicy(CouponPolicy couponPolicy);
 }
