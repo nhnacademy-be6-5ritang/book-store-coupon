@@ -60,6 +60,12 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 			throw new CouponAddErrorException(errorStatus2);
 		}
 
+		if(couponPolicy.getIsUsed() == Boolean.FALSE){
+			String errorMessage2 = "해당 쿠폰템플릿은 정책폐기로 인해 발급을 할 수 없습니다.";
+			ErrorStatus errorStatus2 = ErrorStatus.from(errorMessage2, HttpStatus.FORBIDDEN, LocalDateTime.now());
+			throw new CouponAddErrorException(errorStatus2);
+		}
+
 		CouponTemplate couponTemplate = CouponTemplate.builder()
 			.couponPolicy(couponPolicy)
 			.expiredDate(requestDTO.expiredDate())
