@@ -16,7 +16,9 @@ public record CouponTemplateResponseDTO(
 	String type,
 	Boolean isUsed,
 	Long bookId,
+	String bookTitle,
 	Long categoryId,
+	String categoryName,
 	LocalDateTime expiredDate,
 	LocalDateTime issueDate
 ) {

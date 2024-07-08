@@ -33,16 +33,16 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	private final CouponPolicyRepository couponPolicyRepository;
 	private final BookCouponRepository bookCouponRepository;
 	private final CategoryCouponRepository categoryCouponRepository;
-	 private final UserAndCouponRepository userAndCouponRepository;
+	private final UserAndCouponRepository userAndCouponRepository;
 
 	public CouponPolicyServiceImpl(CouponPolicyRepository couponPolicyRepository,
 		BookCouponRepository bookCouponRepository, CategoryCouponRepository categoryCouponRepository,
-		 UserAndCouponRepository userAndCouponRepository
-		) {
+		UserAndCouponRepository userAndCouponRepository
+	) {
 		this.couponPolicyRepository = couponPolicyRepository;
 		this.bookCouponRepository = bookCouponRepository;
 		this.categoryCouponRepository = categoryCouponRepository;
-		 this.userAndCouponRepository = userAndCouponRepository;
+		this.userAndCouponRepository = userAndCouponRepository;
 	}
 
 	@Override
@@ -61,20 +61,25 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	}
 
 	@Override
-	public void issueSpecificBookCoupon(Long bookId, CouponPolicyRequestDTO requestDTO) {
+	public void issueSpecificBookCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
 
 		couponPolicyRepository.save(couponPolicy);
-		bookCouponRepository.save(BookCoupon.builder().bookId(bookId).couponPolicy(couponPolicy).build());
+		bookCouponRepository.save(BookCoupon.builder()
+			.bookId(requestDTO.bookId())
+			.bookTitle(requestDTO.bookTitle())
+			.couponPolicy(couponPolicy)
+			.build());
 
 	}
 
 	@Override
-	public void issueSpecificCategoryCoupon(Long categoryId, CouponPolicyRequestDTO requestDTO) {
+	public void issueSpecificCategoryCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
 
 		couponPolicyRepository.save(couponPolicy);
-		categoryCouponRepository.save(new CategoryCoupon(couponPolicy, categoryId));
+		categoryCouponRepository.save(CategoryCoupon.builder().categoryId(requestDTO.categoryId()).categoryName(
+			requestDTO.categoryName()).couponPolicy(couponPolicy).build());
 
 	}
 
@@ -89,14 +94,14 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	@Override
 	@Transactional(readOnly = true)
 	public Page<CouponPolicyResponseDTO> getAllCouponPolicies(Pageable pageable) {
-		int page= Math.max(pageable.getPageNumber() - 1, 0);
-		int pageSize=pageable.getPageSize();
-		Map<Long, Long> bookIdMap = bookCouponRepository.fetchBookIdMap();
-		Map<Long, Long> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
+		int page = Math.max(pageable.getPageNumber() - 1, 0);
+		int pageSize = pageable.getPageSize();
+		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
+		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
 
-		return couponPolicyRepository.findAllWithBooksAndCategories(PageRequest.of(page, pageSize),bookIdMap, categoryIdMap);
+		return couponPolicyRepository.findAllWithBooksAndCategories(PageRequest.of(page, pageSize), bookIdMap,
+			categoryIdMap);
 	}
-
 
 	@Override
 	public void updateCouponPolicy(Long id, CouponPolicyUpdateRequestDTO requestDTO) {
@@ -113,14 +118,12 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			if (requestDTO.isUsed() == Boolean.FALSE) {
 				List<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByCouponPolicy(policy);
 
-
 				for (UserAndCoupon userAndCoupon : userAndCoupons) {
 					userAndCoupon.update(LocalDateTime.now(), true);
 				}
 
-			} else 	{
+			} else {
 				List<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByCouponPolicy(policy);
-
 
 				for (UserAndCoupon userAndCoupon : userAndCoupons) {
 					userAndCoupon.update(null, false);
@@ -128,18 +131,13 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 			}
 
-
-
-
 		} else {
 			String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
 			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
 			throw new CouponPolicyNotFoundException(errorStatus);
 		}
 
-
-
-		}
 	}
+}
 
 

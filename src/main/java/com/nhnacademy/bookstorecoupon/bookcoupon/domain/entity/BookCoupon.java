@@ -27,9 +27,26 @@ public class BookCoupon {
 	@Column(name = "book_id")
 	private Long bookId;
 
+
+	@NotNull
+	@Column(name = "book_title", length = 300)
+	private String bookTitle;
+
 	@Builder
-	public BookCoupon(CouponPolicy couponPolicy, Long bookId) {
+	public BookCoupon(CouponPolicy couponPolicy, Long bookId, String bookTitle) {
 		this.couponPolicy = couponPolicy;
 		this.bookId = bookId;
+		this.bookTitle=bookTitle;
+	}
+
+	// 헬퍼 클래스
+	public static class BookInfo {
+		public final Long bookId;
+		public final String bookTitle;
+
+		public BookInfo(Long bookId, String bookTitle) {
+			this.bookId = bookId;
+			this.bookTitle = bookTitle;
+		}
 	}
 }

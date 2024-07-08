@@ -29,30 +29,35 @@ public class CouponPolicyController {
 
 	@PostMapping("/welcome")
 	public ResponseEntity<Void> issueWelcomeCoupon(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		validateSaleFields(couponPolicyRequestDTO);
 		couponPolicyService.issueWelcomeCoupon(couponPolicyRequestDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	@PostMapping("/birthday")
 	public ResponseEntity<Void> issueBirthdayCoupon(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		validateSaleFields(couponPolicyRequestDTO);
 		couponPolicyService.issueBirthdayCoupon(couponPolicyRequestDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@PostMapping("/books/{bookId}")
-	public ResponseEntity<Void> issueSpecificBookCoupon(@PathVariable("bookId") Long bookId, @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
-		couponPolicyService.issueSpecificBookCoupon(bookId, couponPolicyRequestDTO);
+	@PostMapping("/books")
+	public ResponseEntity<Void> issueSpecificBookCoupon( @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		validateSaleFields(couponPolicyRequestDTO);
+		couponPolicyService.issueSpecificBookCoupon(couponPolicyRequestDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@PostMapping("/categories/{categoryId}")
-	public ResponseEntity<Void> issueSpecificCategoryCoupon(@PathVariable("categoryId") Long categoryId, @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
-		couponPolicyService.issueSpecificCategoryCoupon(categoryId, couponPolicyRequestDTO);
+	@PostMapping("/categories")
+	public ResponseEntity<Void> issueSpecificCategoryCoupon(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		validateSaleFields(couponPolicyRequestDTO);
+		couponPolicyService.issueSpecificCategoryCoupon(couponPolicyRequestDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	@PostMapping("/sale")
 	public ResponseEntity<Void> issueDiscountCoupon(@RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
+		validateSaleFields(couponPolicyRequestDTO);
 		couponPolicyService.issueDiscountCoupon(couponPolicyRequestDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
@@ -67,8 +72,22 @@ public class CouponPolicyController {
 
 	@PatchMapping("/{couponPolicyId}")
 	public ResponseEntity<Void> updateCouponPolicy(@PathVariable Long couponPolicyId, @RequestBody CouponPolicyUpdateRequestDTO requestDTO) {
+		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null) ||
+			(requestDTO.salePrice() != null && requestDTO.saleRate() != null)) {
+			throw new IllegalArgumentException("Either salePrice or saleRate must be provided exclusively.");
+		}
 		couponPolicyService.updateCouponPolicy(couponPolicyId, requestDTO);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
+
+
+	// SalePrice와 SaleRate 유효성 검사 메서드 추가
+	private void validateSaleFields(CouponPolicyRequestDTO requestDTO) {
+		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null) ||
+			(requestDTO.salePrice() != null && requestDTO.saleRate() != null)) {
+			throw new IllegalArgumentException("Either salePrice or saleRate must be provided exclusively.");
+		}
+	}
+
 
 }

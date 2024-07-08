@@ -14,7 +14,9 @@ public record CouponPolicyResponseDTO(
 	String type,
 	Boolean isUsed,
 	Long bookId,
-	Long categoryId
+	String bookTitle,
+	Long categoryId,
+	String categoryName
 
 ) {
 
