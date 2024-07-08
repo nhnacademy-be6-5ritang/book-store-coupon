@@ -64,18 +64,23 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 	}
 
-	@Override
-	public void updateUserAndCoupon(Long userId) {
-		UserAndCoupon userAndCoupon = userAndCouponRepository.getByUserId(userId);
+// 임시방편용....  0 0 0 1/1 * ? *  매일 00 시 시작 설정
+// 	@Override
+// 	@Scheduled(cron = "*/10 * * * * * ")
+// 	public void findExpiredCoupons() {
+// 		LocalDateTime now = LocalDateTime.now();
+//
+// 		// 오늘 자정 이후에 만료된 쿠폰들을 조회하여 처리
+// 		List<UserAndCoupon> expiredCoupons = userAndCouponRepository.findByExpiredDateBeforeAndIsUsedIsFalse(now);
+//
+// 		for (UserAndCoupon coupon : expiredCoupons) {
+// 				coupon.update(now, true);
+// 		}
+//
+// 	}
 
 
 
-		userAndCoupon.update(LocalDateTime.now(), true);
-			//TODO :이걸 꼭 붙혀야하나?
-		// userAndCouponRepository.save(userAndCoupon);
-
-
-	}
 
 	@Override
 	public Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByUserPaging(Long userId, Pageable pageable) {

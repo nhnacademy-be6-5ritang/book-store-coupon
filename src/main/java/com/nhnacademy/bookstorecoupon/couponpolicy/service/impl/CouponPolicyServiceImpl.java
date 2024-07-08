@@ -115,6 +115,10 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 				requestDTO.maxSalePrice(),
 				requestDTO.isUsed()
 			);
+
+			// TODO 쿠폰정책이 사용폐기될경우 쿠폰사용됨처리, 다시 정책을 살리면 사용안됨처리 하는게 맞나?
+			//  정책폐기시 front에서 경고창 띄우고 다시 정책을 사용하게 할 수 없게끔 로직짜는게 맞아보임.
+			//  따라서 정책 isUsed = false 일경우  쿠폰 isUsed = true 로 하되 다시 반대로 할 수는 없게끔 조치
 			if (requestDTO.isUsed() == Boolean.FALSE) {
 				List<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByCouponPolicy(policy);
 

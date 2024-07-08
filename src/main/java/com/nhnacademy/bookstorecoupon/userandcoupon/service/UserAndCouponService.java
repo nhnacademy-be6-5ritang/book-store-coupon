@@ -10,8 +10,7 @@ public interface UserAndCouponService {
 
 
     void createUserAndCoupon(Long couponId, UserAndCouponCreateRequestDTO requestDTO);
-
-    void updateUserAndCoupon(Long userId);
+    // void findExpiredCoupons();
 
     Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByUserPaging(Long userId, Pageable pageable);
     Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByManagerPaging(Pageable pageable, String type, Long userId);
