@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import com.nhnacademy.bookstorecoupon.bookcoupon.domain.entity.BookCoupon;
 import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupon;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
+import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.QCouponPolicy;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CustomCouponPolicyRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -63,5 +64,15 @@ public class CustomCouponPolicyRepositoryImpl implements CustomCouponPolicyRepos
 			.orElse(0L);
 
 		return new PageImpl<>(couponPolicies, pageable, totalCount);
+	}
+
+	@Override
+	public Optional<CouponPolicy> findLatestCouponPolicyByType(String type) {
+		QCouponPolicy couponPolicy = QCouponPolicy.couponPolicy;
+		return Optional.ofNullable(queryFactory
+			.selectFrom(couponPolicy)
+			.where(couponPolicy.type.eq(type))
+			.orderBy(couponPolicy.id.desc())
+			.fetchFirst());
 	}
 }

@@ -1,12 +1,15 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +22,10 @@ import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundExc
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.UserAndCouponCreateRequestDTO;
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.BirthdayCouponTargetResponse;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
+import com.nhnacademy.bookstorecoupon.userandcoupon.feignclient.UserAndCouponFeignClient;
 import com.nhnacademy.bookstorecoupon.userandcoupon.repository.UserAndCouponRepository;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService;
 
@@ -32,13 +37,18 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	private final CouponTemplateRepository couponTemplateRepository;
 	private final BookCouponRepository bookCouponRepository;
 	private final CategoryCouponRepository categoryCouponRepository;
+	private final UserAndCouponFeignClient userAndCouponFeignClient;
+
+
 
 	public UserAndCouponServiceImpl(UserAndCouponRepository userAndCouponRepository,
-		CouponTemplateRepository couponTemplateRepository, BookCouponRepository bookCouponRepository, CategoryCouponRepository categoryCouponRepository) {
+		CouponTemplateRepository couponTemplateRepository, BookCouponRepository bookCouponRepository, CategoryCouponRepository categoryCouponRepository,
+	UserAndCouponFeignClient userAndCouponFeignClient) {
 		this.userAndCouponRepository = userAndCouponRepository;
 		this.couponTemplateRepository = couponTemplateRepository;
 		this.bookCouponRepository = bookCouponRepository;
 		this.categoryCouponRepository = categoryCouponRepository;
+		this.userAndCouponFeignClient=userAndCouponFeignClient;
 	}
 
 	@Override
@@ -78,6 +88,33 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 // 		}
 //
 // 	}
+
+//	@Override
+	@Scheduled(cron = "*/10 * * * * * ")
+	public void issueBirthdayCoupon() {
+		LocalDate today = LocalDate.now();
+		List<BirthdayCouponTargetResponse> birthdayList = userAndCouponFeignClient.getUsersWithBirthday(today).getBody();
+
+		// 최신 생일 쿠폰 템플릿을 가져옴
+		CouponTemplate couponTemplate = couponTemplateRepository.findLatestBirthdayCouponTemplate()
+			.orElseThrow(() -> new IllegalStateException("생일 쿠폰 템플릿이 없습니다."));
+
+		// 생일 목록에 있는 각 사용자에게 쿠폰을 발행
+		assert birthdayList != null;
+		birthdayList.forEach(user -> {
+
+			UserAndCoupon userAndCoupon = UserAndCoupon.builder()
+				.couponPolicy(couponTemplate.getCouponPolicy())
+				.userId(user.userId())
+				.isUsed(false)
+				.expiredDate(couponTemplate.getExpiredDate())
+				.issueDate(couponTemplate.getIssueDate())
+				.build();
+
+			userAndCouponRepository.save(userAndCoupon);
+		});
+	}
+
 
 
 
