@@ -21,6 +21,7 @@ import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.UserAndCouponCreateRequestDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
+import com.nhnacademy.bookstorecoupon.userandcoupon.feignclient.UserAndCouponFeignClient;
 import com.nhnacademy.bookstorecoupon.userandcoupon.repository.UserAndCouponRepository;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService;
 
@@ -32,13 +33,18 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	private final CouponTemplateRepository couponTemplateRepository;
 	private final BookCouponRepository bookCouponRepository;
 	private final CategoryCouponRepository categoryCouponRepository;
+	private final UserAndCouponFeignClient userAndCouponFeignClient;
+
+
 
 	public UserAndCouponServiceImpl(UserAndCouponRepository userAndCouponRepository,
-		CouponTemplateRepository couponTemplateRepository, BookCouponRepository bookCouponRepository, CategoryCouponRepository categoryCouponRepository) {
+		CouponTemplateRepository couponTemplateRepository, BookCouponRepository bookCouponRepository, CategoryCouponRepository categoryCouponRepository,
+	UserAndCouponFeignClient userAndCouponFeignClient) {
 		this.userAndCouponRepository = userAndCouponRepository;
 		this.couponTemplateRepository = couponTemplateRepository;
 		this.bookCouponRepository = bookCouponRepository;
 		this.categoryCouponRepository = categoryCouponRepository;
+		this.userAndCouponFeignClient=userAndCouponFeignClient;
 	}
 
 	@Override
@@ -64,18 +70,50 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 	}
 
-	@Override
-	public void updateUserAndCoupon(Long userId) {
-		UserAndCoupon userAndCoupon = userAndCouponRepository.getByUserId(userId);
+//임시방편용....  0 0 0 1/1 * ? *  매일 00 시 시작 설정
+// 	@Override
+// 	@Scheduled(cron = "*/10 * * * * * ")
+// 	public void findExpiredCoupons() {
+// 		LocalDateTime now = LocalDateTime.now();
+//
+// 		// 오늘 자정 이후에 만료된 쿠폰들을 조회하여 처리
+// 		List<UserAndCoupon> expiredCoupons = userAndCouponRepository.findByExpiredDateBeforeAndIsUsedIsFalse(now);
+//
+// 		for (UserAndCoupon coupon : expiredCoupons) {
+// 				coupon.update(coupon.getExpiredDate(), true);
+// 		}
+//
+// 	}
+
+//	@Override
+// 	@Scheduled(cron = "*/10 * * * * * ")
+// 	public void issueBirthdayCoupon() {
+// 		LocalDate today = LocalDate.now();
+// 		List<BirthdayCouponTargetResponse> birthdayList = userAndCouponFeignClient.getUsersWithBirthday(today).getBody();
+//
+// 		// 최신 생일 쿠폰 템플릿을 가져옴
+// 		CouponTemplate couponTemplate = couponTemplateRepository.findLatestBirthdayCouponTemplate()
+// 			.orElseThrow(() -> new IllegalStateException("생일 쿠폰 템플릿이 없습니다."));
+//
+// 		// 생일 목록에 있는 각 사용자에게 쿠폰을 발행
+// 		assert birthdayList != null;
+// 		birthdayList.forEach(user -> {
+//
+// 			UserAndCoupon userAndCoupon = UserAndCoupon.builder()
+// 				.couponPolicy(couponTemplate.getCouponPolicy())
+// 				.userId(user.userId())
+// 				.isUsed(false)
+// 				.expiredDate(couponTemplate.getExpiredDate())
+// 				.issueDate(couponTemplate.getIssueDate())
+// 				.build();
+//
+// 			userAndCouponRepository.save(userAndCoupon);
+// 		});
+// 	}
 
 
 
-		userAndCoupon.update(LocalDateTime.now(), true);
-			//TODO :이걸 꼭 붙혀야하나?
-		// userAndCouponRepository.save(userAndCoupon);
 
-
-	}
 
 	@Override
 	public Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByUserPaging(Long userId, Pageable pageable) {

@@ -102,5 +102,30 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 		return couponTemplateRepository.findAllTemplatesByUserPaging(PageRequest.of(page, pageSize), bookIdMap, categoryIdMap);
 	}
 
+	// @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
+	// @Transactional
+	// public void issueBirthdayTemplate() {
+	// 	issueTemplateByType("birthday");
+	// }
+	//
+	// @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
+	// @Transactional
+	// public void issueWelcomeTemplate() {
+	// 	issueTemplateByType("welcome");
+	// }
+
+	private void issueTemplateByType(String type) {
+		CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType(type)
+			.orElseThrow(() -> new IllegalStateException(String.format("해당 타입의 쿠폰 정책이 없습니다: %s", type)));
+
+		CouponTemplate couponTemplate = CouponTemplate.builder()
+			.couponPolicy(couponPolicy)
+			.expiredDate(LocalDateTime.now().plusDays(365)) // 만료 날짜를 생성일로부터 30일 후로 설정
+			.issueDate(LocalDateTime.now())
+			.build();
+
+		couponTemplateRepository.save(couponTemplate);
+	}
+
 
 }

@@ -20,6 +20,7 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPoli
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
+import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyBanUpdateException;
 import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoundException;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.service.CouponPolicyService;
@@ -106,6 +107,13 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	@Override
 	public void updateCouponPolicy(Long id, CouponPolicyUpdateRequestDTO requestDTO) {
 		Optional<CouponPolicy> optionalPolicy = couponPolicyRepository.findById(id);
+
+		if (Boolean.TRUE.equals(requestDTO.isUsed())) {
+			String errorMessage = "이미 폐기된 쿠폰정책은 변경할 수 없습니다";
+			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			throw new CouponPolicyBanUpdateException(errorStatus);
+		}
+
 		if (optionalPolicy.isPresent()) {
 			CouponPolicy policy = optionalPolicy.get();
 			policy.update(
@@ -115,20 +123,13 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 				requestDTO.maxSalePrice(),
 				requestDTO.isUsed()
 			);
-			if (requestDTO.isUsed() == Boolean.FALSE) {
+
+			if (Boolean.FALSE.equals(requestDTO.isUsed())) {
 				List<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByCouponPolicy(policy);
 
 				for (UserAndCoupon userAndCoupon : userAndCoupons) {
-					userAndCoupon.update(LocalDateTime.now(), true);
+					userAndCoupon.update(userAndCoupon.getExpiredDate(), true);
 				}
-
-			} else {
-				List<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByCouponPolicy(policy);
-
-				for (UserAndCoupon userAndCoupon : userAndCoupons) {
-					userAndCoupon.update(null, false);
-				}
-
 			}
 
 		} else {
@@ -139,5 +140,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 	}
 }
+
 
 
