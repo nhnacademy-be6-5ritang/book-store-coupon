@@ -19,7 +19,7 @@ public interface UserAndCouponService {
     Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByUserPaging(Long userId, Pageable pageable);
     Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByManagerPaging(Pageable pageable, String type, Long userId);
 
-    // void findExpiredCoupons();
-    // void issueBirthdayCoupon();
+    void findExpiredCoupons();
+    void issueBirthdayCoupon();
 
 }

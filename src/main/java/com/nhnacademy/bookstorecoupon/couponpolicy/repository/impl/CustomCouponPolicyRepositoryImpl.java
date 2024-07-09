@@ -71,7 +71,8 @@ public class CustomCouponPolicyRepositoryImpl implements CustomCouponPolicyRepos
 		QCouponPolicy couponPolicy = QCouponPolicy.couponPolicy;
 		return Optional.ofNullable(queryFactory
 			.selectFrom(couponPolicy)
-			.where(couponPolicy.type.eq(type))
+			.where(couponPolicy.type.eq(type).
+				and(couponPolicy.isUsed.isTrue()))
 			.orderBy(couponPolicy.id.desc())
 			.fetchFirst());
 	}

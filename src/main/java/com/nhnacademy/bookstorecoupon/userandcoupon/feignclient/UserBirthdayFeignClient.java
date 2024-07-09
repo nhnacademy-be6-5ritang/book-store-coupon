@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.BirthdayCouponTargetResponse;
 
-@FeignClient(name = "user-and-coupon-feign-client", url = "http://localhost:8083")
-public interface UserAndCouponFeignClient {
+@FeignClient(name = "user-birthday-feign-client", url = "http://localhost:8083")
+public interface UserBirthdayFeignClient {
 
 
-	@GetMapping("/birthday")
+	@GetMapping("/api/users/birthday")
 	ResponseEntity<List<BirthdayCouponTargetResponse>> getUsersWithBirthday(
 		@RequestParam("date") LocalDate date);
 
