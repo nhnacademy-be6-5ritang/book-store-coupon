@@ -20,4 +20,6 @@ public interface CustomCouponTemplateRepository  {
 		 Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap);
 
 	// Optional<CouponTemplate> findLatestBirthdayCouponTemplate();
+
+	Optional<CouponTemplate> findLatestWelcomeCouponTemplate();
 }

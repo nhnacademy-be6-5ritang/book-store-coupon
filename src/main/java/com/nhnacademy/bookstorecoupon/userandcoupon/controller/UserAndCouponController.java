@@ -38,6 +38,16 @@ public class UserAndCouponController {
 
 
 
+    @PostMapping("/coupon/welcome")
+    public ResponseEntity<Void> createUserWelcomeCouponIssue(@RequestBody UserAndCouponCreateRequestDTO requestDTO, @CurrentUser CurrentUserDetails currentUser) {
+        Long userId= currentUser.getUserId();
+        userAndCouponService.createUserWelcomeCouponIssue(userId, requestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+
+
+
 
     @GetMapping("/users/user")
     public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@CurrentUser CurrentUserDetails currentUser,@PageableDefault(page = 1, size = 3) Pageable pageable) {

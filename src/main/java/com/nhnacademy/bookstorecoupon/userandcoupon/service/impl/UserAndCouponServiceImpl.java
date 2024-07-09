@@ -70,6 +70,30 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 	}
 
+	@Override
+	public void createUserWelcomeCouponIssue(Long userId, UserAndCouponCreateRequestDTO requestDTO) {
+
+		String errorMessage = "최신 웰컴쿠폰 템플릿을 찾을 수 없습니다.";
+		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+
+
+		CouponTemplate couponTemplate = couponTemplateRepository.findLatestWelcomeCouponTemplate()
+			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
+
+		UserAndCoupon userAndCoupon = UserAndCoupon.builder()
+			.couponPolicy(couponTemplate.getCouponPolicy())
+			.userId(userId)
+			.isUsed(requestDTO.isUsed())
+			.expiredDate(couponTemplate.getExpiredDate())
+			.issueDate(couponTemplate.getIssueDate())
+			.build();
+
+		userAndCouponRepository.save(userAndCoupon);
+
+
+	}
+
+
 //임시방편용....  0 0 0 1/1 * ? *  매일 00 시 시작 설정
 // 	@Override
 // 	@Scheduled(cron = "*/10 * * * * * ")

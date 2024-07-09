@@ -13,6 +13,7 @@ import com.nhnacademy.bookstorecoupon.bookcoupon.domain.entity.BookCoupon;
 import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupon;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.QCouponPolicy;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response.CouponTemplateResponseDTO;
+import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.QCouponTemplate;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CustomCouponTemplateRepository;
 import com.querydsl.core.Tuple;
@@ -168,4 +169,15 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 	// 		.orderBy(couponTemplate.couponPolicy.id.desc())
 	// 		.fetchFirst());
 	// }
+	//
+
+	@Override
+	public Optional<CouponTemplate> findLatestWelcomeCouponTemplate() {
+		QCouponTemplate couponTemplate = QCouponTemplate.couponTemplate;
+		return Optional.ofNullable(queryFactory
+			.selectFrom(couponTemplate)
+			.where(couponTemplate.couponPolicy.type.eq("welcome"))
+			.orderBy(couponTemplate.couponPolicy.id.desc())
+			.fetchFirst());
+	}
 	}
