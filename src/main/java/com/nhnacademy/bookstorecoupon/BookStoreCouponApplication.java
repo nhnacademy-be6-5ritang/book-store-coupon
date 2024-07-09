@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableDiscoveryClient
 @EnableScheduling
 @EnableFeignClients
+@EnableWebSecurity
 public class BookStoreCouponApplication {
 
     public static void main(String[] args) {

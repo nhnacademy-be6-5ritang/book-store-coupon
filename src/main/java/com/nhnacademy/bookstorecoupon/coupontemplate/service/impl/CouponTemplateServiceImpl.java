@@ -114,18 +114,18 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 	// 	issueTemplateByType("welcome");
 	// }
 
-	private void issueTemplateByType(String type) {
-		CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType(type)
-			.orElseThrow(() -> new IllegalStateException(String.format("해당 타입의 쿠폰 정책이 없습니다: %s", type)));
-
-		CouponTemplate couponTemplate = CouponTemplate.builder()
-			.couponPolicy(couponPolicy)
-			.expiredDate(LocalDateTime.now().plusDays(365)) // 만료 날짜를 생성일로부터 30일 후로 설정
-			.issueDate(LocalDateTime.now())
-			.build();
-
-		couponTemplateRepository.save(couponTemplate);
-	}
+	// private void issueTemplateByType(String type) {
+	// 	CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType(type)
+	// 		.orElseThrow(() -> new IllegalStateException(String.format("해당 타입의 쿠폰 정책이 없습니다: %s", type)));
+	//
+	// 	CouponTemplate couponTemplate = CouponTemplate.builder()
+	// 		.couponPolicy(couponPolicy)
+	// 		.expiredDate(LocalDateTime.now().plusDays(365)) // 만료 날짜를 생성일로부터 30일 후로 설정
+	// 		.issueDate(LocalDateTime.now())
+	// 		.build();
+	//
+	// 	couponTemplateRepository.save(couponTemplate);
+	// }
 
 
 }
