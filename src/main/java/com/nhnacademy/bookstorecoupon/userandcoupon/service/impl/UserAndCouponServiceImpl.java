@@ -18,7 +18,6 @@ import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplat
 import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
-import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.UserAndCouponCreateRequestDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
 import com.nhnacademy.bookstorecoupon.userandcoupon.feignclient.UserAndCouponFeignClient;
@@ -48,7 +47,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	}
 
 	@Override
-	public void createUserAndCoupon(Long couponId, Long userId, UserAndCouponCreateRequestDTO requestDTO) {
+	public void createUserAndCoupon(Long couponId, Long userId) {
 		String errorMessage = String.format("해당 쿠폰은 '%d'는 존재하지 않습니다.", couponId);
 		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
 
@@ -60,7 +59,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		UserAndCoupon userAndCoupon = UserAndCoupon.builder()
 			.couponPolicy(couponTemplate.getCouponPolicy())
 			.userId(userId)
-			.isUsed(requestDTO.isUsed())
+			.isUsed(false)
 			.expiredDate(couponTemplate.getExpiredDate())
 			.issueDate(couponTemplate.getIssueDate())
 			.build();
@@ -71,7 +70,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	}
 
 	@Override
-	public void createUserWelcomeCouponIssue(Long userId, UserAndCouponCreateRequestDTO requestDTO) {
+	public void createUserWelcomeCouponIssue(Long userId) {
 
 		String errorMessage = "최신 웰컴쿠폰 템플릿을 찾을 수 없습니다.";
 		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
@@ -83,7 +82,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		UserAndCoupon userAndCoupon = UserAndCoupon.builder()
 			.couponPolicy(couponTemplate.getCouponPolicy())
 			.userId(userId)
-			.isUsed(requestDTO.isUsed())
+			.isUsed(false)
 			.expiredDate(couponTemplate.getExpiredDate())
 			.issueDate(couponTemplate.getIssueDate())
 			.build();
