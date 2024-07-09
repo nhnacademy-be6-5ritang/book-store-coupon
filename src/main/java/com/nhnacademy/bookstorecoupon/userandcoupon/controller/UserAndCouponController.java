@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nhnacademy.bookstorecoupon.auth.annotation.CurrentUser;
+import com.nhnacademy.bookstorecoupon.auth.jwt.dto.CurrentUserDetails;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.UserAndCouponCreateRequestDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService;
@@ -28,19 +30,28 @@ public class UserAndCouponController {
     }
 
     @PostMapping("/{couponId}")
-    public ResponseEntity<Void> createUserAndCoupon(@PathVariable("couponId") Long couponId, @RequestBody UserAndCouponCreateRequestDTO requestDTO) {
-       userAndCouponService.createUserAndCoupon(couponId ,requestDTO);
+    public ResponseEntity<Void> createUserAndCoupon(@PathVariable("couponId") Long couponId, @RequestBody UserAndCouponCreateRequestDTO requestDTO, @CurrentUser CurrentUserDetails currentUser) {
+        Long userId= currentUser.getUserId();
+       userAndCouponService.createUserAndCoupon(couponId, userId, requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 
 
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@PathVariable("userId") Long userId,@PageableDefault(page = 1, size = 3) Pageable pageable) {
-        Page<UserAndCouponResponseDTO> coupons = userAndCouponService.getAllUsersAndCouponsByUserPaging(userId, pageable);
+    @GetMapping("/users/user")
+    public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@CurrentUser CurrentUserDetails currentUser,@PageableDefault(page = 1, size = 3) Pageable pageable) {
+        Long userId= currentUser.getUserId();
+        Page<UserAndCouponResponseDTO> coupons = userAndCouponService.getAllUsersAndCouponsByUserPaging(
+           userId, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
+
+    // @GetMapping("/users/{userId}")
+    // public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@PathVariable("userId") Long userId,@PageableDefault(page = 1, size = 3) Pageable pageable) {
+    //     Page<UserAndCouponResponseDTO> coupons = userAndCouponService.getAllUsersAndCouponsByUserPaging(userId, pageable);
+    //     return ResponseEntity.status(HttpStatus.OK).body(coupons);
+    // }
 
     @GetMapping("/users")
     public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUsersAndCouponsByManagerPaging(

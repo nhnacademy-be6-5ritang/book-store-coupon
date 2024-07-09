@@ -9,7 +9,7 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndC
 public interface UserAndCouponService {
 
 
-    void createUserAndCoupon(Long couponId, UserAndCouponCreateRequestDTO requestDTO);
+    void createUserAndCoupon(Long couponId, Long userId,UserAndCouponCreateRequestDTO requestDTO);
     // void findExpiredCoupons();
 
     Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByUserPaging(Long userId, Pageable pageable);

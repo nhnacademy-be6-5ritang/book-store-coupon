@@ -48,7 +48,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	}
 
 	@Override
-	public void createUserAndCoupon(Long couponId, UserAndCouponCreateRequestDTO requestDTO) {
+	public void createUserAndCoupon(Long couponId, Long userId, UserAndCouponCreateRequestDTO requestDTO) {
 		String errorMessage = String.format("해당 쿠폰은 '%d'는 존재하지 않습니다.", couponId);
 		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
 
@@ -59,7 +59,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 		UserAndCoupon userAndCoupon = UserAndCoupon.builder()
 			.couponPolicy(couponTemplate.getCouponPolicy())
-			.userId(requestDTO.userId())
+			.userId(userId)
 			.isUsed(requestDTO.isUsed())
 			.expiredDate(couponTemplate.getExpiredDate())
 			.issueDate(couponTemplate.getIssueDate())
