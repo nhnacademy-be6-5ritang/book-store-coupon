@@ -4,13 +4,10 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.nhnacademy.bookstoreback.auth.resolver.CurrentUserArgumentResolver;
-import com.nhnacademy.bookstoreback.global.handler.CustomPageableHandlerMethodArgumentResolver;
+import com.nhnacademy.bookstorecoupon.auth.resolver.CurrentUserArgumentResolver;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

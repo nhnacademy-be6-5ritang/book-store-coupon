@@ -12,10 +12,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.nhnacademy.bookstoreback.auth.jwt.client.TokenReissueClient;
-import com.nhnacademy.bookstoreback.auth.jwt.filter.JwtFilter;
-import com.nhnacademy.bookstoreback.auth.jwt.utils.JwtUtils;
-import com.nhnacademy.bookstoreback.global.filter.IpAddressFilter;
+import com.nhnacademy.bookstorecoupon.auth.jwt.client.TokenReissueClient;
+import com.nhnacademy.bookstorecoupon.auth.jwt.filter.JwtFilter;
+import com.nhnacademy.bookstorecoupon.auth.jwt.utils.JwtUtils;
+import com.nhnacademy.bookstorecoupon.global.filter.IpAddressFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,10 +34,9 @@ public class SecurityConfig {
 			.formLogin(AbstractHttpConfigurer::disable)
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests((requests) -> requests
-				// .requestMatchers("/api/sign-up").permitAll()
-				// .requestMatchers("/api/auth/info").authenticated()
-				// .requestMatchers("/api/internal/users/info").permitAll()
-				// .requestMatchers("/api/admin").hasRole("ADMIN")
+				// .requestMatchers("/coupons/issue").permitAll()
+				// .requestMatchers("/coupons/users").authenticated()
+				// .requestMatchers("/coupons/policies").hasRole("ADMIN")
 				.anyRequest().permitAll()
 			)
 			.addFilterBefore(ipAddressFilter, UsernamePasswordAuthenticationFilter.class)
