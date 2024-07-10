@@ -1,5 +1,7 @@
 package com.nhnacademy.bookstorecoupon.coupontemplate.repository.impl;
 
+import static com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.QCouponPolicy.*;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 
 import com.nhnacademy.bookstorecoupon.bookcoupon.domain.entity.BookCoupon;
 import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupon;
-import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.QCouponPolicy;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response.CouponTemplateResponseDTO;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.QCouponTemplate;
@@ -35,18 +36,18 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 		List<Tuple> tuples = queryFactory
 			.select(
 				QCouponTemplate.couponTemplate.id,
-				QCouponPolicy.couponPolicy.id,
-				QCouponPolicy.couponPolicy.minOrderPrice,
-				QCouponPolicy.couponPolicy.salePrice,
-				QCouponPolicy.couponPolicy.saleRate,
-				QCouponPolicy.couponPolicy.maxSalePrice,
-				QCouponPolicy.couponPolicy.type,
-				QCouponPolicy.couponPolicy.isUsed,
+				couponPolicy.id,
+				couponPolicy.minOrderPrice,
+				couponPolicy.salePrice,
+				couponPolicy.saleRate,
+				couponPolicy.maxSalePrice,
+				couponPolicy.type,
+				couponPolicy.isUsed,
 				QCouponTemplate.couponTemplate.expiredDate,
 				QCouponTemplate.couponTemplate.issueDate
 			)
 			.from(QCouponTemplate.couponTemplate)
-			.join(QCouponTemplate.couponTemplate.couponPolicy, QCouponPolicy.couponPolicy)
+			.join(QCouponTemplate.couponTemplate.couponPolicy, couponPolicy)
 			.orderBy(QCouponTemplate.couponTemplate.id.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -56,19 +57,19 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 		List<CouponTemplateResponseDTO> templates = tuples.stream()
 			.map(tuple ->
 			{
-				BookCoupon.BookInfo bookInfo = bookIdMap.getOrDefault(tuple.get(QCouponPolicy.couponPolicy.id), null);
+				BookCoupon.BookInfo bookInfo = bookIdMap.getOrDefault(tuple.get(couponPolicy.id), null);
 				CategoryCoupon.CategoryInfo categoryInfo = categoryIdMap.getOrDefault(
-					tuple.get(QCouponPolicy.couponPolicy.id), null);
+					tuple.get(couponPolicy.id), null);
 
 			return	new CouponTemplateResponseDTO(
 					tuple.get(QCouponTemplate.couponTemplate.id),
-					tuple.get(QCouponPolicy.couponPolicy.id),
-					tuple.get(QCouponPolicy.couponPolicy.minOrderPrice),
-					tuple.get(QCouponPolicy.couponPolicy.salePrice),
-					tuple.get(QCouponPolicy.couponPolicy.saleRate),
-					tuple.get(QCouponPolicy.couponPolicy.maxSalePrice),
-					tuple.get(QCouponPolicy.couponPolicy.type),
-					tuple.get(QCouponPolicy.couponPolicy.isUsed),
+					tuple.get(couponPolicy.id),
+					tuple.get(couponPolicy.minOrderPrice),
+					tuple.get(couponPolicy.salePrice),
+					tuple.get(couponPolicy.saleRate),
+					tuple.get(couponPolicy.maxSalePrice),
+					tuple.get(couponPolicy.type),
+					tuple.get(couponPolicy.isUsed),
 					(bookInfo != null) ? bookInfo.bookId : null, // Check for null before accessing fields
 					(bookInfo != null) ? bookInfo.bookTitle : null,
 					(categoryInfo != null) ? categoryInfo.categoryId : null,
@@ -98,20 +99,20 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 			List<Tuple> tuples = queryFactory
 				.select(
 					QCouponTemplate.couponTemplate.id,
-					QCouponPolicy.couponPolicy.id,
-					QCouponPolicy.couponPolicy.minOrderPrice,
-					QCouponPolicy.couponPolicy.salePrice,
-					QCouponPolicy.couponPolicy.saleRate,
-					QCouponPolicy.couponPolicy.maxSalePrice,
-					QCouponPolicy.couponPolicy.type,
-					QCouponPolicy.couponPolicy.isUsed,
+					couponPolicy.id,
+					couponPolicy.minOrderPrice,
+					couponPolicy.salePrice,
+					couponPolicy.saleRate,
+					couponPolicy.maxSalePrice,
+					couponPolicy.type,
+					couponPolicy.isUsed,
 					QCouponTemplate.couponTemplate.expiredDate,
 					QCouponTemplate.couponTemplate.issueDate
 				)
 				.from(QCouponTemplate.couponTemplate)
-				.join(QCouponTemplate.couponTemplate.couponPolicy, QCouponPolicy.couponPolicy)
-				.where(QCouponPolicy.couponPolicy.isUsed.isTrue()
-					.and(QCouponPolicy.couponPolicy.type.in(types)))
+				.join(QCouponTemplate.couponTemplate.couponPolicy, couponPolicy)
+				.where(couponPolicy.isUsed.isTrue()
+					.and(couponPolicy.type.in(types)))
 				.orderBy(QCouponTemplate.couponTemplate.id.desc())
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
@@ -122,20 +123,20 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 				.map(tuple ->
 				{
 
-					BookCoupon.BookInfo bookInfo = bookIdMap.getOrDefault(tuple.get(QCouponPolicy.couponPolicy.id),
+					BookCoupon.BookInfo bookInfo = bookIdMap.getOrDefault(tuple.get(couponPolicy.id),
 						null);
 					CategoryCoupon.CategoryInfo categoryInfo = categoryIdMap.getOrDefault(
-						tuple.get(QCouponPolicy.couponPolicy.id), null);
+						tuple.get(couponPolicy.id), null);
 
 					return new CouponTemplateResponseDTO(
 						tuple.get(QCouponTemplate.couponTemplate.id),
-						tuple.get(QCouponPolicy.couponPolicy.id),
-						tuple.get(QCouponPolicy.couponPolicy.minOrderPrice),
-						tuple.get(QCouponPolicy.couponPolicy.salePrice),
-						tuple.get(QCouponPolicy.couponPolicy.saleRate),
-						tuple.get(QCouponPolicy.couponPolicy.maxSalePrice),
-						tuple.get(QCouponPolicy.couponPolicy.type),
-						tuple.get(QCouponPolicy.couponPolicy.isUsed),
+						tuple.get(couponPolicy.id),
+						tuple.get(couponPolicy.minOrderPrice),
+						tuple.get(couponPolicy.salePrice),
+						tuple.get(couponPolicy.saleRate),
+						tuple.get(couponPolicy.maxSalePrice),
+						tuple.get(couponPolicy.type),
+						tuple.get(couponPolicy.isUsed),
 						(bookInfo != null) ? bookInfo.bookId : null, // Check for null before accessing fields
 						(bookInfo != null) ? bookInfo.bookTitle : null,
 						(categoryInfo != null) ? categoryInfo.categoryId : null,
@@ -150,9 +151,9 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 			long totalCount = Optional.ofNullable(queryFactory
 				.select(QCouponTemplate.couponTemplate.id.count())
 				.from(QCouponTemplate.couponTemplate)
-				.join(QCouponTemplate.couponTemplate.couponPolicy, QCouponPolicy.couponPolicy)
-				.where(QCouponPolicy.couponPolicy.isUsed.isTrue()
-					.and(QCouponPolicy.couponPolicy.type.in(types)))
+				.join(QCouponTemplate.couponTemplate.couponPolicy, couponPolicy)
+				.where(couponPolicy.isUsed.isTrue()
+					.and(couponPolicy.type.in(types)))
 				.fetchOne()).orElse(0L);
 
 			return new PageImpl<>(templates, pageable, totalCount);
@@ -160,13 +161,16 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 
 
 
+
 	@Override
-	public Optional<CouponTemplate> findLatestBirthdayCouponTemplate() {
+	public Optional<CouponTemplate> findLatestCouponTemplate(String type) {
 		QCouponTemplate couponTemplate = QCouponTemplate.couponTemplate;
 		return Optional.ofNullable(queryFactory
 			.selectFrom(couponTemplate)
-			.where(couponTemplate.couponPolicy.type.eq("birthday"))
-			.orderBy(couponTemplate.couponPolicy.id.desc())
+			.where(couponTemplate.couponPolicy.type.eq(type)
+				.and(couponPolicy.isUsed.isTrue()))
+			.orderBy(couponTemplate.id.desc())
 			.fetchFirst());
+
 	}
 	}

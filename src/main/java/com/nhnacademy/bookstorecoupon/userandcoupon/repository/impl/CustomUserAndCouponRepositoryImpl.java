@@ -3,6 +3,7 @@ package com.nhnacademy.bookstorecoupon.userandcoupon.repository.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -176,4 +177,86 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
     }
 
 
+
+    @Override
+    public List<UserAndCouponResponseDTO> findAllByUser(
+        Long userId,
+        Map<Long, BookCoupon.BookInfo> bookIdMap,
+        Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap,
+        List<String> bookTitles,
+        List<String> categoryNames
+    ) {
+        // Define the base where clause
+        BooleanExpression whereClause = QUserAndCoupon.userAndCoupon.isUsed.eq(false)
+            .and(QUserAndCoupon.userAndCoupon.userId.eq(userId))
+            .and(QCouponPolicy.couponPolicy.isUsed.eq(true));
+
+        // Fetch tuples
+        List<Tuple> tuples = queryFactory
+            .select(
+                QUserAndCoupon.userAndCoupon.id,
+                QUserAndCoupon.userAndCoupon.userId,
+                QUserAndCoupon.userAndCoupon.usedDate,
+                QUserAndCoupon.userAndCoupon.isUsed,
+                QUserAndCoupon.userAndCoupon.expiredDate,
+                QUserAndCoupon.userAndCoupon.issueDate,
+                QCouponPolicy.couponPolicy.id,
+                QCouponPolicy.couponPolicy.minOrderPrice,
+                QCouponPolicy.couponPolicy.salePrice,
+                QCouponPolicy.couponPolicy.saleRate,
+                QCouponPolicy.couponPolicy.maxSalePrice,
+                QCouponPolicy.couponPolicy.type,
+                QCouponPolicy.couponPolicy.isUsed
+            )
+            .from(QUserAndCoupon.userAndCoupon)
+            .join(QUserAndCoupon.userAndCoupon.couponPolicy, QCouponPolicy.couponPolicy)
+            .where(whereClause)
+            .orderBy(QUserAndCoupon.userAndCoupon.id.desc())
+            .fetch();
+
+        // Map tuples to DTOs
+        List<UserAndCouponResponseDTO> results = tuples.stream()
+            .map(tuple -> {
+                Long couponPolicyId = tuple.get(QCouponPolicy.couponPolicy.id);
+                String couponType = tuple.get(QCouponPolicy.couponPolicy.type);
+
+                BookCoupon.BookInfo bookInfo = bookIdMap.get(couponPolicyId);
+                CategoryCoupon.CategoryInfo categoryInfo = categoryIdMap.get(couponPolicyId);
+
+                String bookTitle = (bookInfo != null) ? bookInfo.bookTitle : null;
+                String categoryName = (categoryInfo != null) ? categoryInfo.categoryName : null;
+
+                // 필터링 조건 추가
+                boolean matchesBookCoupon = couponType.equals("book") && bookTitle != null && bookTitles.contains(bookTitle);
+                boolean matchesCategoryCoupon = couponType.equals("category") && categoryName != null && categoryNames.contains(categoryName);
+                boolean matchesOtherCoupons = couponType.equals("welcome") || couponType.equals("birthday") || couponType.equals("sale");
+
+                if (matchesBookCoupon || matchesCategoryCoupon || matchesOtherCoupons) {
+                    return new UserAndCouponResponseDTO(
+                        tuple.get(QUserAndCoupon.userAndCoupon.id),
+                        tuple.get(QUserAndCoupon.userAndCoupon.userId),
+                        tuple.get(QUserAndCoupon.userAndCoupon.usedDate),
+                        tuple.get(QUserAndCoupon.userAndCoupon.isUsed),
+                        tuple.get(QUserAndCoupon.userAndCoupon.expiredDate),
+                        tuple.get(QUserAndCoupon.userAndCoupon.issueDate),
+                        tuple.get(QCouponPolicy.couponPolicy.minOrderPrice),
+                        tuple.get(QCouponPolicy.couponPolicy.salePrice),
+                        tuple.get(QCouponPolicy.couponPolicy.saleRate),
+                        tuple.get(QCouponPolicy.couponPolicy.maxSalePrice),
+                        tuple.get(QCouponPolicy.couponPolicy.type),
+                        tuple.get(QCouponPolicy.couponPolicy.isUsed),
+                        (bookInfo != null) ? bookInfo.bookId : null,
+                        bookTitle,
+                        (categoryInfo != null) ? categoryInfo.categoryId : null,
+                        categoryName
+                    );
+                } else {
+                    return null; // 필터 조건에 맞지 않으면 null 반환
+                }
+            })
+            .filter(Objects::nonNull) // null인 요소 제거
+            .collect(Collectors.toList());
+
+        return results;
+    }
 }

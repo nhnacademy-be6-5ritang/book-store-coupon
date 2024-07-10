@@ -8,10 +8,15 @@ import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response.CouponT
 
 public interface CouponTemplateService {
 
-    void createCouponTemplate(CouponTemplateRequestDTO requestDTO);
-    Page<CouponTemplateResponseDTO> getAllCouponTemplatesByManagerPaging(Pageable pageable);
-    Page<CouponTemplateResponseDTO> getAllCouponTemplatesByUserPaging(Pageable pageable);
+	void createCouponTemplate(CouponTemplateRequestDTO requestDTO);
 
-    // void issueBirthdayTemplate();
-    // void issueWelcomeTemplate();
+	Page<CouponTemplateResponseDTO> getAllCouponTemplatesByManagerPaging(Pageable pageable);
+
+	Page<CouponTemplateResponseDTO> getAllCouponTemplatesByUserPaging(Pageable pageable);
+
+	void issueBirthdayTemplate();
+
+	void issueWelcomeTemplate();
+
+	void issueTemplateByType(String type);
 }

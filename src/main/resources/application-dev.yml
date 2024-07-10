@@ -32,6 +32,8 @@ logging:
     org.hibernate.orm.jdbc.bind: trace
     org.springframework.transaction.interceptor: trace
 
+remote-addr: 127.0.0.1
+
 #
 #
 #    shutdown: graceful

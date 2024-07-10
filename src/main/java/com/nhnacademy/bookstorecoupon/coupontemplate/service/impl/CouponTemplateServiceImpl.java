@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +26,11 @@ import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRe
 import com.nhnacademy.bookstorecoupon.coupontemplate.service.CouponTemplateService;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 @Transactional
+@Slf4j
 public class CouponTemplateServiceImpl implements CouponTemplateService {
 
 	private final CouponTemplateRepository couponTemplateRepository;
@@ -78,6 +82,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 	}
 
 
+	@Override
+	@Transactional(readOnly = true)
 	public Page<CouponTemplateResponseDTO> getAllCouponTemplatesByManagerPaging(Pageable pageable) {
 		// Fetch necessary maps
 		int page= Math.max(pageable.getPageNumber() - 1, 0);
@@ -89,6 +95,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 		return couponTemplateRepository.findAllTemplatesByManagerPaging(PageRequest.of(page, pageSize), bookIdMap, categoryIdMap);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
 	public Page<CouponTemplateResponseDTO> getAllCouponTemplatesByUserPaging(Pageable pageable
 		) {
 
@@ -102,29 +110,35 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 		return couponTemplateRepository.findAllTemplatesByUserPaging(PageRequest.of(page, pageSize), bookIdMap, categoryIdMap);
 	}
 
-	// @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
-	// @Transactional
-	// public void issueBirthdayTemplate() {
-	// 	issueTemplateByType("birthday");
-	// }
-	//
-	// @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
-	// @Transactional
-	// public void issueWelcomeTemplate() {
-	// 	issueTemplateByType("welcome");
-	// }
+	@Scheduled(cron = "0 0 1 1 * *") // 매월 새벽1시에 실행
+	@Override
+	public void issueBirthdayTemplate() {
+		log.warn("생일쿠폰 스케줄러 작동");
+		issueTemplateByType("birthday");
+	}
 
-	private void issueTemplateByType(String type) {
+	@Scheduled(cron = "0 0 1 * * *") // 매일 새벽1시에 실행
+	@Override
+	public void issueWelcomeTemplate() {
+		log.warn("웰컴쿠폰 스케줄러 작동");
+		issueTemplateByType("welcome");
+	}
+
+	@Override
+	public void issueTemplateByType(String type) {
 		CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType(type)
 			.orElseThrow(() -> new IllegalStateException(String.format("해당 타입의 쿠폰 정책이 없습니다: %s", type)));
 
+		log.warn("{} 쿠폰 템플릿 발행전", type);
+
 		CouponTemplate couponTemplate = CouponTemplate.builder()
 			.couponPolicy(couponPolicy)
-			.expiredDate(LocalDateTime.now().plusDays(365)) // 만료 날짜를 생성일로부터 30일 후로 설정
+			.expiredDate(LocalDateTime.now().plusDays(365)) // 만료 날짜를 생성일로부터 365일 후로 설정
 			.issueDate(LocalDateTime.now())
 			.build();
 
 		couponTemplateRepository.save(couponTemplate);
+		log.warn("{} 쿠폰 템플릿 발행후", type);
 	}
 
 
