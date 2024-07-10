@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorecoupon.userandcoupon.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -176,6 +177,14 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		Long userId, List<String> bookTitles, List<String> categoryNames) {
 		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
 		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
+
+		if (bookTitles == null) {
+			bookTitles = new ArrayList<>();
+		}
+		if (categoryNames == null) {
+			categoryNames = new ArrayList<>();
+		}
+
 		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookTitles, categoryNames);
 	}
 

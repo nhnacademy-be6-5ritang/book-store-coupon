@@ -227,9 +227,8 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
                 String categoryName = (categoryInfo != null) ? categoryInfo.categoryName : null;
 
                 // 필터링 조건 추가
-				assert couponType != null;
-				boolean matchesBookCoupon = couponType.equals("book") && bookTitle != null && bookTitles.contains(bookTitle);
-                boolean matchesCategoryCoupon = couponType.equals("category") && categoryName != null && categoryNames.contains(categoryName);
+                boolean matchesBookCoupon = couponType.equals("book") && bookTitle != null && bookTitles != null && bookTitles.contains(bookTitle);
+                boolean matchesCategoryCoupon = couponType.equals("category") && categoryName != null && categoryNames != null && categoryNames.contains(categoryName);
                 boolean matchesOtherCoupons = couponType.equals("welcome") || couponType.equals("birthday") || couponType.equals("sale");
 
                 if (matchesBookCoupon || matchesCategoryCoupon || matchesOtherCoupons) {
