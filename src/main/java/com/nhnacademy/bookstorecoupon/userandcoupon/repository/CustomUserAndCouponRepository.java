@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.repository;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
@@ -10,6 +11,15 @@ import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupo
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 
 public interface CustomUserAndCouponRepository {
-	Page<UserAndCouponResponseDTO> findAllByUserPaging(Pageable pageable, Long userId,Map<Long, BookCoupon.BookInfo> bookIdMap, Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap);
-	Page<UserAndCouponResponseDTO> findAllByManagerPaging(Pageable pageable, String type, Long userId, Map<Long, BookCoupon.BookInfo> bookIdMap, Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap);
+	Page<UserAndCouponResponseDTO> findAllByUserPaging(Pageable pageable, Long userId,
+		Map<Long, BookCoupon.BookInfo> bookIdMap, Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap);
+
+	Page<UserAndCouponResponseDTO> findAllByManagerPaging(Pageable pageable, String type, Long userId,
+		Map<Long, BookCoupon.BookInfo> bookIdMap, Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap);
+
+	List<UserAndCouponResponseDTO> findAllByUser(Long userId,
+		Map<Long, BookCoupon.BookInfo> bookIdMap,
+		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap,
+		List<String> bookTitles,
+		List<String> categoryNames);
 }
