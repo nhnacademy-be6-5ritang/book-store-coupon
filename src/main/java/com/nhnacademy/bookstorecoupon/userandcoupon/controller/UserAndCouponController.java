@@ -77,11 +77,11 @@ public class UserAndCouponController {
     @GetMapping("/users/order/{userId}")
     public ResponseEntity<List<UserAndCouponResponseDTO>> findCouponByOrder(
         @PathVariable("userId") Long userId,
-        @RequestParam(required = false) List<String> bookTitles,
-        @RequestParam(required = false) List<String> categoryNames) {
+        @RequestParam(required = false) List<Long> bookIds,
+        @RequestParam(required = false) List<Long> categoryIds) {
 
 
-        List<UserAndCouponResponseDTO> coupons = userAndCouponService.findCouponByOrder(userId, bookTitles, categoryNames);
+        List<UserAndCouponResponseDTO> coupons = userAndCouponService.findCouponByOrder(userId, bookIds, categoryIds);
 
         return ResponseEntity.ok(coupons);
     }

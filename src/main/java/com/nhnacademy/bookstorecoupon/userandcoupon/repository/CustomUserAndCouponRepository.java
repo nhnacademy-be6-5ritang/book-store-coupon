@@ -20,6 +20,5 @@ public interface CustomUserAndCouponRepository {
 	List<UserAndCouponResponseDTO> findCouponByOrder(Long userId,
 		Map<Long, BookCoupon.BookInfo> bookIdMap,
 		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap,
-		List<String> bookTitles,
-		List<String> categoryNames);
+		List<Long> bookIds, List<Long> categoryIds);
 }

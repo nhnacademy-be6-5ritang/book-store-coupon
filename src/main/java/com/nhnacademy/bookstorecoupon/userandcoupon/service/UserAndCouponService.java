@@ -25,6 +25,6 @@ public interface UserAndCouponService {
     void issueBirthdayCoupon();
 
 
-    List<UserAndCouponResponseDTO> findCouponByOrder(Long userId, List<String> bookTitles ,List<String> categoryNames);
+    List<UserAndCouponResponseDTO> findCouponByOrder(Long userId, List<Long> bookIds, List<Long> categoryIds);
 
 }

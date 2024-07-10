@@ -174,20 +174,22 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	}
 
 	public List<UserAndCouponResponseDTO> findCouponByOrder(
-		Long userId, List<String> bookTitles, List<String> categoryNames) {
+		Long userId, List<Long> bookIds, List<Long> categoryIds) {
 		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
 		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
 
-		if (bookTitles == null) {
-			bookTitles = new ArrayList<>();
+
+		// Ensure bookIds and categoryIds are not null
+		if (bookIds == null) {
+			bookIds = new ArrayList<>();
 		}
-		if (categoryNames == null) {
-			categoryNames = new ArrayList<>();
+		if (categoryIds == null) {
+			categoryIds = new ArrayList<>();
 		}
 
-		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookTitles, categoryNames);
+
+		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookIds, categoryIds);
 	}
-
 }
 
 
