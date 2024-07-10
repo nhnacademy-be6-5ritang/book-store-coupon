@@ -1,5 +1,6 @@
-package com.nhnacademy.bookstorecoupon.global.config;
+package com.nhnacademy.bookstoreback.global.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,11 @@ public class SecurityConfig {
 	private final IpAddressFilter ipAddressFilter;
 	private final TokenReissueClient tokenReissueClient;
 
+	@Value("${spring.jwt.access-token.expires-in}")
+	private Long accessTokenExpiresIn;
+	@Value("${spring.jwt.refresh-token.expires-in}")
+	private Long refreshTokenExpiresIn;
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
@@ -34,14 +40,16 @@ public class SecurityConfig {
 			.formLogin(AbstractHttpConfigurer::disable)
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests((requests) -> requests
-				// .requestMatchers("/coupons/issue").permitAll()
-				// .requestMatchers("/coupons/users").authenticated()
-				// .requestMatchers("/coupons/policies").hasRole("ADMIN")
+				// .requestMatchers("/api/sign-up").permitAll()
+				// .requestMatchers("/api/auth/info").authenticated()
+				// .requestMatchers("/api/internal/users/info").permitAll()
+				// .requestMatchers("/api/admin").hasRole("ADMIN")
 				.anyRequest().permitAll()
 			)
 			.addFilterBefore(ipAddressFilter, UsernamePasswordAuthenticationFilter.class)
 			// .addFilterAfter(new JwtFilter(jwtUtils, tokenReissueClient), IpAddressFilter.class)
-			.addFilterBefore(new JwtFilter(jwtUtils, tokenReissueClient), UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(new JwtFilter(jwtUtils, tokenReissueClient, accessTokenExpiresIn, refreshTokenExpiresIn),
+				UsernamePasswordAuthenticationFilter.class)
 			.sessionManagement((session) -> session
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			)

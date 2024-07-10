@@ -23,9 +23,7 @@ spring:
     hibernate:
       ddl-auto: validate
     defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
+
 
 logging:
   level:
