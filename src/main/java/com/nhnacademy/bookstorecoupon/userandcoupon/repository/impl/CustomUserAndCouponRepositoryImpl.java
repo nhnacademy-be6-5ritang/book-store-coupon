@@ -179,7 +179,7 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
 
 
     @Override
-    public List<UserAndCouponResponseDTO> findAllByUser(
+    public List<UserAndCouponResponseDTO> findCouponByOrder(
         Long userId,
         Map<Long, BookCoupon.BookInfo> bookIdMap,
         Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap,

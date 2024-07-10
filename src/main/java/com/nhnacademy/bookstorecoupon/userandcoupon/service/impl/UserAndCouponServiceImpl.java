@@ -176,6 +176,13 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 
 
+	public List<UserAndCouponResponseDTO> findCouponByOrder(
+		Long userId, List<String> bookTitles, List<String> categoryNames) {
+		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
+		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
+		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookTitles, categoryNames);
+	}
+
 }
 
 

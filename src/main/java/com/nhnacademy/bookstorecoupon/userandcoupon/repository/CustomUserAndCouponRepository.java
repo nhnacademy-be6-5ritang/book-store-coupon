@@ -17,7 +17,7 @@ public interface CustomUserAndCouponRepository {
 	Page<UserAndCouponResponseDTO> findAllByManagerPaging(Pageable pageable, String type, Long userId,
 		Map<Long, BookCoupon.BookInfo> bookIdMap, Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap);
 
-	List<UserAndCouponResponseDTO> findAllByUser(Long userId,
+	List<UserAndCouponResponseDTO> findCouponByOrder(Long userId,
 		Map<Long, BookCoupon.BookInfo> bookIdMap,
 		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap,
 		List<String> bookTitles,
