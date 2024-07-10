@@ -57,11 +57,6 @@ public class UserAndCouponController {
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
 
-    // @GetMapping("/users/{userId}")
-    // public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@PathVariable("userId") Long userId,@PageableDefault(page = 1, size = 3) Pageable pageable) {
-    //     Page<UserAndCouponResponseDTO> coupons = userAndCouponService.getAllUsersAndCouponsByUserPaging(userId, pageable);
-    //     return ResponseEntity.status(HttpStatus.OK).body(coupons);
-    // }
 
     @GetMapping("/users")
     public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUsersAndCouponsByManagerPaging(
@@ -72,6 +67,18 @@ public class UserAndCouponController {
         Page<UserAndCouponResponseDTO> coupons = userAndCouponService.getAllUsersAndCouponsByManagerPaging(pageable, type, userId);
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
+
+
+
+
+
+    // @GetMapping("/users/order")
+    // public ResponseEntity<List<UserAndCouponResponseDTO>> getAllUsersAndCouponsByOrder(
+    //
+    // ) {
+    //     List<UserAndCouponResponseDTO> coupons = userAndCouponService.;
+    //     return ResponseEntity.status(HttpStatus.OK).body(coupons);
+    // }
 
 
 }
