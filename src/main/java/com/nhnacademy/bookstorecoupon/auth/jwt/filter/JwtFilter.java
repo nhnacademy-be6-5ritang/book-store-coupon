@@ -2,6 +2,9 @@ package com.nhnacademy.bookstorecoupon.auth.jwt.filter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,7 +23,6 @@ import com.nhnacademy.bookstorecoupon.user.domain.dto.response.UserTokenInfo;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -30,6 +32,8 @@ import lombok.RequiredArgsConstructor;
 public class JwtFilter extends OncePerRequestFilter {
 	private final JwtUtils jwtUtils;
 	private final TokenReissueClient tokenReissueClient;
+	private final Long accessTokenExpiresIn;
+	private final Long refreshTokenExpiresIn;
 
 	@Override
 	protected void doFilterInternal(
@@ -45,6 +49,9 @@ public class JwtFilter extends OncePerRequestFilter {
 			return;
 		}
 
+		accessToken = URLDecoder.decode(accessToken, StandardCharsets.UTF_8);
+		refreshToken = URLDecoder.decode(refreshToken, StandardCharsets.UTF_8);
+
 		String accessTokenErrorMessage = jwtUtils.validateToken(accessToken);
 		if ("만료된 토큰입니다.".equals(accessTokenErrorMessage)) {
 			ResponseEntity<ReissueTokensResponse> reissueTokensResponse
@@ -57,17 +64,22 @@ public class JwtFilter extends OncePerRequestFilter {
 			if (!reissueTokensResponse.getStatusCode().is2xxSuccessful()) {
 				PrintWriter writer = response.getWriter();
 				writer.print("토큰 재발급에 실패했습니다. 다시 로그인해주세요.");
+				writer.flush();
+				writer.close();
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
 
 			accessToken = Objects.requireNonNull(reissueTokensResponse.getBody()).accessToken();
 			refreshToken = reissueTokensResponse.getBody().refreshToken();
-			accessTokenErrorMessage = jwtUtils.validateToken(accessToken);
-		}
-		if (Objects.nonNull(accessTokenErrorMessage)) {
+
+			response.setHeader("New-Authorization", URLEncoder.encode(accessToken, StandardCharsets.UTF_8));
+			response.setHeader("New-Refresh-Token", URLEncoder.encode(refreshToken, StandardCharsets.UTF_8));
+		} else if (Objects.nonNull(accessTokenErrorMessage)) {
 			PrintWriter writer = response.getWriter();
 			writer.print(accessTokenErrorMessage);
+			writer.flush();
+			writer.close();
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
@@ -84,11 +96,6 @@ public class JwtFilter extends OncePerRequestFilter {
 			userDetails, null, userDetails.getAuthorities()
 		);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-
-		response.setHeader("Authorization", accessToken);
-		Cookie cookieWithRefreshToken = new Cookie("Refresh-Token", refreshToken);
-		cookieWithRefreshToken.setPath("/");
-		response.addCookie(cookieWithRefreshToken);
 
 		filterChain.doFilter(request, response);
 	}

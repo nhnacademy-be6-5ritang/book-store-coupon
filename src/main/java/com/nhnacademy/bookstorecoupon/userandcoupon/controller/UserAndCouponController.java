@@ -1,5 +1,7 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -72,13 +74,17 @@ public class UserAndCouponController {
 
 
 
-    // @GetMapping("/users/order")
-    // public ResponseEntity<List<UserAndCouponResponseDTO>> getAllUsersAndCouponsByOrder(
-    //
-    // ) {
-    //     List<UserAndCouponResponseDTO> coupons = userAndCouponService.;
-    //     return ResponseEntity.status(HttpStatus.OK).body(coupons);
-    // }
+    @GetMapping("/users/order/{userId}")
+    public ResponseEntity<List<UserAndCouponResponseDTO>> findCouponByOrder(
+        @PathVariable("userId") Long userId,
+        @RequestParam(required = false) List<String> bookTitles,
+        @RequestParam(required = false) List<String> categoryNames) {
+
+
+        List<UserAndCouponResponseDTO> coupons = userAndCouponService.findCouponByOrder(userId, bookTitles, categoryNames);
+
+        return ResponseEntity.ok(coupons);
+    }
 
 
 }

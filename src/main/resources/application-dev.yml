@@ -8,8 +8,6 @@ eureka:
   instance:
     prefer-ip-address: true
 spring:
-
-
   jpa:
     open-in-view: false
     show-sql: true
@@ -30,7 +28,11 @@ spring:
 logging:
   level:
     org.hibernate.orm.jdbc.bind: trace
-    org.springframework.transaction.interceptor: trace
+    org.springframework:
+      transaction:
+        interceptor: trace
+        security: debug
+        web: debug
 
 remote-addr: 127.0.0.1
 

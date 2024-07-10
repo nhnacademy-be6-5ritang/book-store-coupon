@@ -20,5 +20,5 @@ public interface CustomCouponTemplateRepository  {
 		 Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap);
 
 
-	Optional<CouponTemplate> findLatestCouponTemplate(String type);
+	// Optional<CouponTemplate> findLatestCouponTemplate(String type);
 }

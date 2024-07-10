@@ -17,6 +17,8 @@ import com.nhnacademy.bookstorecoupon.bookcoupon.domain.entity.BookCoupon;
 import com.nhnacademy.bookstorecoupon.bookcoupon.repository.BookCouponRepository;
 import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupon;
 import com.nhnacademy.bookstorecoupon.categorycoupon.repository.CategoryCouponRepository;
+import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
+import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
 import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
@@ -40,25 +42,24 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	private final BookCouponRepository bookCouponRepository;
 	private final CategoryCouponRepository categoryCouponRepository;
 	private final UserBirthdayFeignClient userBirthdayFeignClient;
-
-
+	private final CouponPolicyRepository couponPolicyRepository;
 
 	public UserAndCouponServiceImpl(UserAndCouponRepository userAndCouponRepository,
-		CouponTemplateRepository couponTemplateRepository, BookCouponRepository bookCouponRepository, CategoryCouponRepository categoryCouponRepository,
-	UserBirthdayFeignClient userBirthdayFeignClient) {
+		CouponTemplateRepository couponTemplateRepository, BookCouponRepository bookCouponRepository,
+		CategoryCouponRepository categoryCouponRepository,
+		UserBirthdayFeignClient userBirthdayFeignClient, CouponPolicyRepository couponPolicyRepository) {
 		this.userAndCouponRepository = userAndCouponRepository;
 		this.couponTemplateRepository = couponTemplateRepository;
 		this.bookCouponRepository = bookCouponRepository;
 		this.categoryCouponRepository = categoryCouponRepository;
 		this.userBirthdayFeignClient = userBirthdayFeignClient;
+		this.couponPolicyRepository = couponPolicyRepository;
 	}
 
 	@Override
 	public void createUserAndCoupon(Long couponId, Long userId) {
 		String errorMessage = String.format("해당 쿠폰은 '%d'는 존재하지 않습니다.", couponId);
 		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
-
-
 
 		CouponTemplate couponTemplate = couponTemplateRepository.findById(couponId)
 			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
@@ -73,34 +74,30 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 		userAndCouponRepository.save(userAndCoupon);
 
-
 	}
 
 	@Override
 	public void createUserWelcomeCouponIssue(Long userId) {
 
-		String errorMessage = "최신 웰컴쿠폰 템플릿을 찾을 수 없습니다.";
+		String errorMessage = "최신 웰컴쿠폰 정책을 찾을 수 없습니다.";
 		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
 
-
-		CouponTemplate couponTemplate = couponTemplateRepository.findLatestCouponTemplate("welcome")
+		CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType("welcome")
 			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
 
 		UserAndCoupon userAndCoupon = UserAndCoupon.builder()
-			.couponPolicy(couponTemplate.getCouponPolicy())
+			.couponPolicy(couponPolicy)
 			.userId(userId)
 			.isUsed(false)
-			.expiredDate(couponTemplate.getExpiredDate())
-			.issueDate(couponTemplate.getIssueDate())
+			.expiredDate(LocalDateTime.now().plusDays(365))
+			.issueDate(LocalDateTime.now())
 			.build();
 
 		userAndCouponRepository.save(userAndCoupon);
 
-
 	}
 
-
-// 쿠폰 만료처리 스케줄링   매일 새벽 2시 시작 설정
+	// 쿠폰 만료처리 스케줄링   매일 새벽 2시 시작 설정
 	@Override
 	@Scheduled(cron = "0 0 2 * * *")
 	public void findExpiredCoupons() {
@@ -111,7 +108,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		List<UserAndCoupon> expiredCoupons = userAndCouponRepository.findByExpiredDateBeforeAndIsUsedIsFalse(now);
 
 		for (UserAndCoupon coupon : expiredCoupons) {
-				coupon.update(coupon.getExpiredDate(), true);
+			coupon.update(coupon.getExpiredDate(), true);
 		}
 
 		log.warn("기한만료 쿠폰 체크로직 실행완료");
@@ -126,16 +123,20 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		LocalDate today = LocalDate.now();
 		List<BirthdayCouponTargetResponse> birthdayList = userBirthdayFeignClient.getUsersWithBirthday(today).getBody();
 
+		String errorMessage = "최신 생일쿠폰 정책을 찾을 수 없습니다.";
+		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+
 		// 최신 생일 쿠폰 템플릿을 가져옴
-		CouponTemplate couponTemplate = couponTemplateRepository.findLatestCouponTemplate("birthday")
-			.orElseThrow(() -> new IllegalStateException("생일 쿠폰 템플릿이 없습니다."));
+		CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType("birthday")
+			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
 
 		// 생일 목록에 있는 각 사용자에게 쿠폰을 발행
+
 		assert birthdayList != null;
 		birthdayList.forEach(user -> {
 
 			UserAndCoupon userAndCoupon = UserAndCoupon.builder()
-				.couponPolicy(couponTemplate.getCouponPolicy())
+				.couponPolicy(couponPolicy)
 				.userId(user.userId())
 				.isUsed(false)
 				.expiredDate(LocalDateTime.now().plusDays(365)) // 만료 날짜를 생성일로부터 365일 후로 설정
@@ -148,33 +149,35 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		log.warn("생일쿠폰발급 스케줄링 끝");
 	}
 
-
-
-
-
 	@Override
 	@Transactional(readOnly = true)
 	public Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByUserPaging(Long userId, Pageable pageable) {
-		int page= Math.max(pageable.getPageNumber() - 1, 0);
-		int pageSize=pageable.getPageSize();
+		int page = Math.max(pageable.getPageNumber() - 1, 0);
+		int pageSize = pageable.getPageSize();
 		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
 		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
-		return userAndCouponRepository.findAllByUserPaging(PageRequest.of(page, pageSize), userId,bookIdMap, categoryIdMap);
+		return userAndCouponRepository.findAllByUserPaging(PageRequest.of(page, pageSize), userId, bookIdMap,
+			categoryIdMap);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByManagerPaging(Pageable pageable, String type, Long userId) {
-		int page= Math.max(pageable.getPageNumber() - 1, 0);
-		int pageSize=pageable.getPageSize();
+	public Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByManagerPaging(Pageable pageable, String type,
+		Long userId) {
+		int page = Math.max(pageable.getPageNumber() - 1, 0);
+		int pageSize = pageable.getPageSize();
 		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
 		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
-		return userAndCouponRepository.findAllByManagerPaging(PageRequest.of(page, pageSize), type , userId,bookIdMap,  categoryIdMap);
+		return userAndCouponRepository.findAllByManagerPaging(PageRequest.of(page, pageSize), type, userId, bookIdMap,
+			categoryIdMap);
 	}
 
-
-
-
+	public List<UserAndCouponResponseDTO> findCouponByOrder(
+		Long userId, List<String> bookTitles, List<String> categoryNames) {
+		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
+		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
+		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookTitles, categoryNames);
+	}
 
 }
 
