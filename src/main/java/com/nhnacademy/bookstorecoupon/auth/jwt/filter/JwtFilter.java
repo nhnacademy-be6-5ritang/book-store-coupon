@@ -2,6 +2,8 @@ package com.nhnacademy.bookstorecoupon.auth.jwt.filter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
@@ -47,8 +49,8 @@ public class JwtFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		accessToken = java.net.URLDecoder.decode(accessToken, StandardCharsets.UTF_8);
-		refreshToken = java.net.URLDecoder.decode(refreshToken, StandardCharsets.UTF_8);
+		accessToken = URLDecoder.decode(accessToken, StandardCharsets.UTF_8);
+		refreshToken = URLDecoder.decode(refreshToken, StandardCharsets.UTF_8);
 
 		String accessTokenErrorMessage = jwtUtils.validateToken(accessToken);
 		if ("만료된 토큰입니다.".equals(accessTokenErrorMessage)) {
@@ -71,8 +73,8 @@ public class JwtFilter extends OncePerRequestFilter {
 			accessToken = Objects.requireNonNull(reissueTokensResponse.getBody()).accessToken();
 			refreshToken = reissueTokensResponse.getBody().refreshToken();
 
-			response.setHeader("New-Authorization", accessToken);
-			response.setHeader("New-Refresh-Token", refreshToken);
+			response.setHeader("New-Authorization", URLEncoder.encode(accessToken, StandardCharsets.UTF_8));
+			response.setHeader("New-Refresh-Token", URLEncoder.encode(refreshToken, StandardCharsets.UTF_8));
 		} else if (Objects.nonNull(accessTokenErrorMessage)) {
 			PrintWriter writer = response.getWriter();
 			writer.print(accessTokenErrorMessage);

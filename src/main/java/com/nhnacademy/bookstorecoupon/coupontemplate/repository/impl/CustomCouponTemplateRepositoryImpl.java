@@ -162,15 +162,15 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 
 
 
-	@Override
-	public Optional<CouponTemplate> findLatestCouponTemplate(String type) {
-		QCouponTemplate couponTemplate = QCouponTemplate.couponTemplate;
-		return Optional.ofNullable(queryFactory
-			.selectFrom(couponTemplate)
-			.where(couponTemplate.couponPolicy.type.eq(type)
-				.and(couponPolicy.isUsed.isTrue()))
-			.orderBy(couponTemplate.id.desc())
-			.fetchFirst());
-
-	}
+	// @Override
+	// public Optional<CouponTemplate> findLatestCouponTemplate(String type) {
+	// 	QCouponTemplate couponTemplate = QCouponTemplate.couponTemplate;
+	// 	return Optional.ofNullable(queryFactory
+	// 		.selectFrom(couponTemplate)
+	// 		.where(couponTemplate.couponPolicy.type.eq(type)
+	// 			.and(couponPolicy.isUsed.isTrue()))
+	// 		.orderBy(couponTemplate.id.desc())
+	// 		.fetchFirst());
+	//
+	// }
 	}
