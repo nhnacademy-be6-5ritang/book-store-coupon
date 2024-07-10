@@ -8,6 +8,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,8 +84,20 @@ public class UserAndCouponController {
 
         List<UserAndCouponResponseDTO> coupons = userAndCouponService.findCouponByOrder(userId, bookIds, categoryIds);
 
-        return ResponseEntity.ok(coupons);
+        return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
+
+
+    @PatchMapping("/users/payment/{userAndCouponId}")
+    public ResponseEntity<Void> updateCouponAfterPayment(
+        @PathVariable("userAndCouponId") Long userAndCouponId) {
+
+
+         userAndCouponService.updateCouponAfterPayment(userAndCouponId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 
 
 }

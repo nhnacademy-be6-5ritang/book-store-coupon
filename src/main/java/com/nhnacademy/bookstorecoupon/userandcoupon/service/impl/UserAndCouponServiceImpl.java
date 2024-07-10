@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -173,6 +174,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			categoryIdMap);
 	}
 
+	@Override
 	public List<UserAndCouponResponseDTO> findCouponByOrder(
 		Long userId, List<Long> bookIds, List<Long> categoryIds) {
 		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
@@ -189,6 +191,18 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 
 		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookIds, categoryIds);
+	}
+
+	@Override
+	public void updateCouponAfterPayment(Long userAndCouponId) {
+		Optional<UserAndCoupon> optionalUserAndCoupon = userAndCouponRepository.findById(userAndCouponId);
+
+		if (optionalUserAndCoupon.isPresent()) {
+			UserAndCoupon userAndCoupon = optionalUserAndCoupon.get();
+			userAndCoupon.update(LocalDateTime.now(), true);
+		} else {
+			throw new IllegalArgumentException("Coupon not found with id: " + userAndCouponId);
+		}
 	}
 }
 

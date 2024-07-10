@@ -27,4 +27,5 @@ public interface UserAndCouponService {
 
     List<UserAndCouponResponseDTO> findCouponByOrder(Long userId, List<Long> bookIds, List<Long> categoryIds);
 
+    void updateCouponAfterPayment(Long userAndCouponId);
 }
