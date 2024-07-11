@@ -72,8 +72,8 @@ public class CouponPolicyController {
 
 	@PatchMapping("/{couponPolicyId}")
 	public ResponseEntity<Void> updateCouponPolicy(@PathVariable Long couponPolicyId, @RequestBody CouponPolicyUpdateRequestDTO requestDTO) {
-		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null) ||
-			(requestDTO.salePrice() != null && requestDTO.saleRate() != null)) {
+		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null && requestDTO.maxSalePrice() == null) ||
+			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() != null)) {
 			throw new IllegalArgumentException("Either salePrice or saleRate must be provided exclusively.");
 		}
 		couponPolicyService.updateCouponPolicy(couponPolicyId, requestDTO);
@@ -83,8 +83,8 @@ public class CouponPolicyController {
 
 	// SalePrice와 SaleRate 유효성 검사 메서드 추가
 	private void validateSaleFields(CouponPolicyRequestDTO requestDTO) {
-		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null) ||
-			(requestDTO.salePrice() != null && requestDTO.saleRate() != null)) {
+		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null && requestDTO.maxSalePrice() == null) ||
+			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() != null)) {
 			throw new IllegalArgumentException("Either salePrice or saleRate must be provided exclusively.");
 		}
 	}
