@@ -14,6 +14,5 @@ public interface UserAndCouponRepository extends JpaRepository<UserAndCoupon, Lo
 
 	List<UserAndCoupon> findByCouponPolicy(CouponPolicy couponPolicy);
 
-	List<UserAndCoupon> findByIdIn(List<Long> couponIds);
 
 }

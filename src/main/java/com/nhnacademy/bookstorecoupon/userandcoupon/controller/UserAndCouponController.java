@@ -101,10 +101,10 @@ public class UserAndCouponController {
     }
 
     @GetMapping("/users/order/coupon")
-    public ResponseEntity<List<UserAndCouponOrderResponseDTO>> findCouponByOrder(
-        @RequestParam(value = "couponIds", required = false) List<Long> couponIds) {
-        List<UserAndCouponOrderResponseDTO> coupons = userAndCouponService.findUserAndCouponsByIds(couponIds);
-        return ResponseEntity.status(HttpStatus.OK).body(coupons);
+    public ResponseEntity<UserAndCouponOrderResponseDTO> getSelectedCoupon(
+        @RequestParam(value = "couponId", required = false) Long couponId) {
+        UserAndCouponOrderResponseDTO coupon = userAndCouponService.findUserAndCouponsById(couponId);
+        return ResponseEntity.status(HttpStatus.OK).body(coupon);
     }
 
 

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -207,15 +206,11 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	}
 
 	@Override
-	public List<UserAndCouponOrderResponseDTO> findUserAndCouponsByIds(List<Long> couponIds) {
-		List<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByIdIn(couponIds);
-
-		return userAndCoupons.stream()
-			.map(this::mapToResponseDTO)
-			.collect(Collectors.toList());
-	}
-
-	private UserAndCouponOrderResponseDTO mapToResponseDTO(UserAndCoupon userAndCoupon) {
+	public UserAndCouponOrderResponseDTO findUserAndCouponsById(Long couponId) {
+		UserAndCoupon userAndCoupon = userAndCouponRepository.findById(couponId).orElse(null);
+		if (userAndCoupon == null) {
+			return null;
+		}
 		return new UserAndCouponOrderResponseDTO(
 			userAndCoupon.getId(),
 			userAndCoupon.getCouponPolicy().getMinOrderPrice(),
@@ -225,6 +220,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			userAndCoupon.getCouponPolicy().getType()
 		);
 	}
+
 }
 
 
