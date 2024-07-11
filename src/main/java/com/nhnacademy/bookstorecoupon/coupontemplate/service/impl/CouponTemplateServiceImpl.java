@@ -110,36 +110,6 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 		return couponTemplateRepository.findAllTemplatesByUserPaging(PageRequest.of(page, pageSize), bookIdMap, categoryIdMap);
 	}
 
-	@Scheduled(cron = "0 0 1 1 * *") // 매월 새벽1시에 실행
-	@Override
-	public void issueBirthdayTemplate() {
-		log.warn("생일쿠폰 스케줄러 작동");
-		issueTemplateByType("birthday");
-	}
-
-	@Scheduled(cron = "0 0 1 * * *") // 매일 새벽1시에 실행
-	@Override
-	public void issueWelcomeTemplate() {
-		log.warn("웰컴쿠폰 스케줄러 작동");
-		issueTemplateByType("welcome");
-	}
-
-	@Override
-	public void issueTemplateByType(String type) {
-		CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType(type)
-			.orElseThrow(() -> new IllegalStateException(String.format("해당 타입의 쿠폰 정책이 없습니다: %s", type)));
-
-		log.warn("{} 쿠폰 템플릿 발행전", type);
-
-		CouponTemplate couponTemplate = CouponTemplate.builder()
-			.couponPolicy(couponPolicy)
-			.expiredDate(LocalDateTime.now().plusDays(365)) // 만료 날짜를 생성일로부터 365일 후로 설정
-			.issueDate(LocalDateTime.now())
-			.build();
-
-		couponTemplateRepository.save(couponTemplate);
-		log.warn("{} 쿠폰 템플릿 발행후", type);
-	}
 
 
 }

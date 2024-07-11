@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstorecoupon.coupontemplate.repository;
 
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import com.nhnacademy.bookstorecoupon.bookcoupon.domain.entity.BookCoupon;
 import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupon;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response.CouponTemplateResponseDTO;
-import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
 
 public interface CustomCouponTemplateRepository  {
 	Page<CouponTemplateResponseDTO> findAllTemplatesByUserPaging(Pageable pageable,
@@ -20,5 +18,4 @@ public interface CustomCouponTemplateRepository  {
 		 Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap);
 
 
-	// Optional<CouponTemplate> findLatestCouponTemplate(String type);
 }

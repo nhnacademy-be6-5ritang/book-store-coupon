@@ -1,11 +1,13 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +28,7 @@ import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundExc
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.BirthdayCouponTargetResponse;
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponOrderResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
 import com.nhnacademy.bookstorecoupon.userandcoupon.feignclient.UserBirthdayFeignClient;
@@ -176,10 +179,9 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 	@Override
 	public List<UserAndCouponResponseDTO> findCouponByOrder(
-		Long userId, List<Long> bookIds, List<Long> categoryIds) {
+		Long userId, List<Long> bookIds, List<Long> categoryIds,  BigDecimal bookPrice) {
 		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
 		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
-
 
 		// Ensure bookIds and categoryIds are not null
 		if (bookIds == null) {
@@ -189,8 +191,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			categoryIds = new ArrayList<>();
 		}
 
-
-		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookIds, categoryIds);
+		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookIds, categoryIds, bookPrice);
 	}
 
 	@Override
@@ -203,6 +204,26 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		} else {
 			throw new IllegalArgumentException("Coupon not found with id: " + userAndCouponId);
 		}
+	}
+
+	@Override
+	public List<UserAndCouponOrderResponseDTO> findUserAndCouponsByIds(List<Long> couponIds) {
+		List<UserAndCoupon> userAndCoupons = userAndCouponRepository.findByIdIn(couponIds);
+
+		return userAndCoupons.stream()
+			.map(this::mapToResponseDTO)
+			.collect(Collectors.toList());
+	}
+
+	private UserAndCouponOrderResponseDTO mapToResponseDTO(UserAndCoupon userAndCoupon) {
+		return new UserAndCouponOrderResponseDTO(
+			userAndCoupon.getId(),
+			userAndCoupon.getCouponPolicy().getMinOrderPrice(),
+			userAndCoupon.getCouponPolicy().getSalePrice(),
+			userAndCoupon.getCouponPolicy().getSaleRate(),
+			userAndCoupon.getCouponPolicy().getMaxSalePrice(),
+			userAndCoupon.getCouponPolicy().getType()
+		);
 	}
 }
 

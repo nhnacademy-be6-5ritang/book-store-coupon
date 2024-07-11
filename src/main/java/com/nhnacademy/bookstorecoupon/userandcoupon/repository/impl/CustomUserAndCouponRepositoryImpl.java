@@ -1,6 +1,7 @@
 
 package com.nhnacademy.bookstorecoupon.userandcoupon.repository.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -183,12 +184,14 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
         Map<Long, BookCoupon.BookInfo> bookIdMap,
         Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap,
         List<Long> bookIds,
-        List<Long> categoryIds
+        List<Long> categoryIds,
+        BigDecimal bookPrice
     ) {
         // Define the base where clause
         BooleanExpression whereClause = QUserAndCoupon.userAndCoupon.isUsed.eq(false)
             .and(QUserAndCoupon.userAndCoupon.userId.eq(userId))
-            .and(QCouponPolicy.couponPolicy.isUsed.eq(true));
+            .and(QCouponPolicy.couponPolicy.isUsed.eq(true))
+            .and(QCouponPolicy.couponPolicy.minOrderPrice.loe(bookPrice));
 
         // Fetch tuples
         List<Tuple> tuples = queryFactory

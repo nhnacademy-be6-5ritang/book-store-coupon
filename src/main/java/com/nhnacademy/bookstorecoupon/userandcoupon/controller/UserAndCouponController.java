@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nhnacademy.bookstorecoupon.auth.annotation.CurrentUser;
 import com.nhnacademy.bookstorecoupon.auth.jwt.dto.CurrentUserDetails;
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponOrderResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService;
 
@@ -74,15 +76,15 @@ public class UserAndCouponController {
 
 
 
-
-    @GetMapping("/users/order/{userId}")
+    @GetMapping("/users/order")
     public ResponseEntity<List<UserAndCouponResponseDTO>> findCouponByOrder(
-        @PathVariable("userId") Long userId,
+        @CurrentUser CurrentUserDetails currentUserDetails,
         @RequestParam(required = false) List<Long> bookIds,
-        @RequestParam(required = false) List<Long> categoryIds) {
+        @RequestParam(required = false) List<Long> categoryIds,
+        @RequestParam BigDecimal bookPrice) {
 
 
-        List<UserAndCouponResponseDTO> coupons = userAndCouponService.findCouponByOrder(userId, bookIds, categoryIds);
+        List<UserAndCouponResponseDTO> coupons = userAndCouponService.findCouponByOrder(currentUserDetails.getUserId(), bookIds, categoryIds, bookPrice);
 
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
@@ -96,6 +98,13 @@ public class UserAndCouponController {
          userAndCouponService.updateCouponAfterPayment(userAndCouponId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/users/order/coupon")
+    public ResponseEntity<List<UserAndCouponOrderResponseDTO>> findCouponByOrder(
+        @RequestParam(value = "couponIds", required = false) List<Long> couponIds) {
+        List<UserAndCouponOrderResponseDTO> coupons = userAndCouponService.findUserAndCouponsByIds(couponIds);
+        return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
 
 
