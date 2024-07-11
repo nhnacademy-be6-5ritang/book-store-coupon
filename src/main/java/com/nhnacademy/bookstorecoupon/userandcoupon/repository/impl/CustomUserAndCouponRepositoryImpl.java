@@ -2,6 +2,7 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.repository.impl;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -191,7 +192,8 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
         BooleanExpression whereClause = QUserAndCoupon.userAndCoupon.isUsed.eq(false)
             .and(QUserAndCoupon.userAndCoupon.userId.eq(userId))
             .and(QCouponPolicy.couponPolicy.isUsed.eq(true))
-            .and(QCouponPolicy.couponPolicy.minOrderPrice.loe(bookPrice));
+            .and(QCouponPolicy.couponPolicy.minOrderPrice.loe(bookPrice))
+            .and(QUserAndCoupon.userAndCoupon.expiredDate.after(LocalDateTime.now()));
 
         // Fetch tuples
         List<Tuple> tuples = queryFactory
