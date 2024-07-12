@@ -1,9 +1,12 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +27,7 @@ import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundExc
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.BirthdayCouponTargetResponse;
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponOrderResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
 import com.nhnacademy.bookstorecoupon.userandcoupon.feignclient.UserBirthdayFeignClient;
@@ -172,11 +176,49 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			categoryIdMap);
 	}
 
+	@Override
 	public List<UserAndCouponResponseDTO> findCouponByOrder(
-		Long userId, List<String> bookTitles, List<String> categoryNames) {
+		Long userId, List<Long> bookIds, List<Long> categoryIds,  BigDecimal bookPrice) {
 		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
 		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
-		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookTitles, categoryNames);
+
+		// Ensure bookIds and categoryIds are not null
+		if (bookIds == null) {
+			bookIds = new ArrayList<>();
+		}
+		if (categoryIds == null) {
+			categoryIds = new ArrayList<>();
+		}
+
+		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookIds, categoryIds, bookPrice);
+	}
+
+	@Override
+	public void updateCouponAfterPayment(Long userAndCouponId) {
+		Optional<UserAndCoupon> optionalUserAndCoupon = userAndCouponRepository.findById(userAndCouponId);
+
+		if (optionalUserAndCoupon.isPresent()) {
+			UserAndCoupon userAndCoupon = optionalUserAndCoupon.get();
+			userAndCoupon.update(LocalDateTime.now(), true);
+		} else {
+			throw new IllegalArgumentException("Coupon not found with id: " + userAndCouponId);
+		}
+	}
+
+	@Override
+	public UserAndCouponOrderResponseDTO findUserAndCouponsById(Long couponId) {
+		UserAndCoupon userAndCoupon = userAndCouponRepository.findById(couponId).orElse(null);
+		if (userAndCoupon == null) {
+			return null;
+		}
+		return new UserAndCouponOrderResponseDTO(
+			userAndCoupon.getId(),
+			userAndCoupon.getCouponPolicy().getMinOrderPrice(),
+			userAndCoupon.getCouponPolicy().getSalePrice(),
+			userAndCoupon.getCouponPolicy().getSaleRate(),
+			userAndCoupon.getCouponPolicy().getMaxSalePrice(),
+			userAndCoupon.getCouponPolicy().getType()
+		);
 	}
 
 }

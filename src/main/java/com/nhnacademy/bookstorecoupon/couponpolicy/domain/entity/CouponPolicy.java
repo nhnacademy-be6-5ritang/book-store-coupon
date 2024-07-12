@@ -37,7 +37,6 @@ public class CouponPolicy {
 	@Column(name = "coupon_policy_sale_rate")
 	private BigDecimal saleRate;
 
-	@NotNull
 	@Column(name = "coupon_policy_max_sale_price")
 	private BigDecimal maxSalePrice;
 

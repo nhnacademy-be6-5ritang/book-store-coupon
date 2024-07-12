@@ -1,6 +1,8 @@
 
 package com.nhnacademy.bookstorecoupon.userandcoupon.repository.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -177,19 +179,21 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
     }
 
 
-
     @Override
     public List<UserAndCouponResponseDTO> findCouponByOrder(
         Long userId,
         Map<Long, BookCoupon.BookInfo> bookIdMap,
         Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap,
-        List<String> bookTitles,
-        List<String> categoryNames
+        List<Long> bookIds,
+        List<Long> categoryIds,
+        BigDecimal bookPrice
     ) {
         // Define the base where clause
         BooleanExpression whereClause = QUserAndCoupon.userAndCoupon.isUsed.eq(false)
             .and(QUserAndCoupon.userAndCoupon.userId.eq(userId))
-            .and(QCouponPolicy.couponPolicy.isUsed.eq(true));
+            .and(QCouponPolicy.couponPolicy.isUsed.eq(true))
+            .and(QCouponPolicy.couponPolicy.minOrderPrice.loe(bookPrice))
+            .and(QUserAndCoupon.userAndCoupon.expiredDate.after(LocalDateTime.now()));
 
         // Fetch tuples
         List<Tuple> tuples = queryFactory
@@ -223,13 +227,12 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
                 BookCoupon.BookInfo bookInfo = bookIdMap.get(couponPolicyId);
                 CategoryCoupon.CategoryInfo categoryInfo = categoryIdMap.get(couponPolicyId);
 
-                String bookTitle = (bookInfo != null) ? bookInfo.bookTitle : null;
-                String categoryName = (categoryInfo != null) ? categoryInfo.categoryName : null;
+                Long bookId = (bookInfo != null) ? bookInfo.bookId : null;
+                Long categoryId = (categoryInfo != null) ? categoryInfo.categoryId : null;
 
                 // 필터링 조건 추가
-				assert couponType != null;
-				boolean matchesBookCoupon = couponType.equals("book") && bookTitle != null && bookTitles.contains(bookTitle);
-                boolean matchesCategoryCoupon = couponType.equals("category") && categoryName != null && categoryNames.contains(categoryName);
+                boolean matchesBookCoupon = couponType.equals("book") && bookId != null && bookIds.contains(bookId);
+                boolean matchesCategoryCoupon = couponType.equals("category") && categoryId != null && categoryIds.contains(categoryId);
                 boolean matchesOtherCoupons = couponType.equals("welcome") || couponType.equals("birthday") || couponType.equals("sale");
 
                 if (matchesBookCoupon || matchesCategoryCoupon || matchesOtherCoupons) {
@@ -246,10 +249,10 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
                         tuple.get(QCouponPolicy.couponPolicy.maxSalePrice),
                         tuple.get(QCouponPolicy.couponPolicy.type),
                         tuple.get(QCouponPolicy.couponPolicy.isUsed),
-                        (bookInfo != null) ? bookInfo.bookId : null,
-                        bookTitle,
-                        (categoryInfo != null) ? categoryInfo.categoryId : null,
-                        categoryName
+                        (bookId != null) ? bookInfo.bookId : null,
+                        (bookInfo != null) ? bookInfo.bookTitle : null,
+                        (categoryId != null) ? categoryInfo.categoryId : null,
+                        (categoryInfo != null) ? categoryInfo.categoryName : null
                     );
                 } else {
                     return null; // 필터 조건에 맞지 않으면 null 반환
@@ -260,4 +263,5 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
 
         return results;
     }
+
 }

@@ -1,10 +1,12 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponOrderResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 
 public interface UserAndCouponService {
@@ -25,6 +27,10 @@ public interface UserAndCouponService {
     void issueBirthdayCoupon();
 
 
-    List<UserAndCouponResponseDTO> findCouponByOrder(Long userId, List<String> bookTitles ,List<String> categoryNames);
+    List<UserAndCouponResponseDTO> findCouponByOrder(Long userId, List<Long> bookIds, List<Long> categoryIds, BigDecimal bookPrice);
 
+    void updateCouponAfterPayment(Long userAndCouponId);
+
+
+    UserAndCouponOrderResponseDTO findUserAndCouponsById(Long couponIds);
 }

@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nhnacademy.bookstorecoupon.auth.annotation.CurrentUser;
 import com.nhnacademy.bookstorecoupon.auth.jwt.dto.CurrentUserDetails;
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponOrderResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService;
 
@@ -73,18 +76,37 @@ public class UserAndCouponController {
 
 
 
-
-    @GetMapping("/users/order/{userId}")
+    @GetMapping("/users/order")
     public ResponseEntity<List<UserAndCouponResponseDTO>> findCouponByOrder(
-        @PathVariable("userId") Long userId,
-        @RequestParam(required = false) List<String> bookTitles,
-        @RequestParam(required = false) List<String> categoryNames) {
+        @CurrentUser CurrentUserDetails currentUserDetails,
+        @RequestParam(required = false) List<Long> bookIds,
+        @RequestParam(required = false) List<Long> categoryIds,
+        @RequestParam BigDecimal bookPrice) {
 
 
-        List<UserAndCouponResponseDTO> coupons = userAndCouponService.findCouponByOrder(userId, bookTitles, categoryNames);
+        List<UserAndCouponResponseDTO> coupons = userAndCouponService.findCouponByOrder(currentUserDetails.getUserId(), bookIds, categoryIds, bookPrice);
 
-        return ResponseEntity.ok(coupons);
+        return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
+
+
+    @PatchMapping("/users/payment/{userAndCouponId}")
+    public ResponseEntity<Void> updateCouponAfterPayment(
+        @PathVariable("userAndCouponId") Long userAndCouponId) {
+
+
+         userAndCouponService.updateCouponAfterPayment(userAndCouponId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/users/order/coupon")
+    public ResponseEntity<UserAndCouponOrderResponseDTO> getSelectedCoupon(
+        @RequestParam(value = "couponId", required = false) Long couponId) {
+        UserAndCouponOrderResponseDTO coupon = userAndCouponService.findUserAndCouponsById(couponId);
+        return ResponseEntity.status(HttpStatus.OK).body(coupon);
+    }
+
 
 
 }

@@ -14,9 +14,5 @@ public interface CouponTemplateService {
 
 	Page<CouponTemplateResponseDTO> getAllCouponTemplatesByUserPaging(Pageable pageable);
 
-	void issueBirthdayTemplate();
 
-	void issueWelcomeTemplate();
-
-	void issueTemplateByType(String type);
 }

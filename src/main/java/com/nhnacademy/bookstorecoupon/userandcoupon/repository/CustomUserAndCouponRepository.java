@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,6 @@ public interface CustomUserAndCouponRepository {
 	List<UserAndCouponResponseDTO> findCouponByOrder(Long userId,
 		Map<Long, BookCoupon.BookInfo> bookIdMap,
 		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap,
-		List<String> bookTitles,
-		List<String> categoryNames);
+		List<Long> bookIds, List<Long> categoryIds,
+		BigDecimal bookPrice);
 }
