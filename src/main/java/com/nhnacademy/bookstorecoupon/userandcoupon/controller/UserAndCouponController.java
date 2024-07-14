@@ -75,7 +75,7 @@ public class UserAndCouponController {
 
 
 
-
+    // 비회원일경우 처리는 여기서... current user 처리해주는 메소드 만들기
     @GetMapping("/users/order")
     public ResponseEntity<List<UserAndCouponResponseDTO>> findCouponByOrder(
         @CurrentUser CurrentUserDetails currentUserDetails,
@@ -106,6 +106,20 @@ public class UserAndCouponController {
         UserAndCouponOrderResponseDTO coupon = userAndCouponService.findUserAndCouponsById(couponId);
         return ResponseEntity.status(HttpStatus.OK).body(coupon);
     }
+
+
+
+    @GetMapping("/users/auth")
+    public ResponseEntity<Boolean> isRealUserCheck(
+        @CurrentUser CurrentUserDetails currentUserDetails) {
+        if(currentUserDetails==null){
+            return ResponseEntity.status(HttpStatus.OK).body(false);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        }
+
+    }
+
 
 
 
