@@ -43,16 +43,17 @@ public class CouponTemplate {
 	@Column(name = "coupon_template_issue_date", nullable = false)
 	private LocalDateTime issueDate;
 
+	@NotNull
+	@Column(name = "coupon_template_issue_quantity", nullable = false)
+	private Long quantity;
+
 	@Builder
-	public CouponTemplate(CouponPolicy couponPolicy, LocalDateTime expiredDate, LocalDateTime issueDate) {
+	public CouponTemplate(CouponPolicy couponPolicy, LocalDateTime expiredDate, LocalDateTime issueDate, Long quantity) {
 		this.couponPolicy = couponPolicy;
 		this.expiredDate = expiredDate;
 		this.issueDate = issueDate;
+		this.quantity=quantity;
 	}
 
-	public void update(CouponPolicy couponPolicy, LocalDateTime expiredDate, LocalDateTime issueDate) {
-		this.couponPolicy = couponPolicy;
-		this.expiredDate = expiredDate;
-		this.issueDate = issueDate;
-	}
+
 }
