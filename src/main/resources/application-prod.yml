@@ -9,6 +9,11 @@ eureka:
     prefer-ip-address: true
 
 spring:
+  rabbitmq:
+      host: localhost
+      username: guest
+      password: guest
+      port: 5672
 
   jpa:
     open-in-view: false

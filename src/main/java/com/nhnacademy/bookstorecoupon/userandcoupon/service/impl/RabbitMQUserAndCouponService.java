@@ -3,7 +3,6 @@ package com.nhnacademy.bookstorecoupon.userandcoupon.service.impl;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import com.nhnacademy.bookstorecoupon.global.config.RabbitMQConfig;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.CouponIssuanceMessage;
 
 @Service
@@ -21,7 +20,7 @@ public class RabbitMQUserAndCouponService {
 
 
         CouponIssuanceMessage message = new CouponIssuanceMessage(couponId,userId);
-        rabbitTemplate.convertAndSend(RabbitMQConfig.COUPON_ISSUE_QUEUE, message);
+        rabbitTemplate.convertAndSend("coupon.exchange","coupon.key", message);
     }
 }
 
