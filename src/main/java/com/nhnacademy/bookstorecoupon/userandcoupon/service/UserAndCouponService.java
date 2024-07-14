@@ -12,7 +12,7 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndC
 public interface UserAndCouponService {
 
 
-    void createUserAndCoupon(Long couponId, Long userId);
+    // void createUserAndCoupon(Long couponId, Long userId);
 
     void createUserWelcomeCouponIssue(Long userId);
 

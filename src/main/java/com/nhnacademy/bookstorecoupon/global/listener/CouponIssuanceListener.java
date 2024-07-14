@@ -13,6 +13,7 @@ import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplat
 import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.CouponIssuanceMessage;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
 import com.nhnacademy.bookstorecoupon.userandcoupon.repository.UserAndCouponRepository;
 
@@ -39,7 +40,7 @@ public class CouponIssuanceListener implements MessageListener {
             Jackson2JsonMessageConverter jsonMessageConverter = new Jackson2JsonMessageConverter();
             CouponIssuanceMessage issuanceMessage = (CouponIssuanceMessage) jsonMessageConverter.fromMessage(message);
 
-            String errorMessage = String.format("해당 쿠폰 '%d'는 존재하지 않습니다.", issuanceMessage.getCouponId());
+            String errorMessage = String.format("해당 쿠폰템플릿 아이디 '%d'는 존재하지 않습니다.", issuanceMessage.getCouponId());
             ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
 
             log.debug("Received message: {}", issuanceMessage);

@@ -10,9 +10,11 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.nhnacademy.bookstorecoupon.global.listener.CouponIssuanceListener;
+
 @Configuration
 @EnableRabbit
-public class RabbitMQConfig {
+public class RabbitMQConfig implements  {
 
 	public static final String COUPON_ISSUE_QUEUE = "couponIssueQueue";
 
