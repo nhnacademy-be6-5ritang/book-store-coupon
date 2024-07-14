@@ -18,6 +18,8 @@ public class RabbitMQUserAndCouponService {
     public void createUserAndCoupon(Long couponId, Long userId) {
 
 
+
+
         CouponIssuanceMessage message = new CouponIssuanceMessage(couponId,userId);
         rabbitTemplate.convertAndSend(RabbitMQConfig.COUPON_ISSUE_QUEUE, message);
     }

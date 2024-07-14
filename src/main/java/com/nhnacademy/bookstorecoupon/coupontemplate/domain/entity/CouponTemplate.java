@@ -56,4 +56,8 @@ public class CouponTemplate {
 	}
 
 
+	public void update(Long quantity) {
+		this.quantity = quantity;
+	}
+
 }

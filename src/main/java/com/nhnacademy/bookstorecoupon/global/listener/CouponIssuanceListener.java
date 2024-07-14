@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
+import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponInsufficientQuantity;
 import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
@@ -48,6 +49,16 @@ public class CouponIssuanceListener implements MessageListener {
             CouponTemplate couponTemplate = couponTemplateRepository.findById(issuanceMessage.getCouponId())
                 .orElseThrow(() -> new CouponNotFoundException(errorStatus));
 
+
+            String errorMessage1 = String.format("해당 쿠폰템플릿 아이디 '%d'의 발급수량이 부족합니다.", issuanceMessage.getCouponId());
+            ErrorStatus errorStatus1 = ErrorStatus.from(errorMessage1, HttpStatus.NOT_FOUND, LocalDateTime.now());
+
+            if (couponTemplate.getQuantity() <= 0) {
+                throw new CouponInsufficientQuantity(errorStatus1);
+            }
+
+
+
             UserAndCoupon userAndCoupon = UserAndCoupon.builder()
                 .couponPolicy(couponTemplate.getCouponPolicy())
                 .userId(issuanceMessage.getUserId())
@@ -57,6 +68,9 @@ public class CouponIssuanceListener implements MessageListener {
                 .build();
 
             userAndCouponRepository.save(userAndCoupon);
+            // 수량 업데이트
+            couponTemplate.update(couponTemplate.getQuantity() - 1);
+            couponTemplateRepository.save(couponTemplate);
         } catch (Exception e) {
             log.error("Failed to process message", e);
             throw new RuntimeException("Failed to process message", e);
