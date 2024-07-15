@@ -20,7 +20,7 @@ public class RabbitMQUserAndCouponService {
 
 
         CouponIssuanceMessage message = new CouponIssuanceMessage(couponId,userId);
-        rabbitTemplate.convertAndSend("coupon.exchange","coupon.key", message);
+        rabbitTemplate.convertAndSend("5ritang.coupon.exchange","5ritang.coupon.key", message);
     }
 }
 

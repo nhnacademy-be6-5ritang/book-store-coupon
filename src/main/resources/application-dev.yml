@@ -9,9 +9,9 @@ eureka:
     prefer-ip-address: true
 spring:
   rabbitmq:
-      host: localhost
-      username: guest
-      password: guest
+      host: 133.186.241.167
+      username: admin
+      password: nhnacademy123!
       port: 5672
 
   jpa:

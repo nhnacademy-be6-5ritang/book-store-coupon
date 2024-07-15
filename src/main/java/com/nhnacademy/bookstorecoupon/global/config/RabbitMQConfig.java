@@ -20,7 +20,7 @@ import com.nhnacademy.bookstorecoupon.global.listener.CouponIssuanceListener;
 @EnableRabbit
 public class RabbitMQConfig {
 
-	public static final String COUPON_ISSUE_QUEUE = "couponIssueQueue";
+	public static final String COUPON_ISSUE_QUEUE = "5ritang_coupon_issue";
 	@Value("${spring.rabbitmq.host}")
 	private String host;
 
@@ -48,12 +48,12 @@ public class RabbitMQConfig {
 
 	@Bean
 	DirectExchange directExchange() {
-		return new DirectExchange("coupon.exchange");
+		return new DirectExchange("5ritang.coupon.exchange");
 	}
 
 	@Bean
 	Binding binding(DirectExchange directExchange, Queue couponIssueQueue) {
-		return BindingBuilder.bind(couponIssueQueue).to(directExchange).with("coupon.key");
+		return BindingBuilder.bind(couponIssueQueue).to(directExchange).with("5ritang.coupon.key");
 	}
 
 	@Bean
