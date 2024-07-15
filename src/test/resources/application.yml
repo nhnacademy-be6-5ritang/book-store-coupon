@@ -1,4 +1,9 @@
 spring:
+  rabbitmq:
+    host: 133.186.241.167
+    username: admin
+    password: nhnacademy123!
+    port: 5672
   application:
     name: "book-store-coupon"
   jwt:
