@@ -21,21 +21,24 @@ import com.nhnacademy.bookstorecoupon.auth.jwt.dto.CurrentUserDetails;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponOrderResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService;
+import com.nhnacademy.bookstorecoupon.userandcoupon.service.impl.RabbitMQUserAndCouponService;
 
 @RestController
 @RequestMapping("/coupons")
 public class UserAndCouponController {
 
     private final UserAndCouponService userAndCouponService;
+    private final RabbitMQUserAndCouponService rabbitMQUserAndCouponService;
 
-    public UserAndCouponController(UserAndCouponService userAndCouponService) {
+    public UserAndCouponController(UserAndCouponService userAndCouponService, RabbitMQUserAndCouponService rabbitMQUserAndCouponService) {
         this.userAndCouponService = userAndCouponService;
+        this.rabbitMQUserAndCouponService = rabbitMQUserAndCouponService;
     }
 
     @PostMapping("/{couponId}")
     public ResponseEntity<Void> createUserAndCoupon(@PathVariable("couponId") Long couponId, @CurrentUser CurrentUserDetails currentUser) {
         Long userId= currentUser.getUserId();
-       userAndCouponService.createUserAndCoupon(couponId, userId);
+       rabbitMQUserAndCouponService.createUserAndCoupon(couponId, userId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

@@ -73,8 +73,11 @@ public class JwtFilter extends OncePerRequestFilter {
 			accessToken = Objects.requireNonNull(reissueTokensResponse.getBody()).accessToken();
 			refreshToken = reissueTokensResponse.getBody().refreshToken();
 
-			response.setHeader("New-Authorization", URLEncoder.encode(accessToken, StandardCharsets.UTF_8));
-			response.setHeader("New-Refresh-Token", URLEncoder.encode(refreshToken, StandardCharsets.UTF_8));
+			String requestUri = request.getRequestURI();
+			if (!"/api/users/withdraw".equals(requestUri)) {
+				response.setHeader("New-Authorization", URLEncoder.encode(accessToken, StandardCharsets.UTF_8));
+				response.setHeader("New-Refresh-Token", URLEncoder.encode(refreshToken, StandardCharsets.UTF_8));
+			}
 		} else if (Objects.nonNull(accessTokenErrorMessage)) {
 			PrintWriter writer = response.getWriter();
 			writer.print(accessTokenErrorMessage);

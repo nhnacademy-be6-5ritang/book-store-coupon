@@ -22,7 +22,6 @@ import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupo
 import com.nhnacademy.bookstorecoupon.categorycoupon.repository.CategoryCouponRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
-import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
 import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
@@ -60,25 +59,25 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		this.couponPolicyRepository = couponPolicyRepository;
 	}
 
-	@Override
-	public void createUserAndCoupon(Long couponId, Long userId) {
-		String errorMessage = String.format("해당 쿠폰은 '%d'는 존재하지 않습니다.", couponId);
-		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
-
-		CouponTemplate couponTemplate = couponTemplateRepository.findById(couponId)
-			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
-
-		UserAndCoupon userAndCoupon = UserAndCoupon.builder()
-			.couponPolicy(couponTemplate.getCouponPolicy())
-			.userId(userId)
-			.isUsed(false)
-			.expiredDate(couponTemplate.getExpiredDate())
-			.issueDate(couponTemplate.getIssueDate())
-			.build();
-
-		userAndCouponRepository.save(userAndCoupon);
-
-	}
+	// @Override
+	// public void createUserAndCoupon(Long couponId, Long userId) {
+	// 	String errorMessage = String.format("해당 쿠폰은 '%d'는 존재하지 않습니다.", couponId);
+	// 	ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+	//
+	// 	CouponTemplate couponTemplate = couponTemplateRepository.findById(couponId)
+	// 		.orElseThrow(() -> new CouponNotFoundException(errorStatus));
+	//
+	// 	UserAndCoupon userAndCoupon = UserAndCoupon.builder()
+	// 		.couponPolicy(couponTemplate.getCouponPolicy())
+	// 		.userId(userId)
+	// 		.isUsed(false)
+	// 		.expiredDate(couponTemplate.getExpiredDate())
+	// 		.issueDate(couponTemplate.getIssueDate())
+	// 		.build();
+	//
+	// 	userAndCouponRepository.save(userAndCoupon);
+	//
+	// }
 
 	@Override
 	public void createUserWelcomeCouponIssue(Long userId) {

@@ -43,7 +43,8 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 				couponPolicy.type,
 				couponPolicy.isUsed,
 				QCouponTemplate.couponTemplate.expiredDate,
-				QCouponTemplate.couponTemplate.issueDate
+				QCouponTemplate.couponTemplate.issueDate,
+				QCouponTemplate.couponTemplate.quantity
 			)
 			.from(QCouponTemplate.couponTemplate)
 			.join(QCouponTemplate.couponTemplate.couponPolicy, couponPolicy)
@@ -74,7 +75,8 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 					(categoryInfo != null) ? categoryInfo.categoryId : null,
 					(categoryInfo != null) ? categoryInfo.categoryName : null,
 					tuple.get(QCouponTemplate.couponTemplate.expiredDate),
-					tuple.get(QCouponTemplate.couponTemplate.issueDate)
+					tuple.get(QCouponTemplate.couponTemplate.issueDate),
+					tuple.get(QCouponTemplate.couponTemplate.quantity)
 				);
 			})
 			.collect(Collectors.toList());
@@ -106,12 +108,14 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 					couponPolicy.type,
 					couponPolicy.isUsed,
 					QCouponTemplate.couponTemplate.expiredDate,
-					QCouponTemplate.couponTemplate.issueDate
+					QCouponTemplate.couponTemplate.issueDate,
+					QCouponTemplate.couponTemplate.quantity
 				)
 				.from(QCouponTemplate.couponTemplate)
 				.join(QCouponTemplate.couponTemplate.couponPolicy, couponPolicy)
 				.where(couponPolicy.isUsed.isTrue()
-					.and(couponPolicy.type.in(types)))
+					.and(couponPolicy.type.in(types))
+					.and(QCouponTemplate.couponTemplate.quantity.gt(0)))
 				.orderBy(QCouponTemplate.couponTemplate.id.desc())
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
@@ -141,7 +145,8 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 						(categoryInfo != null) ? categoryInfo.categoryId : null,
 						(categoryInfo != null) ? categoryInfo.categoryName : null,
 						tuple.get(QCouponTemplate.couponTemplate.expiredDate),
-						tuple.get(QCouponTemplate.couponTemplate.issueDate)
+						tuple.get(QCouponTemplate.couponTemplate.issueDate),
+						tuple.get(QCouponTemplate.couponTemplate.quantity)
 					);
 				})
 				.collect(Collectors.toList());
