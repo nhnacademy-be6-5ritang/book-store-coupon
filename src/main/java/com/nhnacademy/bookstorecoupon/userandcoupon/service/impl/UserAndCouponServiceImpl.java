@@ -21,14 +21,16 @@ import com.nhnacademy.bookstorecoupon.bookcoupon.repository.BookCouponRepository
 import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupon;
 import com.nhnacademy.bookstorecoupon.categorycoupon.repository.CategoryCouponRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
+import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoundException;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
-import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.BirthdayCouponTargetResponse;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponOrderResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
+import com.nhnacademy.bookstorecoupon.userandcoupon.exception.NotFoundUserAndCouponException;
+import com.nhnacademy.bookstorecoupon.userandcoupon.exception.NotFoundUserBirthdayException;
 import com.nhnacademy.bookstorecoupon.userandcoupon.feignclient.UserBirthdayFeignClient;
 import com.nhnacademy.bookstorecoupon.userandcoupon.repository.UserAndCouponRepository;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService;
@@ -86,7 +88,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
 
 		CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType("welcome")
-			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
+			.orElseThrow(() -> new CouponPolicyNotFoundException(errorStatus));
 
 		UserAndCoupon userAndCoupon = UserAndCoupon.builder()
 			.couponPolicy(couponPolicy)
@@ -117,25 +119,30 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		log.warn("기한만료 쿠폰 체크로직 실행완료");
 	}
 
-	// TODO :생일쿠폰 발급 스케줄링, 생일 설정되면 할 예정
+
 	@Override
 	@Scheduled(cron = "0 0 1 * * *")
 	public void issueBirthdayCoupon() {
 		log.warn("생일쿠폰발급 스케줄링 시작");
 
 		LocalDate today = LocalDate.now();
-		List<BirthdayCouponTargetResponse> birthdayList = userBirthdayFeignClient.getUsersWithBirthday(today).getBody();
+		List<BirthdayCouponTargetResponse> birthdayList = Optional.ofNullable(userBirthdayFeignClient.getUsersWithBirthday(today).getBody())
+			.orElseThrow(() -> {
+				String errorMessage = "유저의 생일리스트가 존재하지 않습니다.";
+				ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+				return new NotFoundUserBirthdayException(errorStatus);
+			});
 
 		String errorMessage = "최신 생일쿠폰 정책을 찾을 수 없습니다.";
 		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
 
 		// 최신 생일 쿠폰 템플릿을 가져옴
 		CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType("birthday")
-			.orElseThrow(() -> new CouponNotFoundException(errorStatus));
+			.orElseThrow(() -> new CouponPolicyNotFoundException(errorStatus));
 
 		// 생일 목록에 있는 각 사용자에게 쿠폰을 발행
 
-		assert birthdayList != null;
+
 		birthdayList.forEach(user -> {
 
 			UserAndCoupon userAndCoupon = UserAndCoupon.builder()
@@ -181,7 +188,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
 		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
 
-		// Ensure bookIds and categoryIds are not null
+
 		if (bookIds == null) {
 			bookIds = new ArrayList<>();
 		}
@@ -200,7 +207,9 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			UserAndCoupon userAndCoupon = optionalUserAndCoupon.get();
 			userAndCoupon.update(LocalDateTime.now(), true);
 		} else {
-			throw new IllegalArgumentException("Coupon not found with id: " + userAndCouponId);
+			String errorMessage = "유저의 쿠폰이 존재하지 않습니다.";
+			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			 throw new NotFoundUserAndCouponException(errorStatus);
 		}
 	}
 

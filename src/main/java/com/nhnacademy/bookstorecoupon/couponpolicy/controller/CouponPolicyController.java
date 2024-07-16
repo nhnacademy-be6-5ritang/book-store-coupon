@@ -1,5 +1,7 @@
 package com.nhnacademy.bookstorecoupon.couponpolicy.controller;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
+import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyValidationException;
 import com.nhnacademy.bookstorecoupon.couponpolicy.service.CouponPolicyService;
+import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 
 import jakarta.validation.Valid;
 
@@ -46,6 +50,11 @@ public class CouponPolicyController {
 	@PostMapping("/books")
 	public ResponseEntity<Void> issueSpecificBookCoupon(@Valid @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
 		validateSaleFields(couponPolicyRequestDTO);
+		if (couponPolicyRequestDTO.bookId()==null && couponPolicyRequestDTO.bookTitle() == null){
+			String errorMessage = "북 쿠폰 발행시 책 아이디와 책 제목이 필요합니다.";
+			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			throw new CouponPolicyValidationException(errorStatus);
+		}
 		couponPolicyService.issueSpecificBookCoupon(couponPolicyRequestDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
@@ -53,6 +62,11 @@ public class CouponPolicyController {
 	@PostMapping("/categories")
 	public ResponseEntity<Void> issueSpecificCategoryCoupon(@Valid @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
 		validateSaleFields(couponPolicyRequestDTO);
+		if (couponPolicyRequestDTO.categoryId()==null && couponPolicyRequestDTO.categoryName() == null){
+			String errorMessage = "카테고리 쿠폰 발행시 카테고리 아이디와 카테고리 이름이 필요합니다.";
+			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			throw new CouponPolicyValidationException(errorStatus);
+		}
 		couponPolicyService.issueSpecificCategoryCoupon(couponPolicyRequestDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
@@ -76,7 +90,10 @@ public class CouponPolicyController {
 	public ResponseEntity<Void> updateCouponPolicy(@PathVariable Long couponPolicyId, @Valid @RequestBody CouponPolicyUpdateRequestDTO requestDTO) {
 		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null && requestDTO.maxSalePrice() == null) ||
 			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() != null)) {
-			throw new IllegalArgumentException("Either salePrice or saleRate must be provided exclusively.");
+			String errorMessage = "해당 할인률, 최대가격과 할인가격은 동시에 작성할 수 없습니다";
+			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			throw new CouponPolicyValidationException(errorStatus);
+
 		}
 		couponPolicyService.updateCouponPolicy(couponPolicyId, requestDTO);
 		return ResponseEntity.status(HttpStatus.OK).build();
@@ -87,7 +104,9 @@ public class CouponPolicyController {
 	private void validateSaleFields(CouponPolicyRequestDTO requestDTO) {
 		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null && requestDTO.maxSalePrice() == null) ||
 			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() != null)) {
-			throw new IllegalArgumentException("Either salePrice or saleRate must be provided exclusively.");
+			String errorMessage = "해당 할인률, 최대가격과 할인가격은 동시에 작성할 수 없습니다";
+			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			throw new CouponPolicyValidationException(errorStatus);
 		}
 	}
 

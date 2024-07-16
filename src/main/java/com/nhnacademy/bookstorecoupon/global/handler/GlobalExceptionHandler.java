@@ -15,7 +15,7 @@ import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-	@ExceptionHandler(GlobalException.class)
+	@ExceptionHandler({GlobalException.class})
 	public ResponseEntity<ErrorStatus> handleExceptionGlobally(GlobalException ex) {
 		ErrorStatus errorStatus=ex.getErrorStatus();
 

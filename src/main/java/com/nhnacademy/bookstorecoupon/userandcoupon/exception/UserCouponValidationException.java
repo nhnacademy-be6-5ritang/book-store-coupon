@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorecoupon.coupontemplate.exception;
+package com.nhnacademy.bookstorecoupon.userandcoupon.exception;
 
 
 import com.nhnacademy.bookstorecoupon.global.exception.GlobalException;
@@ -7,8 +7,8 @@ import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import lombok.Getter;
 
 @Getter
-public class CouponNotFoundException extends GlobalException {
-	public CouponNotFoundException(ErrorStatus errorStatus) {
+public class UserCouponValidationException extends GlobalException {
+	public UserCouponValidationException(ErrorStatus errorStatus) {
 		super(errorStatus);
 	}
 }

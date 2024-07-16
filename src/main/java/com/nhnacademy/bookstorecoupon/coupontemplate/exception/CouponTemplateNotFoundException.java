@@ -7,8 +7,8 @@ import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import lombok.Getter;
 
 @Getter
-public class CouponAddErrorException extends GlobalException {
-	public CouponAddErrorException(ErrorStatus errorStatus) {
+public class CouponTemplateNotFoundException extends GlobalException {
+	public CouponTemplateNotFoundException(ErrorStatus errorStatus) {
 		super(errorStatus);
 	}
 }
