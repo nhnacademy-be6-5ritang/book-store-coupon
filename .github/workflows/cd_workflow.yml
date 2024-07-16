@@ -64,5 +64,5 @@ jobs:
           script: |
             echo "Starting new application..."
             source ~/.bashrc
-            nohup java -jar ~/target/BOOK-STORE-COUPON.jar  --spring.pofiles.active=prod  --server.port=${{ secrets.COUPON_PORT }} --spring.datasource.password=${{ secrets.MYSQL_PASSWORD }} --spring.redis.password=${{ secrets.REDIS_PASSWORD }} > coupon.log 2>&1 &
+            nohup java -jar ~/target/BOOK-STORE-COUPON.jar  --spring.profiles.active=prod  --server.port=${{ secrets.COUPON_PORT }} --spring.datasource.password=${{ secrets.MYSQL_PASSWORD }} --spring.redis.password=${{ secrets.REDIS_PASSWORD }} > coupon.log 2>&1 &
             echo "New application started. Check app.log for details."
