@@ -124,6 +124,24 @@ public class UserAndCouponController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+
+
+    @PatchMapping("/users/refund/{userAndCouponId}")
+    public ResponseEntity<Void> updateCouponAfterRefund(
+        @PathVariable("userAndCouponId") Long userAndCouponId) {
+
+        if (userAndCouponId == null) {
+            ErrorStatus errorStatus = ErrorStatus.from("사용자 쿠폰 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new UserCouponValidationException(errorStatus);
+        }
+
+
+        userAndCouponService.updateCouponAfterRefund(userAndCouponId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+
     @GetMapping("/users/order/coupon")
     public ResponseEntity<UserAndCouponOrderResponseDTO> getSelectedCoupon(
         @RequestParam(value = "couponId", required = false) Long couponId) {

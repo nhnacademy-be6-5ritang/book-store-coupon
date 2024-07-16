@@ -203,6 +203,22 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		}
 	}
 
+
+	@Override
+	public void updateCouponAfterRefund(Long userAndCouponId) {
+		Optional<UserAndCoupon> optionalUserAndCoupon = userAndCouponRepository.findById(userAndCouponId);
+
+		if (optionalUserAndCoupon.isPresent()) {
+			UserAndCoupon userAndCoupon = optionalUserAndCoupon.get();
+			userAndCoupon.update(null, false);
+		} else {
+
+			throw new NotFoundUserAndCouponException(ErrorStatus.from("유저의 쿠폰이 존재하지 않습니다.", HttpStatus.NOT_FOUND, LocalDateTime.now()));
+		}
+	}
+
+
+
 	@Override
 	public UserAndCouponOrderResponseDTO findUserAndCouponsById(Long couponId) {
 		UserAndCoupon userAndCoupon = userAndCouponRepository.findById(couponId).orElse(null);
