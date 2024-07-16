@@ -109,8 +109,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 		Optional<CouponPolicy> optionalPolicy = couponPolicyRepository.findById(id);
 
 		if (Boolean.TRUE.equals(requestDTO.isUsed())) {
-			String errorMessage = "이미 폐기된 쿠폰정책은 변경할 수 없습니다";
-			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			ErrorStatus errorStatus = ErrorStatus.from("이미 폐기된 쿠폰정책은 변경할 수 없습니다", HttpStatus.BAD_REQUEST, LocalDateTime.now());
 			throw new CouponPolicyBanUpdateException(errorStatus);
 		}
 
@@ -133,8 +132,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			}
 
 		} else {
-			String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id);
-			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			ErrorStatus errorStatus = ErrorStatus.from(String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id), HttpStatus.NOT_FOUND, LocalDateTime.now());
 			throw new CouponPolicyNotFoundException(errorStatus);
 		}
 

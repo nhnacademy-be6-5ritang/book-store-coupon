@@ -23,8 +23,7 @@ public class RabbitMQUserAndCouponService {
 
 
         if (couponId == null || userId == null) {
-            String errorMessage = "쿠폰아이디와 사용자아이디가 필요합니다.";
-            ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+            ErrorStatus errorStatus = ErrorStatus.from( "쿠폰아이디와 사용자아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
             throw new UserCouponValidationException(errorStatus);
         }
 

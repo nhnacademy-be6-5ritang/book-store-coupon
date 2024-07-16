@@ -84,11 +84,9 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	@Override
 	public void createUserWelcomeCouponIssue(Long userId) {
 
-		String errorMessage = "최신 웰컴쿠폰 정책을 찾을 수 없습니다.";
-		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
 
 		CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType("welcome")
-			.orElseThrow(() -> new CouponPolicyNotFoundException(errorStatus));
+			.orElseThrow(() -> new CouponPolicyNotFoundException(ErrorStatus.from("최신 웰컴쿠폰 정책을 찾을 수 없습니다.", HttpStatus.NOT_FOUND, LocalDateTime.now())));
 
 		UserAndCoupon userAndCoupon = UserAndCoupon.builder()
 			.couponPolicy(couponPolicy)
@@ -127,18 +125,11 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 		LocalDate today = LocalDate.now();
 		List<BirthdayCouponTargetResponse> birthdayList = Optional.ofNullable(userBirthdayFeignClient.getUsersWithBirthday(today).getBody())
-			.orElseThrow(() -> {
-				String errorMessage = "유저의 생일리스트가 존재하지 않습니다.";
-				ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
-				return new NotFoundUserBirthdayException(errorStatus);
-			});
-
-		String errorMessage = "최신 생일쿠폰 정책을 찾을 수 없습니다.";
-		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			.orElseThrow(() -> new NotFoundUserBirthdayException( ErrorStatus.from("유저의 생일리스트가 존재하지 않습니다.", HttpStatus.NOT_FOUND, LocalDateTime.now())));
 
 		// 최신 생일 쿠폰 템플릿을 가져옴
 		CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType("birthday")
-			.orElseThrow(() -> new CouponPolicyNotFoundException(errorStatus));
+			.orElseThrow(() -> new CouponPolicyNotFoundException(ErrorStatus.from("최신 생일쿠폰 정책을 찾을 수 없습니다.", HttpStatus.NOT_FOUND, LocalDateTime.now())));
 
 		// 생일 목록에 있는 각 사용자에게 쿠폰을 발행
 
@@ -207,9 +198,8 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			UserAndCoupon userAndCoupon = optionalUserAndCoupon.get();
 			userAndCoupon.update(LocalDateTime.now(), true);
 		} else {
-			String errorMessage = "유저의 쿠폰이 존재하지 않습니다.";
-			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
-			 throw new NotFoundUserAndCouponException(errorStatus);
+
+			 throw new NotFoundUserAndCouponException(ErrorStatus.from("유저의 쿠폰이 존재하지 않습니다.", HttpStatus.NOT_FOUND, LocalDateTime.now()));
 		}
 	}
 
@@ -217,7 +207,7 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	public UserAndCouponOrderResponseDTO findUserAndCouponsById(Long couponId) {
 		UserAndCoupon userAndCoupon = userAndCouponRepository.findById(couponId).orElse(null);
 		if (userAndCoupon == null) {
-			return null;
+			throw new NotFoundUserAndCouponException(ErrorStatus.from("유저의 쿠폰이 존재하지 않습니다.", HttpStatus.NOT_FOUND, LocalDateTime.now()));
 		}
 		return new UserAndCouponOrderResponseDTO(
 			userAndCoupon.getId(),

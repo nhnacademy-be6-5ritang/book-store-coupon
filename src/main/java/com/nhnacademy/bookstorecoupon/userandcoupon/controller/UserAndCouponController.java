@@ -50,8 +50,7 @@ public class UserAndCouponController {
     @PostMapping("/coupon/welcome")
     public ResponseEntity<Void> createUserWelcomeCouponIssue(Long userId) {
         if (userId == null) {
-            String errorMessage = "유저 아이디가 필요합니다.";
-            ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+            ErrorStatus errorStatus = ErrorStatus.from("유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
             throw new UserCouponValidationException(errorStatus);
         }
         userAndCouponService.createUserWelcomeCouponIssue(userId);
@@ -66,8 +65,7 @@ public class UserAndCouponController {
     public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@CurrentUser CurrentUserDetails currentUser,@PageableDefault(page = 1, size = 3) Pageable pageable) {
         Long userId= currentUser.getUserId();
         if (userId == null) {
-            String errorMessage = "유저 아이디가 필요합니다.";
-            ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+            ErrorStatus errorStatus = ErrorStatus.from( "유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
             throw new UserCouponValidationException(errorStatus);
         }
         Page<UserAndCouponResponseDTO> coupons = userAndCouponService.getAllUsersAndCouponsByUserPaging(
@@ -83,8 +81,7 @@ public class UserAndCouponController {
         @RequestParam(required = false) Long userId
     ) {
         if (userId == null) {
-            String errorMessage = "유저 아이디가 필요합니다.";
-            ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+            ErrorStatus errorStatus = ErrorStatus.from("유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
             throw new UserCouponValidationException(errorStatus);
         }
         Page<UserAndCouponResponseDTO> coupons = userAndCouponService.getAllUsersAndCouponsByManagerPaging(pageable, type, userId);
@@ -102,8 +99,7 @@ public class UserAndCouponController {
         @RequestParam BigDecimal bookPrice) {
 
         if (currentUserDetails.getUserId() == null) {
-            String errorMessage = "유저 아이디가 필요합니다.";
-            ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+            ErrorStatus errorStatus = ErrorStatus.from("유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
             throw new UserCouponValidationException(errorStatus);
         }
 
@@ -118,8 +114,7 @@ public class UserAndCouponController {
         @PathVariable("userAndCouponId") Long userAndCouponId) {
 
         if (userAndCouponId == null) {
-            String errorMessage = "사용자 쿠폰 아이디가 필요합니다.";
-            ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+            ErrorStatus errorStatus = ErrorStatus.from("사용자 쿠폰 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
             throw new UserCouponValidationException(errorStatus);
         }
 

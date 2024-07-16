@@ -51,8 +51,7 @@ public class CouponPolicyController {
 	public ResponseEntity<Void> issueSpecificBookCoupon(@Valid @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
 		validateSaleFields(couponPolicyRequestDTO);
 		if (couponPolicyRequestDTO.bookId()==null && couponPolicyRequestDTO.bookTitle() == null){
-			String errorMessage = "북 쿠폰 발행시 책 아이디와 책 제목이 필요합니다.";
-			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			ErrorStatus errorStatus = ErrorStatus.from("북 쿠폰 발행시 책 아이디와 책 제목이 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
 			throw new CouponPolicyValidationException(errorStatus);
 		}
 		couponPolicyService.issueSpecificBookCoupon(couponPolicyRequestDTO);
@@ -63,8 +62,7 @@ public class CouponPolicyController {
 	public ResponseEntity<Void> issueSpecificCategoryCoupon(@Valid @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
 		validateSaleFields(couponPolicyRequestDTO);
 		if (couponPolicyRequestDTO.categoryId()==null && couponPolicyRequestDTO.categoryName() == null){
-			String errorMessage = "카테고리 쿠폰 발행시 카테고리 아이디와 카테고리 이름이 필요합니다.";
-			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			ErrorStatus errorStatus = ErrorStatus.from("카테고리 쿠폰 발행시 카테고리 아이디와 카테고리 이름이 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
 			throw new CouponPolicyValidationException(errorStatus);
 		}
 		couponPolicyService.issueSpecificCategoryCoupon(couponPolicyRequestDTO);
@@ -90,8 +88,7 @@ public class CouponPolicyController {
 	public ResponseEntity<Void> updateCouponPolicy(@PathVariable Long couponPolicyId, @Valid @RequestBody CouponPolicyUpdateRequestDTO requestDTO) {
 		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null && requestDTO.maxSalePrice() == null) ||
 			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() != null)) {
-			String errorMessage = "해당 할인률, 최대가격과 할인가격은 동시에 작성할 수 없습니다";
-			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			ErrorStatus errorStatus = ErrorStatus.from("해당 할인률, 최대가격과 할인가격은 동시에 작성할 수 없습니다", HttpStatus.BAD_REQUEST, LocalDateTime.now());
 			throw new CouponPolicyValidationException(errorStatus);
 
 		}
@@ -104,8 +101,7 @@ public class CouponPolicyController {
 	private void validateSaleFields(CouponPolicyRequestDTO requestDTO) {
 		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null && requestDTO.maxSalePrice() == null) ||
 			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() != null)) {
-			String errorMessage = "해당 할인률, 최대가격과 할인가격은 동시에 작성할 수 없습니다";
-			ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
+			ErrorStatus errorStatus = ErrorStatus.from("해당 할인률, 최대가격과 할인가격은 동시에 작성할 수 없습니다", HttpStatus.BAD_REQUEST, LocalDateTime.now());
 			throw new CouponPolicyValidationException(errorStatus);
 		}
 	}
