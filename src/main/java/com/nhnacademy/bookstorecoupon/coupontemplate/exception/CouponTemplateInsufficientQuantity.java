@@ -7,8 +7,8 @@ import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import lombok.Getter;
 
 @Getter
-public class CouponInsufficientQuantity extends GlobalException {
-	public CouponInsufficientQuantity(ErrorStatus errorStatus) {
+public class CouponTemplateInsufficientQuantity extends GlobalException {
+	public CouponTemplateInsufficientQuantity(ErrorStatus errorStatus) {
 		super(errorStatus);
 	}
 }

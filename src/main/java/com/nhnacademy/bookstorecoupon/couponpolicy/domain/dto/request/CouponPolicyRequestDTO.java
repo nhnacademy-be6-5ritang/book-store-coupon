@@ -2,6 +2,12 @@ package com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request;
 
 import java.math.BigDecimal;
 
-public record CouponPolicyRequestDTO(BigDecimal minOrderPrice, BigDecimal salePrice, BigDecimal saleRate,
-									 BigDecimal maxSalePrice, String type, Long bookId, String bookTitle, Long categoryId, String categoryName) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record CouponPolicyRequestDTO(@NotNull BigDecimal minOrderPrice,
+									 BigDecimal salePrice,
+									 BigDecimal saleRate,
+									 BigDecimal maxSalePrice,
+									 @NotBlank String type, Long bookId, String bookTitle, Long categoryId, String categoryName) {
 }

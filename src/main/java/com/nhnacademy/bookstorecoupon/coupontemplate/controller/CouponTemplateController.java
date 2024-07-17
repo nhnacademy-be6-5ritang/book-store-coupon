@@ -16,6 +16,8 @@ import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.request.CouponTe
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response.CouponTemplateResponseDTO;
 import com.nhnacademy.bookstorecoupon.coupontemplate.service.CouponTemplateService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/coupons")
 public class CouponTemplateController {
@@ -28,7 +30,7 @@ public class CouponTemplateController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Void> createCouponTemplate(@RequestBody CouponTemplateRequestDTO requestDTO) {
+	public ResponseEntity<Void> createCouponTemplate(@RequestBody @Valid CouponTemplateRequestDTO requestDTO) {
 		couponTemplateService.createCouponTemplate(requestDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
-import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponInsufficientQuantity;
-import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponNotFoundException;
+import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponTemplateInsufficientQuantity;
+import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponTemplateNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.CouponIssuanceMessage;
@@ -47,14 +47,14 @@ public class CouponIssuanceListener implements MessageListener {
             log.debug("Received message: {}", issuanceMessage);
 
             CouponTemplate couponTemplate = couponTemplateRepository.findById(issuanceMessage.getCouponId())
-                .orElseThrow(() -> new CouponNotFoundException(errorStatus));
+                .orElseThrow(() -> new CouponTemplateNotFoundException(errorStatus));
 
 
             String errorMessage1 = String.format("해당 쿠폰템플릿 아이디 '%d'의 발급수량이 부족합니다.", issuanceMessage.getCouponId());
             ErrorStatus errorStatus1 = ErrorStatus.from(errorMessage1, HttpStatus.NOT_FOUND, LocalDateTime.now());
 
             if (couponTemplate.getQuantity() <= 0) {
-                throw new CouponInsufficientQuantity(errorStatus1);
+                throw new CouponTemplateInsufficientQuantity(errorStatus1);
             }
 
 

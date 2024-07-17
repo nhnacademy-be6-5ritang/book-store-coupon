@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstorecoupon.userandcoupon.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nhnacademy.bookstorecoupon.auth.annotation.CurrentUser;
 import com.nhnacademy.bookstorecoupon.auth.jwt.dto.CurrentUserDetails;
+import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponOrderResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
+import com.nhnacademy.bookstorecoupon.userandcoupon.exception.UserCouponValidationException;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.impl.RabbitMQUserAndCouponService;
 
@@ -47,7 +50,8 @@ public class UserAndCouponController {
     @PostMapping("/coupon/welcome")
     public ResponseEntity<Void> createUserWelcomeCouponIssue(Long userId) {
         if (userId == null) {
-            throw new IllegalArgumentException("User ID cannot be null");
+            ErrorStatus errorStatus = ErrorStatus.from("유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new UserCouponValidationException(errorStatus);
         }
         userAndCouponService.createUserWelcomeCouponIssue(userId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -60,6 +64,10 @@ public class UserAndCouponController {
     @GetMapping("/users/user")
     public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@CurrentUser CurrentUserDetails currentUser,@PageableDefault(page = 1, size = 3) Pageable pageable) {
         Long userId= currentUser.getUserId();
+        if (userId == null) {
+            ErrorStatus errorStatus = ErrorStatus.from( "유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new UserCouponValidationException(errorStatus);
+        }
         Page<UserAndCouponResponseDTO> coupons = userAndCouponService.getAllUsersAndCouponsByUserPaging(
            userId, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
@@ -72,6 +80,10 @@ public class UserAndCouponController {
         @RequestParam(required = false) String type,
         @RequestParam(required = false) Long userId
     ) {
+        if (userId == null) {
+            ErrorStatus errorStatus = ErrorStatus.from("유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new UserCouponValidationException(errorStatus);
+        }
         Page<UserAndCouponResponseDTO> coupons = userAndCouponService.getAllUsersAndCouponsByManagerPaging(pageable, type, userId);
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
@@ -86,6 +98,10 @@ public class UserAndCouponController {
         @RequestParam(required = false) List<Long> categoryIds,
         @RequestParam BigDecimal bookPrice) {
 
+        if (currentUserDetails.getUserId() == null) {
+            ErrorStatus errorStatus = ErrorStatus.from("유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new UserCouponValidationException(errorStatus);
+        }
 
         List<UserAndCouponResponseDTO> coupons = userAndCouponService.findCouponByOrder(currentUserDetails.getUserId(), bookIds, categoryIds, bookPrice);
 
@@ -97,11 +113,34 @@ public class UserAndCouponController {
     public ResponseEntity<Void> updateCouponAfterPayment(
         @PathVariable("userAndCouponId") Long userAndCouponId) {
 
+        if (userAndCouponId == null) {
+            ErrorStatus errorStatus = ErrorStatus.from("사용자 쿠폰 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new UserCouponValidationException(errorStatus);
+        }
+
 
          userAndCouponService.updateCouponAfterPayment(userAndCouponId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+
+
+    @PatchMapping("/users/refund/{userAndCouponId}")
+    public ResponseEntity<Void> updateCouponAfterRefund(
+        @PathVariable("userAndCouponId") Long userAndCouponId) {
+
+        if (userAndCouponId == null) {
+            ErrorStatus errorStatus = ErrorStatus.from("사용자 쿠폰 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new UserCouponValidationException(errorStatus);
+        }
+
+
+        userAndCouponService.updateCouponAfterRefund(userAndCouponId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 
     @GetMapping("/users/order/coupon")
     public ResponseEntity<UserAndCouponOrderResponseDTO> getSelectedCoupon(

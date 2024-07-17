@@ -20,7 +20,7 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyReposi
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.request.CouponTemplateRequestDTO;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response.CouponTemplateResponseDTO;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
-import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponAddErrorException;
+import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponTemplateAddErrorException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.coupontemplate.service.CouponTemplateService;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
@@ -50,23 +50,19 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 
 	@Override
 	public void createCouponTemplate(CouponTemplateRequestDTO requestDTO) {
-		String errorMessage = String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", requestDTO.couponPolicyId());
-		ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
 
 		CouponPolicy couponPolicy = couponPolicyRepository.findById(requestDTO.couponPolicyId())
 			.orElseThrow(
-				() ->  new CouponPolicyNotFoundException(errorStatus));
+				() ->  new CouponPolicyNotFoundException(ErrorStatus.from(String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", requestDTO.couponPolicyId()), HttpStatus.NOT_FOUND, LocalDateTime.now())));
 
 		if(couponPolicy.getType().equals("birthday") || couponPolicy.getType().equals("welcome")){
-			String errorMessage2 = String.format("해당 쿠폰타입 '%s'은 템플릿 발급을 할 수 없습니다.", couponPolicy.getType());
-			ErrorStatus errorStatus2 = ErrorStatus.from(errorMessage2, HttpStatus.FORBIDDEN, LocalDateTime.now());
-			throw new CouponAddErrorException(errorStatus2);
+			ErrorStatus errorStatus2 = ErrorStatus.from(String.format("해당 쿠폰타입 '%s'은 템플릿 발급을 할 수 없습니다.", couponPolicy.getType()), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+			throw new CouponTemplateAddErrorException(errorStatus2);
 		}
 
 		if(couponPolicy.getIsUsed() == Boolean.FALSE){
-			String errorMessage2 = "해당 쿠폰템플릿은 정책폐기로 인해 발급을 할 수 없습니다.";
-			ErrorStatus errorStatus2 = ErrorStatus.from(errorMessage2, HttpStatus.FORBIDDEN, LocalDateTime.now());
-			throw new CouponAddErrorException(errorStatus2);
+			ErrorStatus errorStatus2 = ErrorStatus.from( "해당 쿠폰템플릿은 정책폐기로 인해 발급을 할 수 없습니다.", HttpStatus.FORBIDDEN, LocalDateTime.now());
+			throw new CouponTemplateAddErrorException(errorStatus2);
 		}
 
 		CouponTemplate couponTemplate = CouponTemplate.builder()
