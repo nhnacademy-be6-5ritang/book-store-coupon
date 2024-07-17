@@ -80,17 +80,13 @@ public class UserAndCouponController {
         @RequestParam(required = false) String type,
         @RequestParam(required = false) Long userId
     ) {
-        if (userId == null) {
-            ErrorStatus errorStatus = ErrorStatus.from("유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
-            throw new UserCouponValidationException(errorStatus);
-        }
+
         Page<UserAndCouponResponseDTO> coupons = userAndCouponService.getAllUsersAndCouponsByManagerPaging(pageable, type, userId);
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
 
 
 
-    // 비회원일경우 처리는 여기서... current user 처리해주는 메소드 만들기
     @GetMapping("/users/order")
     public ResponseEntity<List<UserAndCouponResponseDTO>> findCouponByOrder(
         @CurrentUser CurrentUserDetails currentUserDetails,
@@ -144,7 +140,12 @@ public class UserAndCouponController {
 
     @GetMapping("/users/order/coupon")
     public ResponseEntity<UserAndCouponOrderResponseDTO> getSelectedCoupon(
-        @RequestParam(value = "couponId", required = false) Long couponId) {
+        @RequestParam(value = "couponId") Long couponId) {
+        if (couponId == null) {
+            ErrorStatus errorStatus = ErrorStatus.from("사용자 쿠폰 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new UserCouponValidationException(errorStatus);
+        }
+
         UserAndCouponOrderResponseDTO coupon = userAndCouponService.findUserAndCouponsById(couponId);
         return ResponseEntity.status(HttpStatus.OK).body(coupon);
     }
