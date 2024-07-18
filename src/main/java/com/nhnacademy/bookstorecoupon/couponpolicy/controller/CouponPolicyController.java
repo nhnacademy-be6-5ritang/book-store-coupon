@@ -87,7 +87,9 @@ public class CouponPolicyController {
 	@PatchMapping("/{couponPolicyId}")
 	public ResponseEntity<Void> updateCouponPolicy(@PathVariable Long couponPolicyId, @Valid @RequestBody CouponPolicyUpdateRequestDTO requestDTO) {
 		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null && requestDTO.maxSalePrice() == null) ||
-			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() != null)) {
+			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() != null)||
+			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() == null)||
+		(requestDTO.salePrice() != null && requestDTO.saleRate() == null  && requestDTO.maxSalePrice() != null)) {
 			ErrorStatus errorStatus = ErrorStatus.from("해당 할인률, 최대가격과 할인가격은 동시에 작성할 수 없습니다", HttpStatus.BAD_REQUEST, LocalDateTime.now());
 			throw new CouponPolicyValidationException(errorStatus);
 
@@ -100,7 +102,9 @@ public class CouponPolicyController {
 	// SalePrice와 SaleRate 유효성 검사 메서드 추가
 	private void validateSaleFields(CouponPolicyRequestDTO requestDTO) {
 		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null && requestDTO.maxSalePrice() == null) ||
-			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() != null)) {
+			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() != null)||
+			(requestDTO.salePrice() != null && requestDTO.saleRate() != null  && requestDTO.maxSalePrice() == null)||
+			(requestDTO.salePrice() != null && requestDTO.saleRate() == null  && requestDTO.maxSalePrice() != null)) {
 			ErrorStatus errorStatus = ErrorStatus.from("해당 할인률, 최대가격과 할인가격은 동시에 작성할 수 없습니다", HttpStatus.BAD_REQUEST, LocalDateTime.now());
 			throw new CouponPolicyValidationException(errorStatus);
 		}
