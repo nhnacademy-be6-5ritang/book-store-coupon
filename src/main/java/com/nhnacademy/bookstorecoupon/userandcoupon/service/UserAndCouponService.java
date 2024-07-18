@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.GetBookByOrderCouponResponse;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponOrderResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 
@@ -29,9 +30,10 @@ public interface UserAndCouponService {
 
     List<UserAndCouponResponseDTO> findCouponByOrder(Long userId, List<Long> bookIds, List<Long> categoryIds, BigDecimal bookPrice);
 
+    List<UserAndCouponResponseDTO> findCouponByCartOrder(Long userId, List<GetBookByOrderCouponResponse> bookDetails);
+
     void updateCouponAfterPayment(Long userAndCouponId);
 
-    void updateCouponAfterRefund(Long userAndCouponId);
 
     UserAndCouponOrderResponseDTO findUserAndCouponsById(Long couponIds);
 }
