@@ -2,8 +2,6 @@ server:
   port: 9494
   shutdown: graceful
 
-
-
 spring:
   jwt:
     secret: 33085d3cf14717d13f122979944e1e886636cc19e0f749dfbce423bb0031beae8b8758243ce109259c32a83a9325ef2c64433bc0339321d9540036a11884f8fc
@@ -11,10 +9,13 @@ spring:
       expires-in: 60000
     refresh-token:
       expires-in: 86400000
+
   application:
     name: book-store-coupon
+
   profiles:
     active: dev
+
   datasource:
     url: jdbc:mysql://133.186.241.167:3306/be6_5ritang_coupon
     username: be6_5ritang
@@ -30,5 +31,6 @@ spring:
       test-on-borrow: true    # 풀에서 연결을 빌릴 때마다 해당 연결이 유효한지 검증할지 여부를 설정합니다.
       validation-query: SELECT 1    # 연결 유효성을 검사하기 위해 실행할 SQL 쿼리를 설정합니다.
 
-
-
+logging:
+  file:
+    path: ./logs
