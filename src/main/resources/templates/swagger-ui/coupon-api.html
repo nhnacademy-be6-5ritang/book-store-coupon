@@ -203,13 +203,13 @@
   <li><a href="#issueWelcomeCoupon"><code><span class="http-method">post</span> /coupons/policies/welcome</code></a></li>
   <li><a href="#updateCouponPolicy"><code><span class="http-method">patch</span> /coupons/policies/{couponPolicyId}</code></a></li>
   </ul>
-  <h4><a href="#CouponTemplateController">CouponTemplateController</a></h4>
+  <h4><a href="#CouponTemplate">CouponTemplate</a></h4>
   <ul>
   <li><a href="#createCouponTemplate"><code><span class="http-method">post</span> /coupons</code></a></li>
   <li><a href="#getAllCouponTemplatesByManagerPaging"><code><span class="http-method">get</span> /coupons</code></a></li>
   <li><a href="#getAllCouponTemplatesByUserPaging"><code><span class="http-method">get</span> /coupons/issue</code></a></li>
   </ul>
-  <h4><a href="#UserAndCouponController">UserAndCouponController</a></h4>
+  <h4><a href="#UserAndCoupon">UserAndCoupon</a></h4>
   <ul>
   <li><a href="#createUserAndCoupon"><code><span class="http-method">post</span> /coupons/{couponId}</code></a></li>
   <li><a href="#createUserWelcomeCouponIssue"><code><span class="http-method">post</span> /coupons/coupon/welcome</code></a></li>
@@ -238,7 +238,7 @@
     <div class="field-items">
       <div class="param">pageable (required)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 페이지 수, 페이지 사이즈 </div>    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
@@ -513,7 +513,7 @@
     <div class="field-items">
       <div class="param">couponPolicyId (required)</div>
       
-            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; 쿠폰 정책 아이디 format: int64</div>    </div>  <!-- field-items -->
 
     <h3 class="field-label">Consumes</h3>
     This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
@@ -545,13 +545,13 @@
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
-  <h1><a name="CouponTemplateController">CouponTemplateController</a></h1>
+  <h1><a name="CouponTemplate">CouponTemplate</a></h1>
   <div class="method"><a name="createCouponTemplate"></a>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">createCouponTemplate</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">쿠폰 템플릿 생성 (<span class="nickname">createCouponTemplate</span>)</div>
+    <div class="method-notes">새로운 쿠폰 템플릿을 생성합니다.</div>
 
 
     <h3 class="field-label">Consumes</h3>
@@ -576,8 +576,11 @@
 
 
     <h3 class="field-label">Responses</h3>
-    <h4 class="field-label">200</h4>
-    OK
+    <h4 class="field-label">201</h4>
+    쿠폰 템플릿이 성공적으로 생성되었습니다.
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -585,8 +588,8 @@
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">getAllCouponTemplatesByManagerPaging</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">관리자 페이징으로 모든 쿠폰 템플릿 조회 (<span class="nickname">getAllCouponTemplatesByManagerPaging</span>)</div>
+    <div class="method-notes">관리자 기준으로 페이징된 모든 쿠폰 템플릿을 조회합니다.</div>
 
 
 
@@ -596,7 +599,7 @@
     <div class="field-items">
       <div class="param">pageable (required)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 페이지 수, 페이지 사이즈 </div>    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
@@ -674,7 +677,10 @@
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    OK
+    쿠폰 템플릿 조회 성공
+        <a href="#PageCouponTemplateResponseDTO">PageCouponTemplateResponseDTO</a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
         <a href="#PageCouponTemplateResponseDTO">PageCouponTemplateResponseDTO</a>
   </div> <!-- method -->
   <hr/>
@@ -682,8 +688,8 @@
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/issue</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">getAllCouponTemplatesByUserPaging</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">유저 페이징으로 모든 쿠폰 템플릿 조회 (<span class="nickname">getAllCouponTemplatesByUserPaging</span>)</div>
+    <div class="method-notes">유저 기준으로 페이징된 모든 쿠폰 템플릿을 조회합니다.</div>
 
 
 
@@ -693,7 +699,7 @@
     <div class="field-items">
       <div class="param">pageable (required)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 페이지 수, 페이지 사이즈 </div>    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
@@ -771,23 +777,26 @@
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    OK
+    쿠폰 템플릿 조회 성공
+        <a href="#PageCouponTemplateResponseDTO">PageCouponTemplateResponseDTO</a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
         <a href="#PageCouponTemplateResponseDTO">PageCouponTemplateResponseDTO</a>
   </div> <!-- method -->
   <hr/>
-  <h1><a name="UserAndCouponController">UserAndCouponController</a></h1>
+  <h1><a name="UserAndCoupon">UserAndCoupon</a></h1>
   <div class="method"><a name="createUserAndCoupon"></a>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons/{couponId}</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">createUserAndCoupon</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">사용자와 쿠폰 생성 (<span class="nickname">createUserAndCoupon</span>)</div>
+    <div class="method-notes">특정 쿠폰 ID로 사용자에게 쿠폰을 발행합니다.</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
       <div class="param">couponId (required)</div>
       
-            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; 쿠폰아이디 format: int64</div>    </div>  <!-- field-items -->
 
     <h3 class="field-label">Consumes</h3>
     This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
@@ -811,8 +820,11 @@
 
 
     <h3 class="field-label">Responses</h3>
-    <h4 class="field-label">200</h4>
-    OK
+    <h4 class="field-label">201</h4>
+    쿠폰이 성공적으로 발행되었습니다.
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -820,8 +832,8 @@
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons/coupon/welcome</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">createUserWelcomeCouponIssue</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">웰컴 쿠폰 생성 (<span class="nickname">createUserWelcomeCouponIssue</span>)</div>
+    <div class="method-notes">특정 사용자에게 웰컴 쿠폰을 발행합니다.</div>
 
 
 
@@ -831,7 +843,7 @@
     <div class="field-items">
       <div class="param">userId (required)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 사용자 ID format: int64</div>    </div>  <!-- field-items -->
 
 
 
@@ -840,8 +852,11 @@
 
 
     <h3 class="field-label">Responses</h3>
-    <h4 class="field-label">200</h4>
-    OK
+    <h4 class="field-label">201</h4>
+    웰컴 쿠폰이 성공적으로 발행되었습니다.
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -849,8 +864,8 @@
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons/users/order/carts</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">findCouponByCartOrder</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">장바구니 주문에 대한 쿠폰 조회 (<span class="nickname">findCouponByCartOrder</span>)</div>
+    <div class="method-notes">특정 장바구니 주문에 대한 쿠폰을 조회합니다.</div>
 
 
     <h3 class="field-label">Consumes</h3>
@@ -924,7 +939,10 @@
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    OK
+    쿠폰 조회 성공
+        
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
         
   </div> <!-- method -->
   <hr/>
@@ -932,8 +950,8 @@
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/users/order</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">findCouponByOrder</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">단건 주문에 대한 쿠폰 조회 (<span class="nickname">findCouponByOrder</span>)</div>
+    <div class="method-notes">특정 주문에 대한 쿠폰을 조회합니다.</div>
 
 
 
@@ -943,13 +961,13 @@
     <div class="field-items">
       <div class="param">currentUserDetails (required)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>      <div class="param">bookIds (optional)</div>
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 유저 아이디 가져오는 용도 </div>      <div class="param">bookIds (optional)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  format: int64</div>      <div class="param">categoryIds (optional)</div>
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 도서 아이디 format: int64</div>      <div class="param">categoryIds (optional)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  format: int64</div>      <div class="param">bookPrice (required)</div>
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 카테고리 아이디 format: int64</div>      <div class="param">bookPrice (required)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 도서 가격 </div>    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
@@ -1007,7 +1025,10 @@
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    OK
+    쿠폰 조회 성공
+        
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
         
   </div> <!-- method -->
   <hr/>
@@ -1015,8 +1036,8 @@
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/users/user</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">getAllUserAndCouponsByUserPaging</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">마이페이지 쿠폰 조회 (<span class="nickname">getAllUserAndCouponsByUserPaging</span>)</div>
+    <div class="method-notes">특정 사용자 기준으로 페이징된 모든 쿠폰을 조회합니다.</div>
 
 
 
@@ -1026,9 +1047,9 @@
     <div class="field-items">
       <div class="param">currentUser (required)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>      <div class="param">pageable (required)</div>
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 유저 아이디 가져오는 용도 </div>      <div class="param">pageable (required)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 페이지 수, 페이지 사이즈 </div>    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
@@ -1108,7 +1129,10 @@
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    OK
+    쿠폰 조회 성공
+        <a href="#PageUserAndCouponResponseDTO">PageUserAndCouponResponseDTO</a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
         <a href="#PageUserAndCouponResponseDTO">PageUserAndCouponResponseDTO</a>
   </div> <!-- method -->
   <hr/>
@@ -1116,8 +1140,8 @@
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/users</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">getAllUsersAndCouponsByManagerPaging</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">관리자 기준 페이징된 사용자 쿠폰 조회 (<span class="nickname">getAllUsersAndCouponsByManagerPaging</span>)</div>
+    <div class="method-notes">관리자 기준으로 페이징된 모든 사용자 쿠폰을 조회합니다.</div>
 
 
 
@@ -1127,11 +1151,11 @@
     <div class="field-items">
       <div class="param">pageable (required)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>      <div class="param">type (optional)</div>
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 페이지 수, 페이지 사이즈 </div>      <div class="param">type (optional)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>      <div class="param">userId (optional)</div>
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 정책타입 </div>      <div class="param">userId (optional)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 유저 아이디 format: int64</div>    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
@@ -1211,7 +1235,10 @@
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    OK
+    쿠폰 조회 성공
+        <a href="#PageUserAndCouponResponseDTO">PageUserAndCouponResponseDTO</a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
         <a href="#PageUserAndCouponResponseDTO">PageUserAndCouponResponseDTO</a>
   </div> <!-- method -->
   <hr/>
@@ -1219,8 +1246,8 @@
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/users/order/coupon</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">getSelectedCoupon</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">선택된 쿠폰 조회 (<span class="nickname">getSelectedCoupon</span>)</div>
+    <div class="method-notes">특정 쿠폰 ID로 선택된 쿠폰을 조회합니다.</div>
 
 
 
@@ -1230,7 +1257,7 @@
     <div class="field-items">
       <div class="param">couponId (required)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 쿠폰아이디 format: int64</div>    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
@@ -1261,7 +1288,10 @@
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    OK
+    쿠폰 조회 성공
+        <a href="#UserAndCouponOrderResponseDTO">UserAndCouponOrderResponseDTO</a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
         <a href="#UserAndCouponOrderResponseDTO">UserAndCouponOrderResponseDTO</a>
   </div> <!-- method -->
   <hr/>
@@ -1269,8 +1299,8 @@
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/users/auth</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">isRealUserCheck</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">회원인지 아닌지 검사 (<span class="nickname">isRealUserCheck</span>)</div>
+    <div class="method-notes">비회원인지 회원인지 검사합니다.</div>
 
 
 
@@ -1280,7 +1310,7 @@
     <div class="field-items">
       <div class="param">currentUserDetails (required)</div>
       
-            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; 유저 아이디 가져오는 용도 </div>    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
@@ -1304,7 +1334,7 @@
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    OK
+    검사결과를 true or false로 반환
         <a href="#Boolean">Boolean</a>
   </div> <!-- method -->
   <hr/>
@@ -1312,14 +1342,14 @@
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="patch"><code class="huge"><span class="http-method">patch</span> /coupons/users/payment/{userAndCouponId}</code></pre></div>
-    <div class="method-summary"> (<span class="nickname">updateCouponAfterPayment</span>)</div>
-    <div class="method-notes"></div>
+    <div class="method-summary">결제 후 쿠폰 사용됨처리 (<span class="nickname">updateCouponAfterPayment</span>)</div>
+    <div class="method-notes">특정 사용자 쿠폰 ID로 쿠폰을 결제 후 사용됨 처리합니다.</div>
 
     <h3 class="field-label">Path parameters</h3>
     <div class="field-items">
       <div class="param">userAndCouponId (required)</div>
       
-            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; 사용자 쿠폰아이디 format: int64</div>    </div>  <!-- field-items -->
 
 
 
@@ -1333,7 +1363,10 @@
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    OK
+    쿠폰이 성공적으로 업데이트되었습니다.
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -1364,7 +1397,7 @@
 
   <div class="model">
     <h3><a name="CouponPolicyRequestDTO"><code>CouponPolicyRequestDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
-    
+    <div class='model-description'>생일쿠폰정책 발행 요청 데이터</div>
     <div class="field-items">
       <div class="param">minOrderPrice </div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
 <div class="param">salePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
@@ -1396,7 +1429,7 @@
   </div>
   <div class="model">
     <h3><a name="CouponPolicyUpdateRequestDTO"><code>CouponPolicyUpdateRequestDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
-    
+    <div class='model-description'>쿠폰정책 변경 요청 데이터</div>
     <div class="field-items">
       <div class="param">minOrderPrice </div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
 <div class="param">salePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
@@ -1407,7 +1440,7 @@
   </div>
   <div class="model">
     <h3><a name="CouponTemplateRequestDTO"><code>CouponTemplateRequestDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
-    
+    <div class='model-description'>쿠폰 템플릿 발행시 요청데이터</div>
     <div class="field-items">
       <div class="param">couponPolicyId </div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
 <div class="param">expiredDate </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
@@ -1438,7 +1471,7 @@
   </div>
   <div class="model">
     <h3><a name="CurrentUserDetails"><code>CurrentUserDetails</code></a> <a class="up" href="#__Models">Up</a></h3>
-    
+    <div class='model-description'>유저 아이디 가져오는 용도</div>
     <div class="field-items">
       <div class="param">password (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">enabled (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
@@ -1532,10 +1565,10 @@
     <div class="field-items">
       <div class="param">offset (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
 <div class="param">sort (optional)</div><div class="param-desc"><span class="param-type"><a href="#SortObject">SortObject</a></span>  </div>
-<div class="param">unpaged (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
 <div class="param">paged (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
 <div class="param">pageNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
 <div class="param">pageSize (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">unpaged (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -1543,8 +1576,8 @@
     
     <div class="field-items">
       <div class="param">empty (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
-<div class="param">unsorted (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
 <div class="param">sorted (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">unsorted (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -1586,7 +1619,7 @@
     
     <div class="field-items">
       <div class="param">currentUserDetails (optional)</div><div class="param-desc"><span class="param-type"><a href="#CurrentUserDetails">CurrentUserDetails</a></span>  </div>
-<div class="param">bookDetails (optional)</div><div class="param-desc"><span class="param-type"><a href="#GetBookByOrderCouponResponse">array[GetBookByOrderCouponResponse]</a></span>  </div>
+<div class="param">bookDetails (optional)</div><div class="param-desc"><span class="param-type"><a href="#GetBookByOrderCouponResponse">array[GetBookByOrderCouponResponse]</a></span> 도서 주문 정보 </div>
     </div>  <!-- field-items -->
   </div>
   </body>
