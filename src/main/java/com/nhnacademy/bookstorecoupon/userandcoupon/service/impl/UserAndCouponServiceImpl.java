@@ -26,6 +26,7 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyReposi
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.BirthdayCouponTargetResponse;
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.GetBookByOrderCouponResponse;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponOrderResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
@@ -190,6 +191,19 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookIds, categoryIds, bookPrice);
 	}
 
+
+	@Override
+	public List<UserAndCouponResponseDTO> findCouponByCartOrder(
+		Long userId, List<GetBookByOrderCouponResponse> bookDetails) {
+		Map<Long, BookCoupon.BookInfo> bookIdMap = bookCouponRepository.fetchBookIdMap();
+		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap = categoryCouponRepository.fetchCategoryIdMap();
+
+		return userAndCouponRepository.findCouponByCartOrder(userId, bookIdMap, categoryIdMap, bookDetails);
+	}
+
+
+
+
 	@Override
 	public void updateCouponAfterPayment(Long userAndCouponId) {
 		Optional<UserAndCoupon> optionalUserAndCoupon = userAndCouponRepository.findById(userAndCouponId);
@@ -203,19 +217,6 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		}
 	}
 
-
-	@Override
-	public void updateCouponAfterRefund(Long userAndCouponId) {
-		Optional<UserAndCoupon> optionalUserAndCoupon = userAndCouponRepository.findById(userAndCouponId);
-
-		if (optionalUserAndCoupon.isPresent()) {
-			UserAndCoupon userAndCoupon = optionalUserAndCoupon.get();
-			userAndCoupon.update(null, false);
-		} else {
-
-			throw new NotFoundUserAndCouponException(ErrorStatus.from("유저의 쿠폰이 존재하지 않습니다.", HttpStatus.NOT_FOUND, LocalDateTime.now()));
-		}
-	}
 
 
 

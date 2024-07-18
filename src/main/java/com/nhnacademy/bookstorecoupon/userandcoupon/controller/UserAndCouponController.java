@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nhnacademy.bookstorecoupon.auth.annotation.CurrentUser;
 import com.nhnacademy.bookstorecoupon.auth.jwt.dto.CurrentUserDetails;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
+import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.GetBookByOrderCouponResponse;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponOrderResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 import com.nhnacademy.bookstorecoupon.userandcoupon.exception.UserCouponValidationException;
@@ -105,6 +107,24 @@ public class UserAndCouponController {
     }
 
 
+
+
+    @PostMapping("/users/order/carts")
+    public ResponseEntity<List<UserAndCouponResponseDTO>> findCouponByCartOrder(
+        @CurrentUser CurrentUserDetails currentUserDetails,
+        @RequestBody(required = false) List<GetBookByOrderCouponResponse> bookDetails
+       ) {
+
+        if (currentUserDetails.getUserId() == null) {
+            ErrorStatus errorStatus = ErrorStatus.from("유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+            throw new UserCouponValidationException(errorStatus);
+        }
+
+        List<UserAndCouponResponseDTO> coupons = userAndCouponService.findCouponByCartOrder(currentUserDetails.getUserId(),bookDetails);
+
+        return ResponseEntity.status(HttpStatus.OK).body(coupons);
+    }
+
     @PatchMapping("/users/payment/{userAndCouponId}")
     public ResponseEntity<Void> updateCouponAfterPayment(
         @PathVariable("userAndCouponId") Long userAndCouponId) {
@@ -122,20 +142,6 @@ public class UserAndCouponController {
 
 
 
-    @PatchMapping("/users/refund/{userAndCouponId}")
-    public ResponseEntity<Void> updateCouponAfterRefund(
-        @PathVariable("userAndCouponId") Long userAndCouponId) {
-
-        if (userAndCouponId == null) {
-            ErrorStatus errorStatus = ErrorStatus.from("사용자 쿠폰 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
-            throw new UserCouponValidationException(errorStatus);
-        }
-
-
-        userAndCouponService.updateCouponAfterRefund(userAndCouponId);
-
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
 
 
     @GetMapping("/users/order/coupon")
