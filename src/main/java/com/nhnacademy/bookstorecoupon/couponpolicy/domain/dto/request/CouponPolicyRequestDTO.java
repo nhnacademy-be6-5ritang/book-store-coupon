@@ -12,5 +12,5 @@ public record CouponPolicyRequestDTO(@NotNull @Positive @Digits(integer = 8, fra
 									 @Nullable @Positive @Digits(integer = 8, fraction = 2) BigDecimal salePrice,
 									 @Nullable @Positive @Digits(integer = 0, fraction = 2) BigDecimal saleRate,
 									 @Nullable @Positive @Digits(integer = 8, fraction = 2) BigDecimal maxSalePrice,
-									 @NotBlank String type, Long bookId, String bookTitle, Long categoryId, String categoryName) {
+									 @NotBlank String type,  @Nullable Long bookId,   @Nullable String bookTitle, @Nullable Long categoryId,  @Nullable String categoryName) {
 }

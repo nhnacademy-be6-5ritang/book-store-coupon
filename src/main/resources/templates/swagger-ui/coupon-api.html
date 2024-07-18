@@ -1,0 +1,1593 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Coupon API</title>
+    <style type="text/css">
+      body {
+      	font-family: Trebuchet MS, sans-serif;
+      	font-size: 15px;
+      	color: #444;
+      	margin-right: 24px;
+      }
+      
+      h1	{
+      	font-size: 25px;
+      }
+      h2	{
+      	font-size: 20px;
+      }
+      h3	{
+      	font-size: 16px;
+      	font-weight: bold;
+      }
+      hr	{
+      	height: 1px;
+      	border: 0;
+      	color: #ddd;
+      	background-color: #ddd;
+      }
+      
+      .app-desc {
+        clear: both;
+        margin-left: 20px;
+      }
+      .param-name {
+        width: 100%;
+      }
+      .license-info {
+        margin-left: 20px;
+      }
+      
+      .license-url {
+        margin-left: 20px;
+      }
+      
+      .model {
+        margin: 0 0 0px 20px;
+      }
+      
+      .method {
+        margin-left: 20px;
+      }
+      
+      .method-notes	{
+      	margin: 10px 0 20px 0;
+      	font-size: 90%;
+      	color: #555;
+      }
+      
+      pre {
+        padding: 10px;
+        margin-bottom: 2px;
+      }
+      
+      .http-method {
+       text-transform: uppercase;
+      }
+      
+      pre.get {
+        background-color: #0f6ab4;
+      }
+      
+      pre.post {
+        background-color: #10a54a;
+      }
+      
+      pre.put {
+        background-color: #c5862b;
+      }
+      
+      pre.delete {
+        background-color: #a41e22;
+      }
+      
+      .huge	{
+      	color: #fff;
+      }
+      
+      pre.example {
+        background-color: #f3f3f3;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+      
+      code {
+        white-space: pre;
+      }
+      
+      .nickname {
+        font-weight: bold;
+      }
+      
+      .method-path {
+        font-size: 1.5em;
+        background-color: #0f6ab4;
+      }
+      
+      .up {
+        float:right;
+      }
+      
+      .parameter {
+        width: 500px;
+      }
+      
+      .param {
+        width: 500px;
+        padding: 10px 0 0 20px;
+        font-weight: bold;
+      }
+      
+      .param-desc {
+        width: 700px;
+        padding: 0 0 0 20px;
+        color: #777;
+      }
+      
+      .param-type {
+        font-style: italic;
+      }
+      
+      .param-enum-header {
+      width: 700px;
+      padding: 0 0 0 60px;
+      color: #777;
+      font-weight: bold;
+      }
+      
+      .param-enum {
+      width: 700px;
+      padding: 0 0 0 80px;
+      color: #777;
+      font-style: italic;
+      }
+      
+      .field-label {
+        padding: 0;
+        margin: 0;
+        clear: both;
+      }
+      
+      .field-items	{
+      	padding: 0 0 15px 0;
+      	margin-bottom: 15px;
+      }
+      
+      .return-type {
+        clear: both;
+        padding-bottom: 10px;
+      }
+      
+      .param-header {
+        font-weight: bold;
+      }
+      
+      .method-tags {
+        text-align: right;
+      }
+      
+      .method-tag {
+        background: none repeat scroll 0% 0% #24A600;
+        border-radius: 3px;
+        padding: 2px 10px;
+        margin: 2px;
+        color: #FFF;
+        display: inline-block;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+  <h1>Coupon API</h1>
+    <div class="app-desc">쿠폰 API 명세서</div>
+    <div class="app-desc">More information: <a href="https://helloreverb.com">https://helloreverb.com</a></div>
+    <div class="app-desc">Contact Info: <a href="hello@helloreverb.com">hello@helloreverb.com</a></div>
+    <div class="app-desc">Version: 1.0</div>
+    
+    <div class="license-info">All rights reserved</div>
+    <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
+  <h2>Access</h2>
+
+  <h2><a name="__Methods">Methods</a></h2>
+  [ Jump to <a href="#__Models">Models</a> ]
+
+  <h3>Table of Contents </h3>
+  <div class="method-summary"></div>
+  <h4><a href="#CouponPolicy">CouponPolicy</a></h4>
+  <ul>
+  <li><a href="#getAllCouponPolicies"><code><span class="http-method">get</span> /coupons/policies</code></a></li>
+  <li><a href="#issueBirthdayCoupon"><code><span class="http-method">post</span> /coupons/policies/birthday</code></a></li>
+  <li><a href="#issueDiscountCoupon"><code><span class="http-method">post</span> /coupons/policies/sale</code></a></li>
+  <li><a href="#issueSpecificBookCoupon"><code><span class="http-method">post</span> /coupons/policies/books</code></a></li>
+  <li><a href="#issueSpecificCategoryCoupon"><code><span class="http-method">post</span> /coupons/policies/categories</code></a></li>
+  <li><a href="#issueWelcomeCoupon"><code><span class="http-method">post</span> /coupons/policies/welcome</code></a></li>
+  <li><a href="#updateCouponPolicy"><code><span class="http-method">patch</span> /coupons/policies/{couponPolicyId}</code></a></li>
+  </ul>
+  <h4><a href="#CouponTemplateController">CouponTemplateController</a></h4>
+  <ul>
+  <li><a href="#createCouponTemplate"><code><span class="http-method">post</span> /coupons</code></a></li>
+  <li><a href="#getAllCouponTemplatesByManagerPaging"><code><span class="http-method">get</span> /coupons</code></a></li>
+  <li><a href="#getAllCouponTemplatesByUserPaging"><code><span class="http-method">get</span> /coupons/issue</code></a></li>
+  </ul>
+  <h4><a href="#UserAndCouponController">UserAndCouponController</a></h4>
+  <ul>
+  <li><a href="#createUserAndCoupon"><code><span class="http-method">post</span> /coupons/{couponId}</code></a></li>
+  <li><a href="#createUserWelcomeCouponIssue"><code><span class="http-method">post</span> /coupons/coupon/welcome</code></a></li>
+  <li><a href="#findCouponByCartOrder"><code><span class="http-method">post</span> /coupons/users/order/carts</code></a></li>
+  <li><a href="#findCouponByOrder"><code><span class="http-method">get</span> /coupons/users/order</code></a></li>
+  <li><a href="#getAllUserAndCouponsByUserPaging"><code><span class="http-method">get</span> /coupons/users/user</code></a></li>
+  <li><a href="#getAllUsersAndCouponsByManagerPaging"><code><span class="http-method">get</span> /coupons/users</code></a></li>
+  <li><a href="#getSelectedCoupon"><code><span class="http-method">get</span> /coupons/users/order/coupon</code></a></li>
+  <li><a href="#isRealUserCheck"><code><span class="http-method">get</span> /coupons/users/auth</code></a></li>
+  <li><a href="#updateCouponAfterPayment"><code><span class="http-method">patch</span> /coupons/users/payment/{userAndCouponId}</code></a></li>
+  </ul>
+
+  <h1><a name="CouponPolicy">CouponPolicy</a></h1>
+  <div class="method"><a name="getAllCouponPolicies"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/policies</code></pre></div>
+    <div class="method-summary">모든 쿠폰 정책 조회 (<span class="nickname">getAllCouponPolicies</span>)</div>
+    <div class="method-notes">페이징을 통해 모든 쿠폰 정책을 조회합니다.</div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">pageable (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#PageCouponPolicyResponseDTO">PageCouponPolicyResponseDTO</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "number" : 4,
+  "last" : true,
+  "size" : 1,
+  "numberOfElements" : 7,
+  "totalPages" : 6,
+  "pageable" : {
+    "paged" : true,
+    "pageNumber" : 6,
+    "offset" : 1,
+    "pageSize" : 7,
+    "unpaged" : true
+  },
+  "sort" : {
+    "unsorted" : true,
+    "sorted" : true,
+    "empty" : true
+  },
+  "first" : true,
+  "content" : [ {
+    "saleRate" : 7.061401241503109,
+    "minOrderPrice" : 5.637376656633329,
+    "salePrice" : 2.3021358869347655,
+    "id" : 5,
+    "type" : "type",
+    "categoryName" : "categoryName",
+    "isUsed" : true,
+    "categoryId" : 2,
+    "maxSalePrice" : 9.301444243932576,
+    "bookId" : 3,
+    "bookTitle" : "bookTitle"
+  }, {
+    "saleRate" : 7.061401241503109,
+    "minOrderPrice" : 5.637376656633329,
+    "salePrice" : 2.3021358869347655,
+    "id" : 5,
+    "type" : "type",
+    "categoryName" : "categoryName",
+    "isUsed" : true,
+    "categoryId" : 2,
+    "maxSalePrice" : 9.301444243932576,
+    "bookId" : 3,
+    "bookTitle" : "bookTitle"
+  } ],
+  "totalElements" : 0,
+  "empty" : true
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    성공적으로 조회되었습니다.
+        <a href="#PageCouponPolicyResponseDTO">PageCouponPolicyResponseDTO</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="issueBirthdayCoupon"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons/policies/birthday</code></pre></div>
+    <div class="method-summary">생일쿠폰 생성 (<span class="nickname">issueBirthdayCoupon</span>)</div>
+    <div class="method-notes">웰컴쿠폰을 생성합니다</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#CouponPolicyRequestDTO">CouponPolicyRequestDTO</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    생일쿠폰이 성공적으로 발행되었습니다.
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="issueDiscountCoupon"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons/policies/sale</code></pre></div>
+    <div class="method-summary">할인 쿠폰 발행 (<span class="nickname">issueDiscountCoupon</span>)</div>
+    <div class="method-notes">할인 쿠폰을 발행합니다.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#CouponPolicyRequestDTO">CouponPolicyRequestDTO</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    할인쿠폰이 성공적으로 발행되었습니다.
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="issueSpecificBookCoupon"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons/policies/books</code></pre></div>
+    <div class="method-summary">도서 쿠폰 발행 (<span class="nickname">issueSpecificBookCoupon</span>)</div>
+    <div class="method-notes">특정 도서에 대한 도서쿠폰을 발행합니다.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#CouponPolicyRequestDTO">CouponPolicyRequestDTO</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    도서쿠폰이 성공적으로 발행되었습니다.
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="issueSpecificCategoryCoupon"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons/policies/categories</code></pre></div>
+    <div class="method-summary">카테고리 쿠폰 발행 (<span class="nickname">issueSpecificCategoryCoupon</span>)</div>
+    <div class="method-notes">특정 카테고리에 대한 카테고리쿠폰을 발행합니다.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#CouponPolicyRequestDTO">CouponPolicyRequestDTO</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    카테고리쿠폰이 성공적으로 발행되었습니다.
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="issueWelcomeCoupon"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons/policies/welcome</code></pre></div>
+    <div class="method-summary">웰컴쿠폰 생성 (<span class="nickname">issueWelcomeCoupon</span>)</div>
+    <div class="method-notes">웰컴쿠폰을 생성합니다</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#CouponPolicyRequestDTO">CouponPolicyRequestDTO</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    웰컴쿠폰이 성공적으로 발행되었습니다.
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateCouponPolicy"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="patch"><code class="huge"><span class="http-method">patch</span> /coupons/policies/{couponPolicyId}</code></pre></div>
+    <div class="method-summary">쿠폰 정책 업데이트 (<span class="nickname">updateCouponPolicy</span>)</div>
+    <div class="method-notes">쿠폰 정책을 업데이트합니다.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">couponPolicyId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#CouponPolicyUpdateRequestDTO">CouponPolicyUpdateRequestDTO</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    성공적으로 업데이트되었습니다.
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    잘못된 요청입니다.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="CouponTemplateController">CouponTemplateController</a></h1>
+  <div class="method"><a name="createCouponTemplate"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">createCouponTemplate</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#CouponTemplateRequestDTO">CouponTemplateRequestDTO</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAllCouponTemplatesByManagerPaging"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getAllCouponTemplatesByManagerPaging</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">pageable (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#PageCouponTemplateResponseDTO">PageCouponTemplateResponseDTO</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "number" : 1,
+  "last" : true,
+  "size" : 1,
+  "numberOfElements" : 1,
+  "totalPages" : 6,
+  "pageable" : {
+    "paged" : true,
+    "pageNumber" : 6,
+    "offset" : 1,
+    "pageSize" : 7,
+    "unpaged" : true
+  },
+  "sort" : {
+    "unsorted" : true,
+    "sorted" : true,
+    "empty" : true
+  },
+  "first" : true,
+  "content" : [ {
+    "saleRate" : 9.301444243932576,
+    "quantity" : 7,
+    "salePrice" : 7.061401241503109,
+    "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+    "type" : "type",
+    "categoryName" : "categoryName",
+    "isUsed" : true,
+    "maxSalePrice" : 3.616076749251911,
+    "bookId" : 2,
+    "minOrderPrice" : 2.3021358869347655,
+    "couponPolicyId" : 5,
+    "id" : 5,
+    "issueDate" : "2000-01-23T04:56:07.000+00:00",
+    "categoryId" : 4,
+    "bookTitle" : "bookTitle"
+  }, {
+    "saleRate" : 9.301444243932576,
+    "quantity" : 7,
+    "salePrice" : 7.061401241503109,
+    "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+    "type" : "type",
+    "categoryName" : "categoryName",
+    "isUsed" : true,
+    "maxSalePrice" : 3.616076749251911,
+    "bookId" : 2,
+    "minOrderPrice" : 2.3021358869347655,
+    "couponPolicyId" : 5,
+    "id" : 5,
+    "issueDate" : "2000-01-23T04:56:07.000+00:00",
+    "categoryId" : 4,
+    "bookTitle" : "bookTitle"
+  } ],
+  "totalElements" : 0,
+  "empty" : true
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#PageCouponTemplateResponseDTO">PageCouponTemplateResponseDTO</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAllCouponTemplatesByUserPaging"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/issue</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getAllCouponTemplatesByUserPaging</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">pageable (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#PageCouponTemplateResponseDTO">PageCouponTemplateResponseDTO</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "number" : 1,
+  "last" : true,
+  "size" : 1,
+  "numberOfElements" : 1,
+  "totalPages" : 6,
+  "pageable" : {
+    "paged" : true,
+    "pageNumber" : 6,
+    "offset" : 1,
+    "pageSize" : 7,
+    "unpaged" : true
+  },
+  "sort" : {
+    "unsorted" : true,
+    "sorted" : true,
+    "empty" : true
+  },
+  "first" : true,
+  "content" : [ {
+    "saleRate" : 9.301444243932576,
+    "quantity" : 7,
+    "salePrice" : 7.061401241503109,
+    "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+    "type" : "type",
+    "categoryName" : "categoryName",
+    "isUsed" : true,
+    "maxSalePrice" : 3.616076749251911,
+    "bookId" : 2,
+    "minOrderPrice" : 2.3021358869347655,
+    "couponPolicyId" : 5,
+    "id" : 5,
+    "issueDate" : "2000-01-23T04:56:07.000+00:00",
+    "categoryId" : 4,
+    "bookTitle" : "bookTitle"
+  }, {
+    "saleRate" : 9.301444243932576,
+    "quantity" : 7,
+    "salePrice" : 7.061401241503109,
+    "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+    "type" : "type",
+    "categoryName" : "categoryName",
+    "isUsed" : true,
+    "maxSalePrice" : 3.616076749251911,
+    "bookId" : 2,
+    "minOrderPrice" : 2.3021358869347655,
+    "couponPolicyId" : 5,
+    "id" : 5,
+    "issueDate" : "2000-01-23T04:56:07.000+00:00",
+    "categoryId" : 4,
+    "bookTitle" : "bookTitle"
+  } ],
+  "totalElements" : 0,
+  "empty" : true
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#PageCouponTemplateResponseDTO">PageCouponTemplateResponseDTO</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="UserAndCouponController">UserAndCouponController</a></h1>
+  <div class="method"><a name="createUserAndCoupon"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons/{couponId}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">createUserAndCoupon</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">couponId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#CurrentUserDetails">CurrentUserDetails</a> (optional)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="createUserWelcomeCouponIssue"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons/coupon/welcome</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">createUserWelcomeCouponIssue</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">userId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="findCouponByCartOrder"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /coupons/users/order/carts</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">findCouponByCartOrder</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#order_carts_body">order_carts_body</a> (optional)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#UserAndCouponResponseDTO">UserAndCouponResponseDTO</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "saleRate" : 5.637376656633329,
+  "salePrice" : 5.962133916683182,
+  "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+  "type" : "type",
+  "userId" : 6,
+  "categoryName" : "categoryName",
+  "isUsed" : true,
+  "maxSalePrice" : 2.3021358869347655,
+  "bookId" : 7,
+  "minOrderPrice" : 1.4658129805029452,
+  "usedDate" : "2000-01-23T04:56:07.000+00:00",
+  "id" : 0,
+  "issueDate" : "2000-01-23T04:56:07.000+00:00",
+  "policyIsUsed" : true,
+  "categoryId" : 9,
+  "bookTitle" : "bookTitle"
+}, {
+  "saleRate" : 5.637376656633329,
+  "salePrice" : 5.962133916683182,
+  "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+  "type" : "type",
+  "userId" : 6,
+  "categoryName" : "categoryName",
+  "isUsed" : true,
+  "maxSalePrice" : 2.3021358869347655,
+  "bookId" : 7,
+  "minOrderPrice" : 1.4658129805029452,
+  "usedDate" : "2000-01-23T04:56:07.000+00:00",
+  "id" : 0,
+  "issueDate" : "2000-01-23T04:56:07.000+00:00",
+  "policyIsUsed" : true,
+  "categoryId" : 9,
+  "bookTitle" : "bookTitle"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="findCouponByOrder"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/users/order</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">findCouponByOrder</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">currentUserDetails (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>      <div class="param">bookIds (optional)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  format: int64</div>      <div class="param">categoryIds (optional)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  format: int64</div>      <div class="param">bookPrice (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#UserAndCouponResponseDTO">UserAndCouponResponseDTO</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "saleRate" : 5.637376656633329,
+  "salePrice" : 5.962133916683182,
+  "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+  "type" : "type",
+  "userId" : 6,
+  "categoryName" : "categoryName",
+  "isUsed" : true,
+  "maxSalePrice" : 2.3021358869347655,
+  "bookId" : 7,
+  "minOrderPrice" : 1.4658129805029452,
+  "usedDate" : "2000-01-23T04:56:07.000+00:00",
+  "id" : 0,
+  "issueDate" : "2000-01-23T04:56:07.000+00:00",
+  "policyIsUsed" : true,
+  "categoryId" : 9,
+  "bookTitle" : "bookTitle"
+}, {
+  "saleRate" : 5.637376656633329,
+  "salePrice" : 5.962133916683182,
+  "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+  "type" : "type",
+  "userId" : 6,
+  "categoryName" : "categoryName",
+  "isUsed" : true,
+  "maxSalePrice" : 2.3021358869347655,
+  "bookId" : 7,
+  "minOrderPrice" : 1.4658129805029452,
+  "usedDate" : "2000-01-23T04:56:07.000+00:00",
+  "id" : 0,
+  "issueDate" : "2000-01-23T04:56:07.000+00:00",
+  "policyIsUsed" : true,
+  "categoryId" : 9,
+  "bookTitle" : "bookTitle"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAllUserAndCouponsByUserPaging"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/users/user</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getAllUserAndCouponsByUserPaging</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">currentUser (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>      <div class="param">pageable (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#PageUserAndCouponResponseDTO">PageUserAndCouponResponseDTO</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "number" : 5,
+  "last" : true,
+  "size" : 1,
+  "numberOfElements" : 5,
+  "totalPages" : 6,
+  "pageable" : {
+    "paged" : true,
+    "pageNumber" : 6,
+    "offset" : 1,
+    "pageSize" : 7,
+    "unpaged" : true
+  },
+  "sort" : {
+    "unsorted" : true,
+    "sorted" : true,
+    "empty" : true
+  },
+  "first" : true,
+  "content" : [ {
+    "saleRate" : 5.637376656633329,
+    "salePrice" : 5.962133916683182,
+    "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+    "type" : "type",
+    "userId" : 6,
+    "categoryName" : "categoryName",
+    "isUsed" : true,
+    "maxSalePrice" : 2.3021358869347655,
+    "bookId" : 7,
+    "minOrderPrice" : 1.4658129805029452,
+    "usedDate" : "2000-01-23T04:56:07.000+00:00",
+    "id" : 0,
+    "issueDate" : "2000-01-23T04:56:07.000+00:00",
+    "policyIsUsed" : true,
+    "categoryId" : 9,
+    "bookTitle" : "bookTitle"
+  }, {
+    "saleRate" : 5.637376656633329,
+    "salePrice" : 5.962133916683182,
+    "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+    "type" : "type",
+    "userId" : 6,
+    "categoryName" : "categoryName",
+    "isUsed" : true,
+    "maxSalePrice" : 2.3021358869347655,
+    "bookId" : 7,
+    "minOrderPrice" : 1.4658129805029452,
+    "usedDate" : "2000-01-23T04:56:07.000+00:00",
+    "id" : 0,
+    "issueDate" : "2000-01-23T04:56:07.000+00:00",
+    "policyIsUsed" : true,
+    "categoryId" : 9,
+    "bookTitle" : "bookTitle"
+  } ],
+  "totalElements" : 0,
+  "empty" : true
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#PageUserAndCouponResponseDTO">PageUserAndCouponResponseDTO</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAllUsersAndCouponsByManagerPaging"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/users</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getAllUsersAndCouponsByManagerPaging</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">pageable (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>      <div class="param">type (optional)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>      <div class="param">userId (optional)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#PageUserAndCouponResponseDTO">PageUserAndCouponResponseDTO</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "number" : 5,
+  "last" : true,
+  "size" : 1,
+  "numberOfElements" : 5,
+  "totalPages" : 6,
+  "pageable" : {
+    "paged" : true,
+    "pageNumber" : 6,
+    "offset" : 1,
+    "pageSize" : 7,
+    "unpaged" : true
+  },
+  "sort" : {
+    "unsorted" : true,
+    "sorted" : true,
+    "empty" : true
+  },
+  "first" : true,
+  "content" : [ {
+    "saleRate" : 5.637376656633329,
+    "salePrice" : 5.962133916683182,
+    "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+    "type" : "type",
+    "userId" : 6,
+    "categoryName" : "categoryName",
+    "isUsed" : true,
+    "maxSalePrice" : 2.3021358869347655,
+    "bookId" : 7,
+    "minOrderPrice" : 1.4658129805029452,
+    "usedDate" : "2000-01-23T04:56:07.000+00:00",
+    "id" : 0,
+    "issueDate" : "2000-01-23T04:56:07.000+00:00",
+    "policyIsUsed" : true,
+    "categoryId" : 9,
+    "bookTitle" : "bookTitle"
+  }, {
+    "saleRate" : 5.637376656633329,
+    "salePrice" : 5.962133916683182,
+    "expiredDate" : "2000-01-23T04:56:07.000+00:00",
+    "type" : "type",
+    "userId" : 6,
+    "categoryName" : "categoryName",
+    "isUsed" : true,
+    "maxSalePrice" : 2.3021358869347655,
+    "bookId" : 7,
+    "minOrderPrice" : 1.4658129805029452,
+    "usedDate" : "2000-01-23T04:56:07.000+00:00",
+    "id" : 0,
+    "issueDate" : "2000-01-23T04:56:07.000+00:00",
+    "policyIsUsed" : true,
+    "categoryId" : 9,
+    "bookTitle" : "bookTitle"
+  } ],
+  "totalElements" : 0,
+  "empty" : true
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#PageUserAndCouponResponseDTO">PageUserAndCouponResponseDTO</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSelectedCoupon"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/users/order/coupon</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getSelectedCoupon</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">couponId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#UserAndCouponOrderResponseDTO">UserAndCouponOrderResponseDTO</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "saleRate" : 5.962133916683182,
+  "minOrderPrice" : 6.027456183070403,
+  "salePrice" : 1.4658129805029452,
+  "id" : 0,
+  "type" : "type",
+  "maxSalePrice" : 5.637376656633329
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#UserAndCouponOrderResponseDTO">UserAndCouponOrderResponseDTO</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="isRealUserCheck"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /coupons/users/auth</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">isRealUserCheck</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">currentUserDetails (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Boolean
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>true</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#Boolean">Boolean</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateCouponAfterPayment"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="patch"><code class="huge"><span class="http-method">patch</span> /coupons/users/payment/{userAndCouponId}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">updateCouponAfterPayment</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">userAndCouponId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int64</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+
+  <h2><a name="__Models">Models</a></h2>
+  [ Jump to <a href="#__Methods">Methods</a> ]
+
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#CouponPolicyRequestDTO"><code>CouponPolicyRequestDTO</code></a></li>
+    <li><a href="#CouponPolicyResponseDTO"><code>CouponPolicyResponseDTO</code></a></li>
+    <li><a href="#CouponPolicyUpdateRequestDTO"><code>CouponPolicyUpdateRequestDTO</code></a></li>
+    <li><a href="#CouponTemplateRequestDTO"><code>CouponTemplateRequestDTO</code></a></li>
+    <li><a href="#CouponTemplateResponseDTO"><code>CouponTemplateResponseDTO</code></a></li>
+    <li><a href="#CurrentUserDetails"><code>CurrentUserDetails</code></a></li>
+    <li><a href="#GetBookByOrderCouponResponse"><code>GetBookByOrderCouponResponse</code></a></li>
+    <li><a href="#GrantedAuthority"><code>GrantedAuthority</code></a></li>
+    <li><a href="#PageCouponPolicyResponseDTO"><code>PageCouponPolicyResponseDTO</code></a></li>
+    <li><a href="#PageCouponTemplateResponseDTO"><code>PageCouponTemplateResponseDTO</code></a></li>
+    <li><a href="#PageUserAndCouponResponseDTO"><code>PageUserAndCouponResponseDTO</code></a></li>
+    <li><a href="#Pageable"><code>Pageable</code></a></li>
+    <li><a href="#PageableObject"><code>PageableObject</code></a></li>
+    <li><a href="#SortObject"><code>SortObject</code></a></li>
+    <li><a href="#UserAndCouponOrderResponseDTO"><code>UserAndCouponOrderResponseDTO</code></a></li>
+    <li><a href="#UserAndCouponResponseDTO"><code>UserAndCouponResponseDTO</code></a></li>
+    <li><a href="#order_carts_body"><code>order_carts_body</code></a></li>
+  </ol>
+
+  <div class="model">
+    <h3><a name="CouponPolicyRequestDTO"><code>CouponPolicyRequestDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">minOrderPrice </div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">salePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">saleRate (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">maxSalePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">type </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">bookId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">bookTitle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">categoryId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">categoryName (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="CouponPolicyResponseDTO"><code>CouponPolicyResponseDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">minOrderPrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">salePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">saleRate (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">maxSalePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">isUsed (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">bookId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">bookTitle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">categoryId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">categoryName (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="CouponPolicyUpdateRequestDTO"><code>CouponPolicyUpdateRequestDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">minOrderPrice </div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">salePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">saleRate (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">maxSalePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">isUsed </div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="CouponTemplateRequestDTO"><code>CouponTemplateRequestDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">couponPolicyId </div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">expiredDate </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">issueDate </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">quantity </div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="CouponTemplateResponseDTO"><code>CouponTemplateResponseDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">couponPolicyId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">minOrderPrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">salePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">saleRate (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">maxSalePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">isUsed (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">bookId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">bookTitle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">categoryId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">categoryName (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">expiredDate (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">issueDate (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">quantity (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="CurrentUserDetails"><code>CurrentUserDetails</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">password (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">enabled (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">credentialsNonExpired (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">accountNonExpired (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">accountNonLocked (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">userId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">authorities (optional)</div><div class="param-desc"><span class="param-type"><a href="#GrantedAuthority">array[GrantedAuthority]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="GetBookByOrderCouponResponse"><code>GetBookByOrderCouponResponse</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">bookId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">bookPrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">categoryId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">array[Long]</a></span>  format: int64</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="GrantedAuthority"><code>GrantedAuthority</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">authority (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="PageCouponPolicyResponseDTO"><code>PageCouponPolicyResponseDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">totalElements (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">totalPages (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">first (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">last (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">size (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">content (optional)</div><div class="param-desc"><span class="param-type"><a href="#CouponPolicyResponseDTO">array[CouponPolicyResponseDTO]</a></span>  </div>
+<div class="param">number (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">sort (optional)</div><div class="param-desc"><span class="param-type"><a href="#SortObject">SortObject</a></span>  </div>
+<div class="param">numberOfElements (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">pageable (optional)</div><div class="param-desc"><span class="param-type"><a href="#PageableObject">PageableObject</a></span>  </div>
+<div class="param">empty (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="PageCouponTemplateResponseDTO"><code>PageCouponTemplateResponseDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">totalElements (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">totalPages (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">first (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">last (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">size (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">content (optional)</div><div class="param-desc"><span class="param-type"><a href="#CouponTemplateResponseDTO">array[CouponTemplateResponseDTO]</a></span>  </div>
+<div class="param">number (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">sort (optional)</div><div class="param-desc"><span class="param-type"><a href="#SortObject">SortObject</a></span>  </div>
+<div class="param">numberOfElements (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">pageable (optional)</div><div class="param-desc"><span class="param-type"><a href="#PageableObject">PageableObject</a></span>  </div>
+<div class="param">empty (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="PageUserAndCouponResponseDTO"><code>PageUserAndCouponResponseDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">totalElements (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">totalPages (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">first (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">last (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">size (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">content (optional)</div><div class="param-desc"><span class="param-type"><a href="#UserAndCouponResponseDTO">array[UserAndCouponResponseDTO]</a></span>  </div>
+<div class="param">number (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">sort (optional)</div><div class="param-desc"><span class="param-type"><a href="#SortObject">SortObject</a></span>  </div>
+<div class="param">numberOfElements (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">pageable (optional)</div><div class="param-desc"><span class="param-type"><a href="#PageableObject">PageableObject</a></span>  </div>
+<div class="param">empty (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Pageable"><code>Pageable</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">page (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">size (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">sort (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="PageableObject"><code>PageableObject</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">offset (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">sort (optional)</div><div class="param-desc"><span class="param-type"><a href="#SortObject">SortObject</a></span>  </div>
+<div class="param">unpaged (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">paged (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">pageNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">pageSize (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="SortObject"><code>SortObject</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">empty (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">unsorted (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">sorted (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="UserAndCouponOrderResponseDTO"><code>UserAndCouponOrderResponseDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">minOrderPrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">salePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">saleRate (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">maxSalePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="UserAndCouponResponseDTO"><code>UserAndCouponResponseDTO</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">userId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">usedDate (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">isUsed (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">expiredDate (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">issueDate (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">minOrderPrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">salePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">saleRate (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">maxSalePrice (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">policyIsUsed (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">bookId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">bookTitle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">categoryId (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">categoryName (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="order_carts_body"><code>order_carts_body</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">currentUserDetails (optional)</div><div class="param-desc"><span class="param-type"><a href="#CurrentUserDetails">CurrentUserDetails</a></span>  </div>
+<div class="param">bookDetails (optional)</div><div class="param-desc"><span class="param-type"><a href="#GetBookByOrderCouponResponse">array[GetBookByOrderCouponResponse]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  </body>
+</html>
