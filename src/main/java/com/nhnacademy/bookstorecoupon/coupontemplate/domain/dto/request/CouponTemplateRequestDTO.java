@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Positive;
 
 public record CouponTemplateRequestDTO(
 	@NotNull
+	@Positive
 	Long couponPolicyId,
 
 	@NotNull
