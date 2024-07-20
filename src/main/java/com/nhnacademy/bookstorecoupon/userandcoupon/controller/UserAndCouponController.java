@@ -87,7 +87,7 @@ public class UserAndCouponController {
     })
     @AuthorizeRole({"COUPON_ADMIN", "MEMBER"})
     @GetMapping("/users/user")
-    public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUser, @Parameter(description = "페이지 수, 페이지 사이즈", required = false) @PageableDefault(page = 1, size = 3) Pageable pageable) {
+    public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUser, @Parameter(description = "페이지 수, 페이지 사이즈", required = false) @PageableDefault(page = 1, size = 4) Pageable pageable) {
         Long userId= currentUser.getUserId();
         if (userId == null) {
             ErrorStatus errorStatus = ErrorStatus.from( "유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
@@ -107,7 +107,7 @@ public class UserAndCouponController {
     @AuthorizeRole({"COUPON_ADMIN"})
     @GetMapping("/users")
     public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUsersAndCouponsByManagerPaging(
-        @Parameter(description = "페이지 수, 페이지 사이즈", required = false)   @PageableDefault(page = 1, size = 3) Pageable pageable,
+        @Parameter(description = "페이지 수, 페이지 사이즈", required = false)   @PageableDefault(page = 1, size = 4) Pageable pageable,
         @Parameter(description = "정책타입", required = false)  @RequestParam(required = false) String type,
         @Parameter(description = "유저 아이디", required = false) @RequestParam(required = false) Long userId
     ) {
