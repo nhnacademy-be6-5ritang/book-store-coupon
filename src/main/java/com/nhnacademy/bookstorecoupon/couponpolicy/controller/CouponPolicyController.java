@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nhnacademy.bookstorecoupon.auth.annotation.AuthorizeRole;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
@@ -46,6 +47,7 @@ public class CouponPolicyController {
 		@ApiResponse(responseCode = "201", description = "웰컴쿠폰이 성공적으로 발행되었습니다."),
 		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
 	})
+	@AuthorizeRole({"COUPON_ADMIN"})
 	@PostMapping("/welcome")
 	public ResponseEntity<Void> issueWelcomeCoupon(
 		@Parameter(description = "웰컴쿠폰정책 발행 요청 데이터", required = true) @Valid @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
@@ -61,6 +63,7 @@ public class CouponPolicyController {
 		@ApiResponse(responseCode = "201", description = "생일쿠폰이 성공적으로 발행되었습니다."),
 		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
 	})
+	@AuthorizeRole({"COUPON_ADMIN"})
 	@PostMapping("/birthday")
 	public ResponseEntity<Void> issueBirthdayCoupon(
 		@Parameter(description = "생일쿠폰정책 발행 요청 데이터", required = true) @Valid @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
@@ -75,6 +78,7 @@ public class CouponPolicyController {
 		@ApiResponse(responseCode = "201", description = "도서쿠폰이 성공적으로 발행되었습니다."),
 		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
 	})
+	@AuthorizeRole({"COUPON_ADMIN"})
 	@PostMapping("/books")
 	public ResponseEntity<Void> issueSpecificBookCoupon(
 		@Parameter(description = "도서쿠폰정책 발행 요청 데이터", required = true) @Valid @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
@@ -92,6 +96,7 @@ public class CouponPolicyController {
 		@ApiResponse(responseCode = "201", description = "카테고리쿠폰이 성공적으로 발행되었습니다."),
 		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
 	})
+	@AuthorizeRole({"COUPON_ADMIN"})
 	@PostMapping("/categories")
 	public ResponseEntity<Void> issueSpecificCategoryCoupon(
 		@Parameter(description = "카테고리쿠폰정책 발행 요청 데이터", required = true) @Valid @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
@@ -110,6 +115,7 @@ public class CouponPolicyController {
 		@ApiResponse(responseCode = "201", description = "할인쿠폰이 성공적으로 발행되었습니다."),
 		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
 	})
+	@AuthorizeRole({"COUPON_ADMIN"})
 	@PostMapping("/sale")
 	public ResponseEntity<Void> issueDiscountCoupon(
 		@Parameter(description = "할인쿠폰정책 발행 요청 데이터", required = true) @Valid @RequestBody CouponPolicyRequestDTO couponPolicyRequestDTO) {
@@ -122,6 +128,7 @@ public class CouponPolicyController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "성공적으로 조회되었습니다.")
 	})
+	@AuthorizeRole({"COUPON_ADMIN"})
 	@GetMapping
 	public ResponseEntity<Page<CouponPolicyResponseDTO>> getAllCouponPolicies(@Parameter(description = "페이지 수, 페이지 사이즈", required = false) @PageableDefault(page = 1, size = 3) Pageable pageable) {
 		Page<CouponPolicyResponseDTO> policies = couponPolicyService.getAllCouponPolicies(pageable);
@@ -135,6 +142,7 @@ public class CouponPolicyController {
 		@ApiResponse(responseCode = "200", description = "성공적으로 업데이트되었습니다."),
 		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
 	})
+	@AuthorizeRole({"COUPON_ADMIN"})
 	@PatchMapping("/{couponPolicyId}")
 	public ResponseEntity<Void> updateCouponPolicy(
 		@Parameter(description = "쿠폰 정책 아이디", required = true) @PathVariable Long couponPolicyId, @Parameter(description = "쿠폰정책 변경 요청 데이터", required = true)  @Valid @RequestBody CouponPolicyUpdateRequestDTO requestDTO) {

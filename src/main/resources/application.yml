@@ -35,7 +35,7 @@ spring:
 
 springdoc:
   api-docs:
-    path: /coupon-docs
+    path: /coupon-api
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
   swagger-ui:
@@ -43,8 +43,9 @@ springdoc:
     tags-sorter: alpha
     path: /coupon-api.html
     disable-swagger-default-url: true
-    doc-expansion: none
 
 logging:
   file:
     path: ./logs
+
+
