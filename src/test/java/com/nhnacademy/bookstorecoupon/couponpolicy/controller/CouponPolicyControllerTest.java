@@ -91,6 +91,8 @@ class CouponPolicyControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(requestDTO)).with(csrf()))
 			.andExpect(status().isBadRequest());
+
+		verify(couponPolicyService, times(0)).issueWelcomeCoupon(any(CouponPolicyRequestDTO.class));
 	}
 
 	@Test
@@ -158,6 +160,7 @@ class CouponPolicyControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(requestDTO)).with(csrf()))
 			.andExpect(status().isBadRequest());
+		verify(couponPolicyService, times(0)).issueSpecificBookCoupon(any(CouponPolicyRequestDTO.class));
 	}
 
 	@Test
@@ -202,6 +205,9 @@ class CouponPolicyControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(requestDTO)).with(csrf()))
 			.andExpect(status().isBadRequest());
+
+
+		verify(couponPolicyService, times(0)).issueSpecificCategoryCoupon(any(CouponPolicyRequestDTO.class));
 	}
 
 	@Test
@@ -334,9 +340,13 @@ class CouponPolicyControllerTest {
 
 				assertTrue("메시지 체크", actualMessage.equals(expectedMessage));
 			});
+
+
+		verify(couponPolicyService, times(0)).issueWelcomeCoupon( any(CouponPolicyRequestDTO.class));
 	}
 
 	@Test
+	@WithMockUser(roles = {"COUPON_ADMIN"})
 	void testIssueCoupon_SalePriceAndMaxSalePriceInvalid() throws Exception {
 		CouponPolicyRequestDTO requestDTO = new CouponPolicyRequestDTO(
 			BigDecimal.valueOf(1000), // minOrderPrice
@@ -377,10 +387,12 @@ class CouponPolicyControllerTest {
 					assertTrue("메시지 체크", actualMessage.equals(expectedMessage));
 				}
 			});
+		verify(couponPolicyService, times(0)).issueWelcomeCoupon( any(CouponPolicyRequestDTO.class));
 	}
 
 
 	@Test
+	@WithMockUser(roles = {"COUPON_ADMIN"})
 	void testUpdateCoupon_SalePriceAndMaxSalePriceSet() throws Exception {
 		CouponPolicyUpdateRequestDTO requestDTO = new CouponPolicyUpdateRequestDTO(
 			BigDecimal.valueOf(1000), // minOrderPrice
@@ -417,6 +429,8 @@ class CouponPolicyControllerTest {
 					assertTrue("메시지 체크", actualMessage.equals(expectedMessage));
 				}
 			});
+
+		verify(couponPolicyService, times(0)).updateCouponPolicy(anyLong(), any(CouponPolicyUpdateRequestDTO.class));
 	}
 
 
