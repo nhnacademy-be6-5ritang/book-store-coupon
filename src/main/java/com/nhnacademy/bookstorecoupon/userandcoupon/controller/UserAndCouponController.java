@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nhnacademy.bookstorecoupon.auth.annotation.AuthorizeRole;
 import com.nhnacademy.bookstorecoupon.auth.annotation.CurrentUser;
 import com.nhnacademy.bookstorecoupon.auth.jwt.dto.CurrentUserDetails;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
@@ -52,6 +53,7 @@ public class UserAndCouponController {
         @ApiResponse(responseCode = "201", description = "쿠폰이 성공적으로 발행되었습니다."),
         @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
     })
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     @PostMapping("/{couponId}")
     public ResponseEntity<Void> createUserAndCoupon(@Parameter(description = "쿠폰아이디", required = true) @PathVariable("couponId") Long couponId, @Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUser) {
         Long userId= currentUser.getUserId();
@@ -83,8 +85,9 @@ public class UserAndCouponController {
         @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
     })
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     @GetMapping("/users/user")
-    public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUser, @Parameter(description = "페이지 수, 페이지 사이즈", required = false) @PageableDefault(page = 1, size = 3) Pageable pageable) {
+    public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUser, @Parameter(description = "페이지 수, 페이지 사이즈", required = false) @PageableDefault(page = 1, size = 4) Pageable pageable) {
         Long userId= currentUser.getUserId();
         if (userId == null) {
             ErrorStatus errorStatus = ErrorStatus.from( "유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
@@ -101,9 +104,10 @@ public class UserAndCouponController {
         @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
     })
+    @AuthorizeRole({"COUPON_ADMIN", "HEAD_ADMIN"})
     @GetMapping("/users")
     public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUsersAndCouponsByManagerPaging(
-        @Parameter(description = "페이지 수, 페이지 사이즈", required = false)   @PageableDefault(page = 1, size = 3) Pageable pageable,
+        @Parameter(description = "페이지 수, 페이지 사이즈", required = false)   @PageableDefault(page = 1, size = 4) Pageable pageable,
         @Parameter(description = "정책타입", required = false)  @RequestParam(required = false) String type,
         @Parameter(description = "유저 아이디", required = false) @RequestParam(required = false) Long userId
     ) {
@@ -118,6 +122,7 @@ public class UserAndCouponController {
         @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
     })
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     @GetMapping("/users/order")
     public ResponseEntity<List<UserAndCouponResponseDTO>> findCouponByOrder(
         @Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUserDetails,
@@ -142,6 +147,7 @@ public class UserAndCouponController {
         @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
     })
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     @PostMapping("/users/order/carts")
     public ResponseEntity<List<UserAndCouponResponseDTO>> findCouponByCartOrder(
         @Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUserDetails,
@@ -164,6 +170,7 @@ public class UserAndCouponController {
         @ApiResponse(responseCode = "200", description = "쿠폰이 성공적으로 업데이트되었습니다."),
         @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
     })
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     @PatchMapping("/users/payment/{userAndCouponId}")
     public ResponseEntity<Void> updateCouponAfterPayment(
         @Parameter(description = "사용자 쿠폰아이디", required = true) @PathVariable("userAndCouponId") Long userAndCouponId) {
@@ -188,6 +195,7 @@ public class UserAndCouponController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
     })
     @GetMapping("/users/order/coupon")
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     public ResponseEntity<UserAndCouponOrderResponseDTO> getSelectedCoupon(
         @Parameter(description = "쿠폰아이디", required = true)  @RequestParam(value = "couponId") Long couponId) {
         if (couponId == null) {

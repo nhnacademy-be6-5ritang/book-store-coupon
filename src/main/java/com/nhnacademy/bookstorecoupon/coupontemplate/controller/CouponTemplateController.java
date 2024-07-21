@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nhnacademy.bookstorecoupon.auth.annotation.AuthorizeRole;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.request.CouponTemplateRequestDTO;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response.CouponTemplateResponseDTO;
 import com.nhnacademy.bookstorecoupon.coupontemplate.service.CouponTemplateService;
@@ -34,11 +35,13 @@ public class CouponTemplateController {
 		this.couponTemplateService = couponTemplateService;
 	}
 
+
 	@Operation(summary = "쿠폰 템플릿 생성", description = "새로운 쿠폰 템플릿을 생성합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "쿠폰 템플릿이 성공적으로 생성되었습니다."),
 		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
 	})
+	@AuthorizeRole({"COUPON_ADMIN", "HEAD_ADMIN"})
 	@PostMapping
 	public ResponseEntity<Void> createCouponTemplate(@Parameter(description = "쿠폰 템플릿 발행시 요청데이터", required = true) @Valid @RequestBody CouponTemplateRequestDTO requestDTO) {
 		couponTemplateService.createCouponTemplate(requestDTO);
@@ -65,6 +68,7 @@ public class CouponTemplateController {
 		@ApiResponse(responseCode = "200", description = "쿠폰 템플릿 조회 성공"),
 		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
 	})
+	@AuthorizeRole({"COUPON_ADMIN", "HEAD_ADMIN"})
 	@GetMapping
 	public ResponseEntity<Page<CouponTemplateResponseDTO>> getAllCouponTemplatesByManagerPaging(@Parameter(description = "페이지 수, 페이지 사이즈", required = false) @PageableDefault(page = 1, size = 3) Pageable pageable
 		) {
