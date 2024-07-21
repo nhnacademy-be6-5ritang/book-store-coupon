@@ -40,10 +40,6 @@ public class SecurityConfig {
 			.formLogin(AbstractHttpConfigurer::disable)
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests((requests) -> requests
-				// .requestMatchers("/api/sign-up").permitAll()
-				// .requestMatchers("/api/auth/info").authenticated()
-				// .requestMatchers("/api/internal/users/info").permitAll()
-				// .requestMatchers("/api/admin").hasRole("ADMIN")
 				.anyRequest().permitAll()
 			)
 			.addFilterBefore(ipAddressFilter, UsernamePasswordAuthenticationFilter.class)

@@ -20,7 +20,6 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPoli
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
-import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyBanUpdateException;
 import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoundException;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.service.CouponPolicyService;
@@ -108,10 +107,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	public void updateCouponPolicy(Long id, CouponPolicyUpdateRequestDTO requestDTO) {
 		Optional<CouponPolicy> optionalPolicy = couponPolicyRepository.findById(id);
 
-		if (Boolean.TRUE.equals(requestDTO.isUsed())) {
-			ErrorStatus errorStatus = ErrorStatus.from("이미 폐기된 쿠폰정책은 변경할 수 없습니다", HttpStatus.BAD_REQUEST, LocalDateTime.now());
-			throw new CouponPolicyBanUpdateException(errorStatus);
-		}
 
 		if (optionalPolicy.isPresent()) {
 			CouponPolicy policy = optionalPolicy.get();
@@ -137,6 +132,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 		}
 
 	}
+
 }
 
 

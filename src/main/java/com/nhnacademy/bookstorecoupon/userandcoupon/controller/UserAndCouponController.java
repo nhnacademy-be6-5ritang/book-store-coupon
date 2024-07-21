@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nhnacademy.bookstorecoupon.auth.annotation.AuthorizeRole;
 import com.nhnacademy.bookstorecoupon.auth.annotation.CurrentUser;
 import com.nhnacademy.bookstorecoupon.auth.jwt.dto.CurrentUserDetails;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
@@ -28,8 +29,15 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.exception.UserCouponValidati
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.impl.RabbitMQUserAndCouponService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/coupons")
+@Tag(name = "UserAndCoupon", description = "사용자 쿠폰관련 API")
 public class UserAndCouponController {
 
     private final UserAndCouponService userAndCouponService;
@@ -40,17 +48,27 @@ public class UserAndCouponController {
         this.rabbitMQUserAndCouponService = rabbitMQUserAndCouponService;
     }
 
+    @Operation(summary = "사용자와 쿠폰 생성", description = "특정 쿠폰 ID로 사용자에게 쿠폰을 발행합니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "쿠폰이 성공적으로 발행되었습니다."),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
+    })
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     @PostMapping("/{couponId}")
-    public ResponseEntity<Void> createUserAndCoupon(@PathVariable("couponId") Long couponId, @CurrentUser CurrentUserDetails currentUser) {
+    public ResponseEntity<Void> createUserAndCoupon(@Parameter(description = "쿠폰아이디", required = true) @PathVariable("couponId") Long couponId, @Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUser) {
         Long userId= currentUser.getUserId();
        rabbitMQUserAndCouponService.createUserAndCoupon(couponId, userId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 
-
+    @Operation(summary = "웰컴 쿠폰 생성", description = "특정 사용자에게 웰컴 쿠폰을 발행합니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "웰컴 쿠폰이 성공적으로 발행되었습니다."),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
+    })
     @PostMapping("/coupon/welcome")
-    public ResponseEntity<Void> createUserWelcomeCouponIssue(Long userId) {
+    public ResponseEntity<Void> createUserWelcomeCouponIssue(@Parameter(description = "사용자 ID", required = true) Long userId) {
         if (userId == null) {
             ErrorStatus errorStatus = ErrorStatus.from("유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
             throw new UserCouponValidationException(errorStatus);
@@ -62,9 +80,14 @@ public class UserAndCouponController {
 
 
 
-
+    @Operation(summary = "마이페이지 쿠폰 조회", description = "특정 사용자 기준으로 페이징된 모든 쿠폰을 조회합니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
+    })
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     @GetMapping("/users/user")
-    public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@CurrentUser CurrentUserDetails currentUser,@PageableDefault(page = 1, size = 3) Pageable pageable) {
+    public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUserAndCouponsByUserPaging(@Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUser, @Parameter(description = "페이지 수, 페이지 사이즈", required = false) @PageableDefault(page = 1, size = 4) Pageable pageable) {
         Long userId= currentUser.getUserId();
         if (userId == null) {
             ErrorStatus errorStatus = ErrorStatus.from( "유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
@@ -76,11 +99,17 @@ public class UserAndCouponController {
     }
 
 
+    @Operation(summary = "관리자 기준 페이징된 사용자 쿠폰 조회", description = "관리자 기준으로 페이징된 모든 사용자 쿠폰을 조회합니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
+    })
+    @AuthorizeRole({"COUPON_ADMIN", "HEAD_ADMIN"})
     @GetMapping("/users")
     public ResponseEntity<Page<UserAndCouponResponseDTO>> getAllUsersAndCouponsByManagerPaging(
-        @PageableDefault(page = 1, size = 3) Pageable pageable,
-        @RequestParam(required = false) String type,
-        @RequestParam(required = false) Long userId
+        @Parameter(description = "페이지 수, 페이지 사이즈", required = false)   @PageableDefault(page = 1, size = 4) Pageable pageable,
+        @Parameter(description = "정책타입", required = false)  @RequestParam(required = false) String type,
+        @Parameter(description = "유저 아이디", required = false) @RequestParam(required = false) Long userId
     ) {
 
         Page<UserAndCouponResponseDTO> coupons = userAndCouponService.getAllUsersAndCouponsByManagerPaging(pageable, type, userId);
@@ -88,13 +117,18 @@ public class UserAndCouponController {
     }
 
 
-
+    @Operation(summary = "단건 주문에 대한 쿠폰 조회", description = "특정 주문에 대한 쿠폰을 조회합니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
+    })
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     @GetMapping("/users/order")
     public ResponseEntity<List<UserAndCouponResponseDTO>> findCouponByOrder(
-        @CurrentUser CurrentUserDetails currentUserDetails,
-        @RequestParam(required = false) List<Long> bookIds,
-        @RequestParam(required = false) List<Long> categoryIds,
-        @RequestParam BigDecimal bookPrice) {
+        @Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUserDetails,
+        @Parameter(description = "도서 아이디", required = false) @RequestParam(required = false) List<Long> bookIds,
+        @Parameter(description = "카테고리 아이디", required = false) @RequestParam(required = false) List<Long> categoryIds,
+        @Parameter(description = "도서 가격", required = true) @RequestParam BigDecimal bookPrice) {
 
         if (currentUserDetails.getUserId() == null) {
             ErrorStatus errorStatus = ErrorStatus.from("유저 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
@@ -108,11 +142,16 @@ public class UserAndCouponController {
 
 
 
-
+    @Operation(summary = "장바구니 주문에 대한 쿠폰 조회", description = "특정 장바구니 주문에 대한 쿠폰을 조회합니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
+    })
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     @PostMapping("/users/order/carts")
     public ResponseEntity<List<UserAndCouponResponseDTO>> findCouponByCartOrder(
-        @CurrentUser CurrentUserDetails currentUserDetails,
-        @RequestBody(required = false) List<GetBookByOrderCouponResponse> bookDetails
+        @Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUserDetails,
+        @Parameter(description = "도서 주문 정보", required = false) @RequestBody(required = false) List<GetBookByOrderCouponResponse> bookDetails
        ) {
 
         if (currentUserDetails.getUserId() == null) {
@@ -125,9 +164,16 @@ public class UserAndCouponController {
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
 
+
+    @Operation(summary = "결제 후 쿠폰 사용됨처리", description = "특정 사용자 쿠폰 ID로 쿠폰을 결제 후 사용됨 처리합니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "쿠폰이 성공적으로 업데이트되었습니다."),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
+    })
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     @PatchMapping("/users/payment/{userAndCouponId}")
     public ResponseEntity<Void> updateCouponAfterPayment(
-        @PathVariable("userAndCouponId") Long userAndCouponId) {
+        @Parameter(description = "사용자 쿠폰아이디", required = true) @PathVariable("userAndCouponId") Long userAndCouponId) {
 
         if (userAndCouponId == null) {
             ErrorStatus errorStatus = ErrorStatus.from("사용자 쿠폰 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
@@ -143,10 +189,15 @@ public class UserAndCouponController {
 
 
 
-
+    @Operation(summary = "선택된 쿠폰 조회", description = "특정 쿠폰 ID로 선택된 쿠폰을 조회합니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
+    })
     @GetMapping("/users/order/coupon")
+    @AuthorizeRole({"COUPON_ADMIN", "MEMBER", "HEAD_ADMIN"})
     public ResponseEntity<UserAndCouponOrderResponseDTO> getSelectedCoupon(
-        @RequestParam(value = "couponId") Long couponId) {
+        @Parameter(description = "쿠폰아이디", required = true)  @RequestParam(value = "couponId") Long couponId) {
         if (couponId == null) {
             ErrorStatus errorStatus = ErrorStatus.from("사용자 쿠폰 아이디가 필요합니다.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
             throw new UserCouponValidationException(errorStatus);
@@ -158,9 +209,13 @@ public class UserAndCouponController {
 
 
 
+    @Operation(summary = "회원인지 아닌지 검사", description = "비회원인지 회원인지 검사합니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "검사결과를 true or false로 반환"),
+    })
     @GetMapping("/users/auth")
     public ResponseEntity<Boolean> isRealUserCheck(
-        @CurrentUser CurrentUserDetails currentUserDetails) {
+        @Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUserDetails) {
         if(currentUserDetails==null){
             return ResponseEntity.status(HttpStatus.OK).body(false);
         } else {

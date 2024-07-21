@@ -13,10 +13,18 @@ spring:
     refresh-token:
       expires-in: 86400000
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:testdb;MODE=MYSQL;
     driver-class-name: org.h2.Driver
     username: sa
-    password:
+    type: org.apache.commons.dbcp2.BasicDataSource
+    dbcp2:
+        initial-size: 50    # 초기로 생성할 연결의 수를 설정합니다.
+        max-total: 50   # 풀에서 유지할 수 있는 최대 연결 수를 설정합니다.
+        max-idle: 50   # 유휴 상태로 유지할 최대 연결 수를 설정합니다.
+        min-idle: 50    # 유휴 상태로 유지할 최소 연결 수를 설정합니다.
+        test-on-borrow: true    # 풀에서 연결을 빌릴 때마다 해당 연결이 유효한지 검증할지 여부를 설정합니다.
+        validation-query: SELECT 1    # 연결 유효성을 검사하기 위해 실행할 SQL 쿼리를 설정합니다.
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -27,3 +35,5 @@ spring:
 
 
 remote-addr: 127.0.0.1
+
+
