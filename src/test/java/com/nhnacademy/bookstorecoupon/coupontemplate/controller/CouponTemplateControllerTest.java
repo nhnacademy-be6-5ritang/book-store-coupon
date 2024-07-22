@@ -203,6 +203,8 @@ class CouponTemplateControllerTest {
 			.andExpect(jsonPath("$.content[2].id").value(3))
 			.andExpect(jsonPath("$.content[2].couponPolicyId").value(3))
 			.andExpect(jsonPath("$.content[2].minOrderPrice").value(300.00));
+
+		verify(couponTemplateService, times(1)).getAllCouponTemplatesByUserPaging(Mockito.any(Pageable.class));
 	}
 
 	@Test
@@ -251,5 +253,7 @@ class CouponTemplateControllerTest {
 			.andExpect(jsonPath("$.content[2].id").value(3))
 			.andExpect(jsonPath("$.content[2].couponPolicyId").value(3))
 			.andExpect(jsonPath("$.content[2].minOrderPrice").value(300.00));
+
+		verify(couponTemplateService, times(1)).getAllCouponTemplatesByManagerPaging(Mockito.any(Pageable.class));
 	}
 }

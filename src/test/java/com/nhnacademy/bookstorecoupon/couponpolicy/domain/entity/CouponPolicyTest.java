@@ -16,7 +16,7 @@ import com.nhnacademy.bookstorecoupon.global.config.QuerydslConfig;
 
 @DataJpaTest
 @Import(QuerydslConfig.class)
-public class CouponPolicyTest {
+class CouponPolicyTest {
 
 	@Autowired
 	private CouponPolicyRepository couponPolicyRepository;
