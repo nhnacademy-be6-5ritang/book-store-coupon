@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorecoupon.coupontemplate.repository.impl;
 
 import static com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.QCouponPolicy.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -115,7 +116,8 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 				.join(QCouponTemplate.couponTemplate.couponPolicy, couponPolicy)
 				.where(couponPolicy.isUsed.isTrue()
 					.and(couponPolicy.type.in(types))
-					.and(QCouponTemplate.couponTemplate.quantity.gt(0)))
+					.and(QCouponTemplate.couponTemplate.quantity.gt(0))
+					.and(QCouponTemplate.couponTemplate.expiredDate.after(LocalDateTime.now())))
 				.orderBy(QCouponTemplate.couponTemplate.id.desc())
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
@@ -157,7 +159,9 @@ public class CustomCouponTemplateRepositoryImpl implements CustomCouponTemplateR
 				.from(QCouponTemplate.couponTemplate)
 				.join(QCouponTemplate.couponTemplate.couponPolicy, couponPolicy)
 				.where(couponPolicy.isUsed.isTrue()
-					.and(couponPolicy.type.in(types)))
+					.and(couponPolicy.type.in(types))
+					.and(QCouponTemplate.couponTemplate.quantity.gt(0))
+					.and(QCouponTemplate.couponTemplate.expiredDate.after(LocalDateTime.now())))
 				.fetchOne()).orElse(0L);
 
 			return new PageImpl<>(templates, pageable, totalCount);

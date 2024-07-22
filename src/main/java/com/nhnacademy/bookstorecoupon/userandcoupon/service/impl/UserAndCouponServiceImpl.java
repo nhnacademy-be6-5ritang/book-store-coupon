@@ -23,7 +23,6 @@ import com.nhnacademy.bookstorecoupon.categorycoupon.repository.CategoryCouponRe
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 import com.nhnacademy.bookstorecoupon.couponpolicy.exception.CouponPolicyNotFoundException;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CouponPolicyRepository;
-import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.BirthdayCouponTargetResponse;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.GetBookByOrderCouponResponse;
@@ -44,43 +43,23 @@ import lombok.extern.slf4j.Slf4j;
 public class UserAndCouponServiceImpl implements UserAndCouponService {
 
 	private final UserAndCouponRepository userAndCouponRepository;
-	private final CouponTemplateRepository couponTemplateRepository;
 	private final BookCouponRepository bookCouponRepository;
 	private final CategoryCouponRepository categoryCouponRepository;
 	private final UserBirthdayFeignClient userBirthdayFeignClient;
 	private final CouponPolicyRepository couponPolicyRepository;
 
 	public UserAndCouponServiceImpl(UserAndCouponRepository userAndCouponRepository,
-		CouponTemplateRepository couponTemplateRepository, BookCouponRepository bookCouponRepository,
+		 BookCouponRepository bookCouponRepository,
 		CategoryCouponRepository categoryCouponRepository,
 		UserBirthdayFeignClient userBirthdayFeignClient, CouponPolicyRepository couponPolicyRepository) {
 		this.userAndCouponRepository = userAndCouponRepository;
-		this.couponTemplateRepository = couponTemplateRepository;
+
 		this.bookCouponRepository = bookCouponRepository;
 		this.categoryCouponRepository = categoryCouponRepository;
 		this.userBirthdayFeignClient = userBirthdayFeignClient;
 		this.couponPolicyRepository = couponPolicyRepository;
 	}
 
-	// @Override
-	// public void createUserAndCoupon(Long couponId, Long userId) {
-	// 	String errorMessage = String.format("해당 쿠폰은 '%d'는 존재하지 않습니다.", couponId);
-	// 	ErrorStatus errorStatus = ErrorStatus.from(errorMessage, HttpStatus.NOT_FOUND, LocalDateTime.now());
-	//
-	// 	CouponTemplate couponTemplate = couponTemplateRepository.findById(couponId)
-	// 		.orElseThrow(() -> new CouponNotFoundException(errorStatus));
-	//
-	// 	UserAndCoupon userAndCoupon = UserAndCoupon.builder()
-	// 		.couponPolicy(couponTemplate.getCouponPolicy())
-	// 		.userId(userId)
-	// 		.isUsed(false)
-	// 		.expiredDate(couponTemplate.getExpiredDate())
-	// 		.issueDate(couponTemplate.getIssueDate())
-	// 		.build();
-	//
-	// 	userAndCouponRepository.save(userAndCoupon);
-	//
-	// }
 
 	@Override
 	public void createUserWelcomeCouponIssue(Long userId) {
