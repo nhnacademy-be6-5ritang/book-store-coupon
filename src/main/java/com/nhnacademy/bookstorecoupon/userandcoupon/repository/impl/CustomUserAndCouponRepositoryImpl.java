@@ -58,7 +58,8 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
             .join(QUserAndCoupon.userAndCoupon.couponPolicy, QCouponPolicy.couponPolicy)
             .where(
                 QUserAndCoupon.userAndCoupon.isUsed.eq(false)
-                    .and(QUserAndCoupon.userAndCoupon.userId.eq(userId)) // 필터링 조건 추가
+                    .and(QUserAndCoupon.userAndCoupon.userId.eq(userId))
+                    .and(QUserAndCoupon.userAndCoupon.expiredDate.after(LocalDateTime.now()))// 필터링 조건 추가
             )
             .orderBy(QUserAndCoupon.userAndCoupon.id.desc())
             .offset(pageable.getOffset())
@@ -98,7 +99,8 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
             .select(QUserAndCoupon.userAndCoupon.id.count())
             .from(QUserAndCoupon.userAndCoupon)
             .where(  QUserAndCoupon.userAndCoupon.isUsed.eq(false)
-                .and(QUserAndCoupon.userAndCoupon.userId.eq(userId)))
+                .and(QUserAndCoupon.userAndCoupon.userId.eq(userId))
+                .and(QUserAndCoupon.userAndCoupon.expiredDate.after(LocalDateTime.now())))
             .fetchOne()).orElse(0L);
 
 
