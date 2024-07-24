@@ -36,6 +36,8 @@ public class CouponTemplateController {
 	}
 
 
+
+
 	@Operation(summary = "쿠폰 템플릿 생성", description = "새로운 쿠폰 템플릿을 생성합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "쿠폰 템플릿이 성공적으로 생성되었습니다."),

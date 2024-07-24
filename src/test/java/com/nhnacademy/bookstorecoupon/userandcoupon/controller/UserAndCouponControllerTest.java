@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -21,9 +22,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstorecoupon.auth.jwt.dto.CurrentUserDetails;
@@ -35,6 +40,7 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.impl.RabbitMQUserAndCouponService;
 
 @WebMvcTest(UserAndCouponController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UserAndCouponControllerTest {
 
 	@Autowired
@@ -52,7 +58,8 @@ class UserAndCouponControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-
+	@Autowired
+	private WebApplicationContext context;
 
 	private UserAndCouponResponseDTO dto1;
 	private UserAndCouponResponseDTO dto2;
@@ -67,25 +74,31 @@ class UserAndCouponControllerTest {
 	@BeforeEach
 	void setUp() {
 		// UserTokenInfo 및 CurrentUserDetails 초기화
-		UserTokenInfo userTokenInfo = UserTokenInfo.builder()
+
+
+
+		currentMember = new CurrentUserDetails(UserTokenInfo.builder()
 			.id(1L)
 			.password("password")
 			.roles(List.of("ROLE_MEMBER"))
 			.status("ACTIVE")
-			.build();
-
-		currentMember = new CurrentUserDetails(userTokenInfo);
-
+			.build());
+		setSecurityContext(currentMember);
 
 
-		UserTokenInfo userTokenInfo2 = UserTokenInfo.builder()
+
+
+		currentAdmin = new CurrentUserDetails(UserTokenInfo.builder()
 			.id(1L)
 			.password("password")
 			.roles(List.of("ROLE_COUPON_ADMIN"))
 			.status("ACTIVE")
-			.build();
+			.build());
+		setSecurityContext(currentAdmin);
 
-		currentAdmin = new CurrentUserDetails(userTokenInfo2);
+
+
+
 
 
 		// 공통적으로 사용할 DTO 객체 초기화
@@ -127,13 +140,24 @@ class UserAndCouponControllerTest {
 		bookDetail2 = new GetBookByOrderCouponResponse(
 			4L, BigDecimal.valueOf(30000), List.of(1L)
 		);
-
+		mockMvc = MockMvcBuilders
+			.webAppContextSetup(context)
+			.build();
 
 	}
+
+	private void setSecurityContext(CurrentUserDetails currentUserDetails) {
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(currentUserDetails, "password", currentUserDetails.getAuthorities()));
+		SecurityContextHolder.setContext(securityContext);
+	}
 	@Test
-	@WithMockUser(roles = "MEMBER")
 	void testCreateUserAndCoupon() throws Exception {
 		Long couponId = 1L;
+
+
+
+
 
 		// Arrange - Set up the mock behavior
 		// You can use `Mockito` to mock behaviors here if needed
@@ -143,7 +167,6 @@ class UserAndCouponControllerTest {
 		mockMvc.perform(post("/coupons/{couponId}", couponId)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "Bearer dummyToken")
-				.with(csrf())
 				.with(user(currentMember)))
 			.andExpect(status().isCreated());
 
@@ -152,15 +175,13 @@ class UserAndCouponControllerTest {
 	}
 
 	@Test
-	@WithMockUser(roles = "COUPON_ADMIN")
 	void testCreateUserWelcomeCouponIssue() throws Exception {
 		Long userId = 1L;
 
 		mockMvc.perform(post("/coupons/coupon/welcome")
 				.param("userId", "1")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(userId))
-			.with(csrf()))
+				.content(objectMapper.writeValueAsString(userId)))
 			.andExpect(status().isCreated());
 
 		verify(userAndCouponService, times(1)).createUserWelcomeCouponIssue(userId);
@@ -168,12 +189,10 @@ class UserAndCouponControllerTest {
 
 
 	@Test
-	@WithMockUser(roles = "COUPON_ADMIN")
 	void testFailCreateUserWelcomeCouponIssue() throws Exception {
 		// Arrange - Setting up the test without userId
 		mockMvc.perform(post("/coupons/coupon/welcome")
-				.contentType(MediaType.APPLICATION_JSON)
-				.with(csrf()))
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest()) // Expecting 400 Bad Request
 			.andExpect(jsonPath("$.message").value("유저 아이디가 필요합니다.")) // Check the error message
 			.andExpect(jsonPath("$.status").value("BAD_REQUEST")); // Check the error status
@@ -184,7 +203,6 @@ class UserAndCouponControllerTest {
 
 
 	@Test
-	@WithMockUser(roles = "MEMBER")
 	void testGetAllUserAndCouponsByUserPaging() throws Exception {
 
 
@@ -203,7 +221,6 @@ class UserAndCouponControllerTest {
 				.param("page", "1")
 				.param("size", "2")
 				.header("Authorization", "Bearer dummyToken")
-				.with(csrf())
 			.with(user(currentMember)))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.content[0].id").value(1))
@@ -215,7 +232,6 @@ class UserAndCouponControllerTest {
 	}
 
 	@Test
-	@WithMockUser(roles = "COUPON_ADMIN")
 	void testGetAllUsersAndCouponsByManagerPaging() throws Exception {
 
 		Page<UserAndCouponResponseDTO> dtoPage = new PageImpl<>(List.of(dto1, dto2));
@@ -232,7 +248,6 @@ class UserAndCouponControllerTest {
 				.param("page", "1")
 				.param("size", "2")
 				.header("Authorization", "Bearer dummyToken")
-				.with(csrf())
 				.with(user(currentAdmin)))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.content[0].id").value(1))
@@ -244,7 +259,6 @@ class UserAndCouponControllerTest {
 	}
 
 	@Test
-	@WithMockUser(roles = "MEMBER")
 	void testFindCouponByOrder() throws Exception {
 		// 준비: 공통 DTO 객체를 사용
 		List<UserAndCouponResponseDTO> userAndCouponResponseList = List.of(dto3, dto4);
@@ -263,7 +277,6 @@ class UserAndCouponControllerTest {
 				.param("bookIds", "1") // Query 파라미터로 전달
 				.param("categoryIds", "1") // Query 파라미터로 전달
 				.header("Authorization", "Bearer dummyToken")
-				.with(csrf())
 				.with(user(currentMember)))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$[0].id").value(3))
@@ -277,7 +290,6 @@ class UserAndCouponControllerTest {
 	}
 
 	@Test
-	@WithMockUser(roles = "MEMBER")
 	void testFindCouponByCartOrder() throws Exception {
 		// 여러 개의 GetBookByOrderCouponResponse 객체를 포함하는 리스트 생성
 		List<GetBookByOrderCouponResponse> bookDetails = Arrays.asList(bookDetail1, bookDetail2);
@@ -290,7 +302,6 @@ class UserAndCouponControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(bookDetails))
 				.header("Authorization", "Bearer dummyToken")
-			.with(csrf())
 			.with(user(currentMember)))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$[0].id").value(dto3.id()))
@@ -304,7 +315,6 @@ class UserAndCouponControllerTest {
 
 
 	@Test
-	@WithMockUser(roles = "MEMBER")
 	void testUpdateCouponAfterPayment() throws Exception {
 		// Arrange
 		Long userAndCouponId = 1L;
@@ -315,7 +325,6 @@ class UserAndCouponControllerTest {
 		// Act & Assert
 		mockMvc.perform(patch("/coupons/users/payment/{userAndCouponId}", userAndCouponId)
 				.header("Authorization", "Bearer dummyToken")
-				.with(csrf())
 			.with(user(currentMember)))
 			.andExpect(status().isOk());
 
@@ -325,7 +334,6 @@ class UserAndCouponControllerTest {
 
 
 	@Test
-	@WithMockUser(roles = "MEMBER")
 	void testGetSelectedCouponWithValidCouponId() throws Exception {
 		Long validCouponId = 1L;
 
@@ -334,8 +342,7 @@ class UserAndCouponControllerTest {
 
 		mockMvc.perform(get("/coupons/users/order/coupon")
 				.param("couponId", validCouponId.toString())
-				.header("Authorization", "Bearer dummyToken")
-			.with(csrf()))
+				.header("Authorization", "Bearer dummyToken"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.id").value(1))
 			.andExpect(jsonPath("$.type").value("sale"));
@@ -349,9 +356,12 @@ class UserAndCouponControllerTest {
 
 	@Test
 	void testIsRealUserCheckWhenCurrentUserDetailsIsNull() throws Exception {
+		SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+		securityContext.setAuthentication(new UsernamePasswordAuthenticationToken(null, "password"));
+		SecurityContextHolder.setContext(securityContext);
+
 		mockMvc.perform(MockMvcRequestBuilders.get("/coupons/users/auth")
 				.header("Authorization", "Bearer dummyToken")
-				.with(csrf())
 				.with(user("1").roles("MEMBER")) // This is just to have a user, but you need to simulate the null user
 				.with(request -> {
 					// Simulate a null currentUserDetails
@@ -364,11 +374,9 @@ class UserAndCouponControllerTest {
 
 
 	@Test
-	@WithMockUser(roles = "MEMBER")
 	void testIsRealUserCheckWhenCurrentUserDetailsIsNotNull() throws Exception {
 		mockMvc.perform(get("/coupons/users/auth")
 				.header("Authorization", "Bearer dummyToken")
-				.with(csrf())
 				.with(user(currentMember)))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$").value(true));
