@@ -41,13 +41,8 @@ class CouponPolicyControllerTest {
 	@MockBean
 	private CouponPolicyService couponPolicyService;
 
-
-
 	@Autowired
 	private ObjectMapper objectMapper;
-
-
-
 
 	@Test
 	void testIssueWelcomeCoupon_Success() throws Exception {

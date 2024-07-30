@@ -12,28 +12,86 @@ spring:
       expires-in: 600000
     refresh-token:
       expires-in: 86400000
+  config:
+    activate:
+      on-profile: test  # 이 프로파일이 활성화되면 이 설정이 적용됩니다.
+
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MYSQL;
-    driver-class-name: org.h2.Driver
     username: sa
-    type: org.apache.commons.dbcp2.BasicDataSource
-    dbcp2:
-        initial-size: 50    # 초기로 생성할 연결의 수를 설정합니다.
-        max-total: 50   # 풀에서 유지할 수 있는 최대 연결 수를 설정합니다.
-        max-idle: 50   # 유휴 상태로 유지할 최대 연결 수를 설정합니다.
-        min-idle: 50    # 유휴 상태로 유지할 최소 연결 수를 설정합니다.
-        test-on-borrow: true    # 풀에서 연결을 빌릴 때마다 해당 연결이 유효한지 검증할지 여부를 설정합니다.
-        validation-query: SELECT 1    # 연결 유효성을 검사하기 위해 실행할 SQL 쿼리를 설정합니다.
+    password:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL
+    # H2 데이터베이스를 메모리 모드로 설정하고, MySQL 모드로 작동하게 합니다.
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
+      # Hibernate가 데이터베이스 스키마를 생성하고 테스트가 끝난 후 삭제합니다.
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+      # Hibernate가 MySQL의 방언을 사용하여 쿼리를 생성하도록 설정합니다.
+      hibernate:
+        format_sql: true
+        # SQL 쿼리를 포맷하여 보기 좋게 출력합니다.
+        globally_quoted_identifiers: true
+        # 전역적으로 식별자를 쿼리에서 따옴표로 감싸도록 설정합니다.
     show-sql: true
+    # Hibernate가 실행하는 SQL 쿼리를 콘솔에 출력합니다.
+    generate-ddl: true
+    # Hibernate가 데이터베이스에 대한 DDL(데이터 정의 언어) 명령을 생성합니다.
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    # Hibernate가 MySQL 8의 데이터베이스 플랫폼을 사용하도록 설정합니다.
+    database: h2
+    # JPA 데이터베이스 플랫폼을 H2로 설정합니다.
+
   h2:
     console:
       enabled: true
+      # H2 데이터베이스 콘솔을 활성화하여 웹에서 데이터베이스 상태를 볼 수 있습니다.
 
 
 remote-addr: 127.0.0.1
 
+
+#
+#spring:
+#  rabbitmq:
+#    host: 133.186.241.167
+#    username: admin
+#    password: nhnacademy123!
+#    port: 5672
+#  application:
+#    name: "book-store-coupon"
+#  jwt:
+#    secret: 33085d3cf14717d13f122979944e1e886636cc19e0f749dfbce423bb0031beae8b8758243ce109259c32a83a9325ef2c64433bc0339321d9540036a11884f8fc
+#    access-token:
+#      expires-in: 600000
+#    refresh-token:
+#      expires-in: 86400000
+#  datasource:
+#    url: jdbc:h2:mem:testdb;MODE=MYSQL;
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    type: org.apache.commons.dbcp2.BasicDataSource
+#    dbcp2:
+#        initial-size: 50    # 초기로 생성할 연결의 수를 설정합니다.
+#        max-total: 50   # 풀에서 유지할 수 있는 최대 연결 수를 설정합니다.
+#        max-idle: 50   # 유휴 상태로 유지할 최대 연결 수를 설정합니다.
+#        min-idle: 50    # 유휴 상태로 유지할 최소 연결 수를 설정합니다.
+#        test-on-borrow: true    # 풀에서 연결을 빌릴 때마다 해당 연결이 유효한지 검증할지 여부를 설정합니다.
+#        validation-query: SELECT 1    # 연결 유효성을 검사하기 위해 실행할 SQL 쿼리를 설정합니다.
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#    show-sql: true
+#  h2:
+#    console:
+#      enabled: true
+#
+#
+#remote-addr: 127.0.0.1
+#
+#
+#
 
