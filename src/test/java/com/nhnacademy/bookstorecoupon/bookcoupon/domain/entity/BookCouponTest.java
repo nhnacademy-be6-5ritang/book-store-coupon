@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.nhnacademy.bookstorecoupon.bookcoupon.repository.BookCouponRepository;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
@@ -17,6 +18,7 @@ import com.nhnacademy.bookstorecoupon.global.config.QuerydslConfig;
 
 @DataJpaTest
 @Import(QuerydslConfig.class)
+@ActiveProfiles("test")
 class BookCouponTest {
 
 	@Autowired

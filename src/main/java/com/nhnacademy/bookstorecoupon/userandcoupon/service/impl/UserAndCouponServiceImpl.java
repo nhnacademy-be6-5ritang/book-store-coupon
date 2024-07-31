@@ -112,8 +112,6 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			.orElseThrow(() -> new CouponPolicyNotFoundException(ErrorStatus.from("최신 생일쿠폰 정책을 찾을 수 없습니다.", HttpStatus.NOT_FOUND, LocalDateTime.now())));
 
 		// 생일 목록에 있는 각 사용자에게 쿠폰을 발행
-
-
 		birthdayList.forEach(user -> {
 
 			UserAndCoupon userAndCoupon = UserAndCoupon.builder()

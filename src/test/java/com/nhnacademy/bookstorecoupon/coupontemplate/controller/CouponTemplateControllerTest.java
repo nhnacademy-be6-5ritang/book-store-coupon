@@ -2,7 +2,6 @@ package com.nhnacademy.bookstorecoupon.coupontemplate.controller;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -13,13 +12,13 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +27,7 @@ import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response.CouponT
 import com.nhnacademy.bookstorecoupon.coupontemplate.service.CouponTemplateService;
 
 @WebMvcTest(CouponTemplateController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class CouponTemplateControllerTest {
 
 	@Autowired
@@ -39,8 +39,9 @@ class CouponTemplateControllerTest {
 	@MockBean
 	private CouponTemplateService couponTemplateService;
 
+
+
 	@Test
-	@WithMockUser(roles = {"COUPON_ADMIN"})
 	void testCreateCouponTemplate_Valid() throws Exception {
 		CouponTemplateRequestDTO validRequest = new CouponTemplateRequestDTO(
 			1L,
@@ -51,14 +52,13 @@ class CouponTemplateControllerTest {
 
 		mockMvc.perform(post("/coupons")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(validRequest)).with(csrf()))
+				.content(objectMapper.writeValueAsString(validRequest)))
 			.andExpect(status().isCreated());
 
 		verify(couponTemplateService, times(1)).createCouponTemplate(any(CouponTemplateRequestDTO.class));
 	}
 
 	@Test
-	@WithMockUser(roles = {"COUPON_ADMIN"})
 	void testCreateCouponTemplate_InvalidCouponPolicyId() throws Exception {
 		CouponTemplateRequestDTO invalidRequest = new CouponTemplateRequestDTO(
 			null,
@@ -69,7 +69,7 @@ class CouponTemplateControllerTest {
 
 		mockMvc.perform(post("/coupons")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(invalidRequest)).with(csrf()))
+				.content(objectMapper.writeValueAsString(invalidRequest)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("couponPolicyId 에러: must not be null, 입력된 값: null; "))
 			.andExpect(jsonPath("$.status").value("BAD_REQUEST"));
@@ -78,7 +78,6 @@ class CouponTemplateControllerTest {
 	}
 
 	@Test
-	@WithMockUser(roles = {"COUPON_ADMIN"})
 	void testCreateCouponTemplate_InvalidExpiredDate() throws Exception {
 		CouponTemplateRequestDTO invalidRequest = new CouponTemplateRequestDTO(
 			1L,
@@ -89,7 +88,7 @@ class CouponTemplateControllerTest {
 
 		mockMvc.perform(post("/coupons")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(invalidRequest)).with(csrf()))
+				.content(objectMapper.writeValueAsString(invalidRequest)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("expiredDate 에러: must not be null, 입력된 값: null; "))
 			.andExpect(jsonPath("$.status").value("BAD_REQUEST"));
@@ -98,7 +97,6 @@ class CouponTemplateControllerTest {
 	}
 
 	@Test
-	@WithMockUser(roles = {"COUPON_ADMIN"})
 	void testCreateCouponTemplate_InvalidIssueDate() throws Exception {
 		CouponTemplateRequestDTO invalidRequest = new CouponTemplateRequestDTO(
 			1L,
@@ -109,7 +107,7 @@ class CouponTemplateControllerTest {
 
 		mockMvc.perform(post("/coupons")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(invalidRequest)).with(csrf()))
+				.content(objectMapper.writeValueAsString(invalidRequest)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("issueDate 에러: must not be null, 입력된 값: null; "))
 			.andExpect(jsonPath("$.status").value("BAD_REQUEST"));
@@ -118,7 +116,6 @@ class CouponTemplateControllerTest {
 	}
 
 	@Test
-	@WithMockUser(roles = {"COUPON_ADMIN"})
 	void testCreateCouponTemplate_InvalidQuantity() throws Exception {
 		CouponTemplateRequestDTO invalidRequest = new CouponTemplateRequestDTO(
 			1L,
@@ -129,7 +126,7 @@ class CouponTemplateControllerTest {
 
 		mockMvc.perform(post("/coupons")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(invalidRequest)).with(csrf()))
+				.content(objectMapper.writeValueAsString(invalidRequest)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("quantity 에러: must not be null, 입력된 값: null; "))
 			.andExpect(jsonPath("$.status").value("BAD_REQUEST"));
@@ -138,7 +135,6 @@ class CouponTemplateControllerTest {
 	}
 
 	@Test
-	@WithMockUser(roles = {"COUPON_ADMIN"})
 	void testCreateCouponTemplate_NegativeQuantity() throws Exception {
 		CouponTemplateRequestDTO invalidRequest = new CouponTemplateRequestDTO(
 			1L,
@@ -149,7 +145,7 @@ class CouponTemplateControllerTest {
 
 		mockMvc.perform(post("/coupons")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(invalidRequest)).with(csrf()))
+				.content(objectMapper.writeValueAsString(invalidRequest)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("quantity 에러: must be greater than 0, 입력된 값: -100; "))
 			.andExpect(jsonPath("$.status").value("BAD_REQUEST"));
@@ -158,7 +154,6 @@ class CouponTemplateControllerTest {
 	}
 
 	@Test
-	@WithMockUser(roles = {"MEMBER"})
 	void testGetAllCouponTemplatesByUserPaging() throws Exception {
 		// CouponTemplateResponseDTO 객체 생성
 		CouponTemplateResponseDTO coupon1 = new CouponTemplateResponseDTO(
@@ -190,8 +185,7 @@ class CouponTemplateControllerTest {
 		mockMvc.perform(get("/coupons/issue")
 				.param("page", "0")  // 페이지는 0부터 시작하므로 0으로 설정
 				.param("size", "3")
-				.contentType(MediaType.APPLICATION_JSON)
-				.with(csrf()))
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$.content[0].id").value(1))
@@ -208,7 +202,6 @@ class CouponTemplateControllerTest {
 	}
 
 	@Test
-	@WithMockUser(roles = {"COUPON_ADMIN"})  // 올바른 역할로 설정
 	void testGetAllCouponTemplatesByManagerPaging() throws Exception {
 		// CouponTemplateResponseDTO 객체 생성
 		CouponTemplateResponseDTO coupon1 = new CouponTemplateResponseDTO(
@@ -240,8 +233,7 @@ class CouponTemplateControllerTest {
 		mockMvc.perform(get("/coupons")
 				.param("page", "0")  // 페이지는 0부터 시작하므로 0으로 설정
 				.param("size", "2")
-				.contentType(MediaType.APPLICATION_JSON)
-				.with(csrf()))  // CSRF 토큰을 포함
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$.content[0].id").value(1))

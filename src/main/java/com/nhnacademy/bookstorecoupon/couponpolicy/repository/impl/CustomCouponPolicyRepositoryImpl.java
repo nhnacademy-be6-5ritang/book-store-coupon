@@ -29,10 +29,6 @@ public class CustomCouponPolicyRepositoryImpl implements CustomCouponPolicyRepos
 		Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap) {
 		QCouponPolicy couponPolicy = QCouponPolicy.couponPolicy;
 
-
-
-
-
 		// Fetch coupon policies with pagination and ordering
 		List<CouponPolicyResponseDTO> couponPolicies = queryFactory
 			.selectFrom(couponPolicy)
