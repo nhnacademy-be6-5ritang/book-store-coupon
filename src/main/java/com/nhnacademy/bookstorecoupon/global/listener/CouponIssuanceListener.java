@@ -20,6 +20,14 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.repository.UserAndCouponRepo
 
 import lombok.extern.slf4j.Slf4j;
 
+
+
+/**
+ * 쿠폰 발급을 처리하는 리스너입니다.
+ * 메시지를 수신하여 쿠폰 템플릿을 조회하고, 쿠폰 발급 및 수량 업데이트를 수행합니다.
+ *
+ * @author 이기훈
+ */
 @Slf4j
 @Component
 public class CouponIssuanceListener implements MessageListener {
@@ -34,6 +42,14 @@ public class CouponIssuanceListener implements MessageListener {
         this.couponTemplateRepository = couponTemplateRepository;
     }
 
+
+    /**
+     * 메시지를 수신하여 쿠폰 발급을 처리합니다.
+     * 메시지에서 쿠폰 발급 정보를 추출하고, 쿠폰 템플릿을 조회하여 수량을 확인합니다.
+     * 수량이 충분한 경우, 쿠폰을 발급하고 쿠폰 템플릿의 수량을 업데이트합니다.
+     *
+     * @param message 수신한 메시지
+     */
     @Override
     @Transactional
     public void onMessage(Message message) {

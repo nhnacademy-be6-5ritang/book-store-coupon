@@ -35,6 +35,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+
+
+/**
+ * 사용자와 쿠폰 관련 API를 제공하는 컨트롤러 클래스입니다.
+ * <p>
+ * 이 클래스는 사용자에게 쿠폰을 발행하거나 조회하는 등의 기능을 제공합니다.
+ * </p>
+ *
+ * @author 이기훈
+ */
 @RestController
 @RequestMapping("/coupons")
 @Tag(name = "UserAndCoupon", description = "사용자 쿠폰관련 API")
@@ -48,6 +58,14 @@ public class UserAndCouponController {
         this.rabbitMQUserAndCouponService = rabbitMQUserAndCouponService;
     }
 
+
+    /**
+     * 특정 쿠폰 ID로 사용자에게 쿠폰을 발행합니다.
+     *
+     * @param couponId 쿠폰 ID
+     * @param currentUser 현재 인증된 사용자 정보
+     * @return 쿠폰 발행 결과
+     */
     @Operation(summary = "사용자와 쿠폰 생성", description = "특정 쿠폰 ID로 사용자에게 쿠폰을 발행합니다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "쿠폰이 성공적으로 발행되었습니다."),
@@ -62,6 +80,13 @@ public class UserAndCouponController {
     }
 
 
+
+    /**
+     * 특정 사용자에게 웰컴 쿠폰을 발행합니다.
+     *
+     * @param userId 사용자 ID
+     * @return 웰컴 쿠폰 발행 결과
+     */
     @Operation(summary = "웰컴 쿠폰 생성", description = "특정 사용자에게 웰컴 쿠폰을 발행합니다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "웰컴 쿠폰이 성공적으로 발행되었습니다."),
@@ -80,6 +105,13 @@ public class UserAndCouponController {
 
 
 
+    /**
+     * 특정 사용자 기준으로 페이징된 모든 쿠폰을 조회합니다.
+     *
+     * @param currentUser 현재 인증된 사용자 정보
+     * @param pageable 페이지 요청 정보
+     * @return 페이징된 사용자 쿠폰 목록
+     */
     @Operation(summary = "마이페이지 쿠폰 조회", description = "특정 사용자 기준으로 페이징된 모든 쿠폰을 조회합니다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
@@ -98,7 +130,14 @@ public class UserAndCouponController {
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
 
-
+    /**
+     * 관리자 기준으로 페이징된 모든 사용자 쿠폰을 조회합니다.
+     *
+     * @param pageable 페이지 요청 정보
+     * @param type 정책 타입 (선택 사항)
+     * @param userId 사용자 ID (선택 사항)
+     * @return 페이징된 사용자 쿠폰 목록
+     */
     @Operation(summary = "관리자 기준 페이징된 사용자 쿠폰 조회", description = "관리자 기준으로 페이징된 모든 사용자 쿠폰을 조회합니다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
@@ -117,6 +156,15 @@ public class UserAndCouponController {
     }
 
 
+    /**
+     * 특정 주문에 대한 쿠폰을 조회합니다.
+     *
+     * @param currentUserDetails 현재 인증된 사용자 정보
+     * @param bookIds 도서 ID 목록 (선택 사항)
+     * @param categoryIds 카테고리 ID 목록 (선택 사항)
+     * @param bookPrice 도서 가격
+     * @return 특정 주문에 대한 쿠폰 목록
+     */
     @Operation(summary = "단건 주문에 대한 쿠폰 조회", description = "특정 주문에 대한 쿠폰을 조회합니다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
@@ -142,6 +190,13 @@ public class UserAndCouponController {
 
 
 
+    /**
+     * 특정 장바구니 주문에 대한 쿠폰을 조회합니다.
+     *
+     * @param currentUserDetails 현재 인증된 사용자 정보
+     * @param bookDetails 도서 주문 정보 (선택 사항)
+     * @return 특정 장바구니 주문에 대한 쿠폰 목록
+     */
     @Operation(summary = "장바구니 주문에 대한 쿠폰 조회", description = "특정 장바구니 주문에 대한 쿠폰을 조회합니다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
@@ -165,6 +220,12 @@ public class UserAndCouponController {
     }
 
 
+    /**
+     * 특정 사용자 쿠폰 ID로 쿠폰을 결제 후 사용됨 처리합니다.
+     *
+     * @param userAndCouponId 사용자 쿠폰 ID
+     * @return 쿠폰 사용됨 처리 결과
+     */
     @Operation(summary = "결제 후 쿠폰 사용됨처리", description = "특정 사용자 쿠폰 ID로 쿠폰을 결제 후 사용됨 처리합니다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "쿠폰이 성공적으로 업데이트되었습니다."),
@@ -188,7 +249,12 @@ public class UserAndCouponController {
 
 
 
-
+    /**
+     * 특정 쿠폰 ID로 선택된 쿠폰을 조회합니다.
+     *
+     * @param couponId 쿠폰 ID
+     * @return 선택된 쿠폰 정보
+     */
     @Operation(summary = "선택된 쿠폰 조회", description = "특정 쿠폰 ID로 선택된 쿠폰을 조회합니다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "쿠폰 조회 성공"),
@@ -207,8 +273,12 @@ public class UserAndCouponController {
         return ResponseEntity.status(HttpStatus.OK).body(coupon);
     }
 
-
-
+    /**
+     * 비회원인지 회원인지 검사합니다.
+     *
+     * @param currentUserDetails 현재 인증된 사용자 정보
+     * @return 사용자의 회원 여부
+     */
     @Operation(summary = "회원인지 아닌지 검사", description = "비회원인지 회원인지 검사합니다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "검사결과를 true or false로 반환"),

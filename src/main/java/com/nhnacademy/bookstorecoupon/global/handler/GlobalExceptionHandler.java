@@ -15,11 +15,28 @@ import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 
 import lombok.extern.slf4j.Slf4j;
 
+
+
+/**
+ * 글로벌 예외를 처리하는 클래스입니다.
+ * 이 클래스는 애플리케이션 전역에서 발생하는 예외를 처리하여 적절한 HTTP 응답을 반환합니다.
+ *
+ * @author 이기훈
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
 
+
+	/**
+	 * MethodArgumentNotValidException 예외를 처리합니다.
+	 * 요청 파라미터의 유효성 검증 실패 시 발생하는 예외를 처리합니다.
+	 * 오류 메시지를 생성하여  ErrorStatus 객체로 응답합니다.
+	 *
+	 * @param exception 발생한  MethodArgumentNotValidException
+	 * @return ResponseEntity containing ErrorStatus with validation error details
+	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorStatus> processValidationError(MethodArgumentNotValidException exception) {
 		BindingResult bindingResult = exception.getBindingResult();
@@ -51,6 +68,15 @@ public class GlobalExceptionHandler {
 
 
 
+	/**
+	 * GlobalException 예외를 처리합니다.
+	 * <p>
+	 * 애플리케이션의 전역적인 예외를 처리하고, 해당 예외에 대한 ErrorStatus 객체를 응답합니다.
+	 * </p>
+	 *
+	 * @param ex 발생한 GlobalException
+	 * @return ResponseEntity containing ErrorStatus with global error details
+	 */
 	@ExceptionHandler({GlobalException.class})
 	public ResponseEntity<ErrorStatus> handleGlobalException(GlobalException ex) {
 		ErrorStatus errorStatus=ex.getErrorStatus();
@@ -61,6 +87,17 @@ public class GlobalExceptionHandler {
 
 
 
+
+
+	/**
+	 * 모든 {@link Exception} 예외를 처리합니다.
+	 * <p>
+	 * 처리되지 않은 예외를 포괄적으로 처리하여 500 상태 코드와 함께 응답합니다.
+	 * </p>
+	 *
+	 * @param ex 발생한 {@link Exception}
+	 * @return {@link ResponseEntity} with HTTP status 500
+	 */
 	@ExceptionHandler({Exception.class})
 	public ResponseEntity<Void> handleException(Exception ex) {
 
