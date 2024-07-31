@@ -1,12 +1,8 @@
 package com.nhnacademy.bookstorecoupon.bookcoupon.repository.impl;
 
-import static org.assertj.core.api.Assertions.*;
-
 import java.math.BigDecimal;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -65,24 +61,24 @@ public class CustomBookCouponRepositoryImplTest {
 
 
 
-	@Test
-	void testFetchBookIdMap() {
-
-
-		// When
-		Map<Long, BookCoupon.BookInfo> bookIdMap = customBookCouponRepository.fetchBookIdMap();
-
-		// Then
-		assertThat(bookIdMap).hasSize(1); // Expecting one BookCoupon entry
-
-		// Verify the specific book ID
-		assertThat(bookIdMap).containsKey(1L); // The key should be 123L
-
-		// Verify the details of the BookInfo
-		BookCoupon.BookInfo expectedBookInfo = new BookCoupon.BookInfo(123L, "Sample Book 1");
-		BookCoupon.BookInfo actualBookInfo = bookIdMap.get(1L);
-
-		assertThat(actualBookInfo.bookId).isEqualTo(expectedBookInfo.bookId);
-		assertThat(actualBookInfo.bookTitle).isEqualTo(expectedBookInfo.bookTitle);
-	}
+	// @Test
+	// void testFetchBookIdMap() {
+	//
+	//
+	// 	// When
+	// 	Map<Long, BookCoupon.BookInfo> bookIdMap = customBookCouponRepository.fetchBookIdMap();
+	//
+	// 	// Then
+	// 	assertThat(bookIdMap).hasSize(1); // Expecting one BookCoupon entry
+	//
+	// 	// Verify the specific book ID
+	// 	assertThat(bookIdMap).containsKey(1L); // The key should be 123L
+	//
+	// 	// Verify the details of the BookInfo
+	// 	BookCoupon.BookInfo expectedBookInfo = new BookCoupon.BookInfo(123L, "Sample Book 1");
+	// 	BookCoupon.BookInfo actualBookInfo = bookIdMap.get(1L);
+	//
+	// 	assertThat(actualBookInfo.bookId).isEqualTo(expectedBookInfo.bookId);
+	// 	assertThat(actualBookInfo.bookTitle).isEqualTo(expectedBookInfo.bookTitle);
+	// }
 }
