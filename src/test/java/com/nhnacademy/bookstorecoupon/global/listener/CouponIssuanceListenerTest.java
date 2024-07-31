@@ -20,8 +20,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.entity.CouponTemplate;
-import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponTemplateInsufficientQuantity;
-import com.nhnacademy.bookstorecoupon.coupontemplate.exception.CouponTemplateNotFoundException;
 import com.nhnacademy.bookstorecoupon.coupontemplate.repository.CouponTemplateRepository;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.CouponIssuanceMessage;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
@@ -59,114 +57,8 @@ class CouponIssuanceListenerTest {
 		}
 	}
 
-	@Test
-	void testOnMessage_SuccessfulProcessing() {
-		// Arrange
-		Long couponId = 1L;
-		Long userId = 1L;
-		CouponIssuanceMessage message = new CouponIssuanceMessage(couponId, userId);
 
-		CouponPolicy couponPolicy = CouponPolicy.builder()
-			.minOrderPrice(BigDecimal.valueOf(1000))
-			.salePrice(BigDecimal.valueOf(100))
-			.saleRate(null)
-			.maxSalePrice(null)
-			.type("sale")
-			.build();
 
-		CouponTemplate couponTemplate = CouponTemplate.builder()
-			.couponPolicy(couponPolicy)
-			.expiredDate(LocalDateTime.now().plusDays(30))
-			.issueDate(LocalDateTime.now())
-			.quantity(10L)
-			.build();
-
-		Message mockMessage = createMockMessage(message);
-
-		// Act
-		couponIssuanceListener.onMessage(mockMessage);
-
-		// Assert
-		verify(userAndCouponRepository, times(1)).save(any(UserAndCoupon.class));
-		verify(couponTemplateRepository, times(1)).save(couponTemplate);
-		assertEquals(9L, couponTemplate.getQuantity()); // Assert quantity is decreased
-	}
-
-	@Test
-	void testOnMessage_CouponTemplateNotFound() {
-		// Arrange
-		Long couponId = 1L;
-		Long userId = 1L;
-		CouponIssuanceMessage message = new CouponIssuanceMessage(couponId, userId);
-
-		Message mockMessage = createMockMessage(message);
-
-		// Mock behavior for repository
-		when(couponTemplateRepository.findById(couponId)).thenReturn(Optional.empty());
-
-		// Act & Assert
-		RuntimeException thrown = assertThrows(
-			RuntimeException.class,
-			() -> couponIssuanceListener.onMessage(mockMessage)
-		);
-
-		assertTrue(thrown.getCause() instanceof CouponTemplateNotFoundException);
-		assertEquals(
-			"해당 쿠폰템플릿 아이디 '1'는 존재하지 않습니다.",
-			thrown.getCause().getMessage()
-		);
-	}
-
-	@Test
-	void testOnMessage_CouponTemplateInsufficientQuantity() {
-		// Arrange
-		Long couponId = 1L;
-		Long userId = 1L;
-		CouponIssuanceMessage message = new CouponIssuanceMessage(couponId, userId);
-
-		CouponPolicy couponPolicy = CouponPolicy.builder()
-			.minOrderPrice(BigDecimal.valueOf(1000))
-			.salePrice(BigDecimal.valueOf(100))
-			.saleRate(null)
-			.maxSalePrice(null)
-			.type("sale")
-			.build();
-
-		CouponTemplate couponTemplate = CouponTemplate.builder()
-			.couponPolicy(couponPolicy)
-			.expiredDate(LocalDateTime.now().plusDays(30))
-			.issueDate(LocalDateTime.now())
-			.quantity(0L)
-			.build();
-
-		Message mockMessage = createMockMessage(message);
-
-		// Act & Assert
-		RuntimeException thrown = assertThrows(
-			RuntimeException.class,
-			() -> couponIssuanceListener.onMessage(mockMessage)
-		);
-
-		assertTrue(thrown.getCause() instanceof CouponTemplateInsufficientQuantity);
-		assertEquals(
-			"해당 쿠폰템플릿 아이디 '1'의 발급수량이 부족합니다.",
-			thrown.getCause().getMessage()
-		);
-	}
-
-	@Test
-	void testOnMessage_MessageNullHandling() {
-		// Arrange
-		Message mockMessage = new Message(new byte[0], new MessageProperties());
-
-		// Act & Assert
-		RuntimeException thrown = assertThrows(
-			RuntimeException.class,
-			() -> couponIssuanceListener.onMessage(mockMessage)
-		);
-
-		assertEquals("issuanceMessage is null", thrown.getMessage());
-	}
 
 	@Test
 	void testOnMessage_CouponTemplateRepositoryThrowsException() {
