@@ -29,6 +29,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+
+
+
+
+/**
+ * @author 이기훈
+ * 쿠폰정책관련 기능을 수행하는 컨트롤러입니다.
+ */
 @Tag(name = "CouponPolicy", description = "쿠폰 정책관련 API")
 @RestController
 @RequestMapping("/coupons/policies")
@@ -39,6 +47,12 @@ public class CouponPolicyController {
 		this.couponPolicyService = couponPolicyService;
 	}
 
+
+
+	/**
+	 * 웰컴쿠폰 정책을 생성하는 컨트롤러
+	 * @param couponPolicyRequestDTO 쿠폰정책 생성 dto
+	 */
 	@Operation(
 		summary = "웰컴쿠폰정책 생성",
 		description = "웰컴쿠폰정책을 생성합니다"
@@ -55,6 +69,14 @@ public class CouponPolicyController {
 		couponPolicyService.issueWelcomeCoupon(couponPolicyRequestDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
+
+
+
+
+	/**
+	 * 생일쿠폰 정책을 생성하는 컨트롤러
+	 * @param couponPolicyRequestDTO 쿠폰정책 생성 dto
+	 */
 	@Operation(
 		summary = "생일쿠폰정책 생성",
 		description = "생일쿠폰정책을 생성합니다"
@@ -73,6 +95,10 @@ public class CouponPolicyController {
 	}
 
 
+	/**
+	 * 도서쿠폰 정책을 생성하는 컨트롤러
+	 * @param couponPolicyRequestDTO 쿠폰정책 생성 dto
+	 */
 	@Operation(summary = "도서 쿠폰 발행", description = "특정 도서에 대한 도서쿠폰을 발행합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "도서쿠폰이 성공적으로 발행되었습니다."),
@@ -91,6 +117,12 @@ public class CouponPolicyController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
+
+
+	/**
+	 * 카테고리쿠폰 정책을 생성하는 컨트롤러
+	 * @param couponPolicyRequestDTO 쿠폰정책 생성 dto
+	 */
 	@Operation(summary = "카테고리 쿠폰 발행", description = "특정 카테고리에 대한 카테고리쿠폰을 발행합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "카테고리쿠폰이 성공적으로 발행되었습니다."),
@@ -110,6 +142,11 @@ public class CouponPolicyController {
 	}
 
 
+
+	/**
+	 * 할인쿠폰 정책을 생성하는 컨트롤러
+	 * @param couponPolicyRequestDTO 쿠폰정책 생성 dto
+	 */
 	@Operation(summary = "할인 쿠폰 발행", description = "할인 쿠폰을 발행합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "할인쿠폰이 성공적으로 발행되었습니다."),
@@ -124,6 +161,12 @@ public class CouponPolicyController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
+
+
+	/**
+	 * 모든 쿠폰 정책을 불러오는 컨트롤러
+	 * @param pageable 페이지 정보
+	 */
 	@Operation(summary = "모든 쿠폰 정책 조회", description = "페이징을 통해 모든 쿠폰 정책을 조회합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "성공적으로 조회되었습니다.")
@@ -137,6 +180,10 @@ public class CouponPolicyController {
 
 
 
+	/**
+	 * 쿠폰정책을 수정하는 컨트롤러
+	 * @param requestDTO 쿠폰 업데이트 dto
+	 */
 	@Operation(summary = "쿠폰 정책 업데이트", description = "쿠폰 정책을 업데이트합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "성공적으로 업데이트되었습니다."),
@@ -159,6 +206,10 @@ public class CouponPolicyController {
 	}
 
 
+	/**
+	 * 쿠폰정책생성 유효성을 검사하는 메소드
+	 * @param requestDTO 쿠폰정책생성 dto
+	 */
 	// SalePrice와 SaleRate 유효성 검사 메서드 추가
 	private void validateSaleFields(CouponPolicyRequestDTO requestDTO) {
 		if ((requestDTO.salePrice() == null && requestDTO.saleRate() == null && requestDTO.maxSalePrice() == null) ||
