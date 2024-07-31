@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.nhnacademy.bookstorecoupon.bookcoupon.domain.entity.BookCoupon;
 import com.nhnacademy.bookstorecoupon.config.QuerydslTestConfig;
@@ -23,7 +22,6 @@ import jakarta.persistence.EntityManager;
 @DataJpaTest
 @Import(QuerydslTestConfig.class) // QueryDSL 설정 파일 임포트
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실제 데이터베이스 연결
-@ActiveProfiles("test")
 public class CustomBookCouponRepositoryImplTest {
 
 	@Autowired

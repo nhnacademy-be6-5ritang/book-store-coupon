@@ -21,8 +21,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
 @DataJpaTest
-@Import(QuerydslTestConfig.class) // QueryDSL 설정 파일 임포트
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실제 데이터베이스 연결
+@Import(QuerydslTestConfig.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class CustomCategoryCouponRepositoryImplTest {
 
 	@Autowired
@@ -62,8 +62,9 @@ class CustomCategoryCouponRepositoryImplTest {
 
 	@AfterEach
 	void resetAutoIncrementId() {
-		entityManager.createNativeQuery("ALTER TABLE categories_coupons ALTER COLUMN category_coupon_id RESTART WITH 1")
-			.executeUpdate();
+
+		entityManager.createQuery("DELETE FROM CategoryCoupon").executeUpdate();
+		entityManager.createQuery("DELETE FROM CouponPolicy").executeUpdate();
 	}
 
 
