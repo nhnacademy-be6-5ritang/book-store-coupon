@@ -40,11 +40,11 @@ public class CouponPolicyController {
 	}
 
 	@Operation(
-		summary = "웰컴쿠폰 생성",
-		description = "웰컴쿠폰을 생성합니다"
+		summary = "웰컴쿠폰정책 생성",
+		description = "웰컴쿠폰정책을 생성합니다"
 	)
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "201", description = "웰컴쿠폰이 성공적으로 발행되었습니다."),
+		@ApiResponse(responseCode = "201", description = "웰컴쿠폰정책이 성공적으로 발행되었습니다."),
 		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
 	})
 	@AuthorizeRole({"COUPON_ADMIN", "HEAD_ADMIN"})
@@ -56,11 +56,11 @@ public class CouponPolicyController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 	@Operation(
-		summary = "생일쿠폰 생성",
-		description = "웰컴쿠폰을 생성합니다"
+		summary = "생일쿠폰정책 생성",
+		description = "생일쿠폰정책을 생성합니다"
 	)
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "201", description = "생일쿠폰이 성공적으로 발행되었습니다."),
+		@ApiResponse(responseCode = "201", description = "생일쿠폰정책이 성공적으로 발행되었습니다."),
 		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.")
 	})
 	@AuthorizeRole({"COUPON_ADMIN", "HEAD_ADMIN"})

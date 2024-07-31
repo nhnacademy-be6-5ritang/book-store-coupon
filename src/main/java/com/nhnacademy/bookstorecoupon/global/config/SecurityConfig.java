@@ -43,7 +43,6 @@ public class SecurityConfig {
 				.anyRequest().permitAll()
 			)
 			.addFilterBefore(ipAddressFilter, UsernamePasswordAuthenticationFilter.class)
-			// .addFilterAfter(new JwtFilter(jwtUtils, tokenReissueClient), IpAddressFilter.class)
 			.addFilterBefore(new JwtFilter(jwtUtils, tokenReissueClient, accessTokenExpiresIn, refreshTokenExpiresIn),
 				UsernamePasswordAuthenticationFilter.class)
 			.sessionManagement((session) -> session

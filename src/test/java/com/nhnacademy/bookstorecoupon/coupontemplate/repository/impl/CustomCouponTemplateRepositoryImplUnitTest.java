@@ -27,7 +27,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-class CustomCouponTemplateRepositoryImplTest {
+class CustomCouponTemplateRepositoryImplUnitTest {
 
 	@Mock
 	private JPAQueryFactory queryFactory;
@@ -164,6 +164,5 @@ class CustomCouponTemplateRepositoryImplTest {
 		verify(countQuery).from(qCouponTemplate);
 		verify(countQuery).fetchOne();
 	}
-
 
 }

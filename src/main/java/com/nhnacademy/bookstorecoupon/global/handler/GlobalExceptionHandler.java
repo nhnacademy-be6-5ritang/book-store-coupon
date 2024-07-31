@@ -13,15 +13,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.nhnacademy.bookstorecoupon.global.exception.GlobalException;
 import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-	@ExceptionHandler({GlobalException.class})
-	public ResponseEntity<ErrorStatus> handleExceptionGlobally(GlobalException ex) {
-		ErrorStatus errorStatus=ex.getErrorStatus();
 
-
-		return new ResponseEntity<>(errorStatus, errorStatus.getStatus());
-	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorStatus> processValidationError(MethodArgumentNotValidException exception) {
@@ -47,8 +44,29 @@ public class GlobalExceptionHandler {
 			LocalDateTime.now()
 		);
 
+		log.error("validation 에러: {}", exception.getMessage());
 		return new ResponseEntity<>(errorStatus, HttpStatus.BAD_REQUEST);
 
+	}
+
+
+
+	@ExceptionHandler({GlobalException.class})
+	public ResponseEntity<ErrorStatus> handleGlobalException(GlobalException ex) {
+		ErrorStatus errorStatus=ex.getErrorStatus();
+
+		log.error("글로벌 에러: {}", ex.getMessage());
+		return new ResponseEntity<>(errorStatus, errorStatus.getStatus());
+	}
+
+
+
+	@ExceptionHandler({Exception.class})
+	public ResponseEntity<Void> handleException(Exception ex) {
+
+
+		log.error("서버에러: {}", ex.getMessage());
+		return ResponseEntity.status(500).build();
 	}
 
 }
