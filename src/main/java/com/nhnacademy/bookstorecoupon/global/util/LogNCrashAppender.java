@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorecoupon.global.config;
+package com.nhnacademy.bookstorecoupon.global.util;
 
 import java.util.HashMap;
 import java.util.Map;
