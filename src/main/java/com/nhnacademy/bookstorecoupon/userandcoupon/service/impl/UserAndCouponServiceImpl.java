@@ -42,6 +42,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserAndCouponServiceImpl implements UserAndCouponService {
 
+	private static final int MAX_RETRY_ATTEMPTS = 3;
+	private static final int RETRY_DELAY_MS = 5000; // 5초 대기
+
 	private final UserAndCouponRepository userAndCouponRepository;
 	private final BookCouponRepository bookCouponRepository;
 	private final CategoryCouponRepository categoryCouponRepository;
@@ -81,9 +84,25 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	}
 
 	// 쿠폰 만료처리 스케줄링   매일 새벽 2시 시작 설정
-	@Override
 	@Scheduled(cron = "0 0 2 * * *")
+	public void findExpiredCouponsScheduler() {
+		log.warn("기한만료 쿠폰 스케쥴러 시작");
+
+		try {
+			// 실제 로직 수행
+			findExpiredCoupons();
+		} catch (Exception e) {
+			log.error("기한만료 쿠폰 체크로직 실행 중 오류 발생", e);
+			// 재시도 로직 호출
+			retryLogic(1);
+		}
+
+
+	}
+
+	@Override
 	public void findExpiredCoupons() {
+
 		log.warn("기한만료 쿠폰 체크로직 발동");
 		LocalDateTime now = LocalDateTime.now();
 
@@ -93,9 +112,34 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		for (UserAndCoupon coupon : expiredCoupons) {
 			coupon.update(coupon.getExpiredDate(), true);
 		}
-
 		log.warn("기한만료 쿠폰 체크로직 실행완료");
 	}
+
+	private void retryLogic(int attempt) {
+		if (attempt > MAX_RETRY_ATTEMPTS) {
+			log.error("최대 재시도 횟수 초과");
+			// 재시도 실패 알림 전송 또는 다른 처리
+			return;
+		}
+
+		try {
+			Thread.sleep(RETRY_DELAY_MS); // 대기 시간
+			log.warn("재시도 - 시도 " + attempt);
+
+			new Thread(() -> {
+				try {
+					findExpiredCoupons();
+				} catch (Exception e) {
+					log.error("재시도 중 오류 발생", e);
+					retryLogic(attempt + 1); // 다음 시도
+				}
+			}).start();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			log.error("재시도 중 오류 발생", e);
+		}
+	}
+
 
 
 	@Override
