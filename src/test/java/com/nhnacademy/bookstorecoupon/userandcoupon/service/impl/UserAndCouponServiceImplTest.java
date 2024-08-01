@@ -122,38 +122,7 @@ class UserAndCouponServiceImplTest {
 	}
 
 
-	// @Test
-	// void findExpiredCoupons_ShouldUpdateExpiredCoupons() {
-	// 	// 현재 시간 고정
-	// 	LocalDateTime now = LocalDateTime.now();
-	// 	UserAndCoupon expiredCoupon = UserAndCoupon.builder()
-	// 		.couponPolicy(CouponPolicy.builder()
-	// 			.minOrderPrice(BigDecimal.valueOf(100))
-	// 			.salePrice(BigDecimal.valueOf(100))
-	// 			.maxSalePrice(null)
-	// 			.saleRate(null)
-	// 			.type("welcome")
-	// 			.build())
-	// 		.userId(1L)
-	// 		.isUsed(false)
-	// 		.expiredDate(now.minusDays(1))
-	// 		.issueDate(now.minusDays(10))
-	// 		.build();
-	//
-	// 	// Stub the repository method to return the list with the expiredCoupon
-	// 	when(userAndCouponRepository.findByExpiredDateBeforeAndIsUsedIsFalse(now))
-	// 		.thenReturn(Collections.singletonList(expiredCoupon));
-	//
-	// 	// Call the method under test
-	// 	userAndCouponService.findExpiredCoupons();
-	//
-	// 	// Verify that save was called with the updated coupon
-	// 	verify(userAndCouponRepository, times(1)).save(argThat(coupon ->
-	// 		coupon.getIsUsed() == true &&
-	// 			coupon.getExpiredDate().isBefore(now) &&
-	// 			coupon.getIssueDate().isBefore(now)
-	// 	));
-	// }
+
 	@Test
 	void issueBirthdayCoupon_ShouldIssueCoupons_WhenUsersExist() {
 		LocalDate today = LocalDate.now();
