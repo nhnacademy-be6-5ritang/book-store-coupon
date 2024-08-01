@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-public class KeyResponseDto {
+public class KeyResponse {
 	private Header header;
 	private Body body;
 

@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.nhnacademy.bookstorecoupon.keymanager.dto.KeyResponseDto;
+import com.nhnacademy.bookstorecoupon.keymanager.dto.KeyResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +48,9 @@ public class KeyManagerService {
 			HttpEntity<String> entity = new HttpEntity<>(headers);
 
 			// 데이터 요청 및 반환
-			ResponseEntity<KeyResponseDto> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity,
-				KeyResponseDto.class);
-			KeyResponseDto responseBody = responseEntity.getBody();
+			ResponseEntity<KeyResponse> responseEntity = restTemplate.exchange(url, HttpMethod.GET, entity,
+				KeyResponse.class);
+			KeyResponse responseBody = responseEntity.getBody();
 			if (responseBody != null) {
 				return responseBody.getBody().getSecret();
 			} else {
