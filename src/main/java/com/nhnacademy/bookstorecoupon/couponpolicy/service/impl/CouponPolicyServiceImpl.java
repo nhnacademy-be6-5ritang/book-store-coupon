@@ -27,32 +27,30 @@ import com.nhnacademy.bookstorecoupon.global.exception.payload.ErrorStatus;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
 import com.nhnacademy.bookstorecoupon.userandcoupon.repository.UserAndCouponRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class CouponPolicyServiceImpl implements CouponPolicyService {
 	private final CouponPolicyRepository couponPolicyRepository;
 	private final BookCouponRepository bookCouponRepository;
 	private final CategoryCouponRepository categoryCouponRepository;
 	private final UserAndCouponRepository userAndCouponRepository;
 
-	public CouponPolicyServiceImpl(CouponPolicyRepository couponPolicyRepository,
-		BookCouponRepository bookCouponRepository, CategoryCouponRepository categoryCouponRepository,
-		UserAndCouponRepository userAndCouponRepository
-	) {
-		this.couponPolicyRepository = couponPolicyRepository;
-		this.bookCouponRepository = bookCouponRepository;
-		this.categoryCouponRepository = categoryCouponRepository;
-		this.userAndCouponRepository = userAndCouponRepository;
-	}
-
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	public void issueWelcomeCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
 
 		couponPolicyRepository.save(couponPolicy);
-
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	public void issueBirthdayCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
@@ -60,6 +58,9 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	public void issueSpecificBookCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
@@ -73,6 +74,9 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	public void issueSpecificCategoryCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
@@ -83,6 +87,9 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	public void issueDiscountCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
@@ -91,6 +98,9 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Page<CouponPolicyResponseDTO> getAllCouponPolicies(Pageable pageable) {
@@ -103,10 +113,12 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			categoryIdMap);
 	}
 
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	public void updateCouponPolicy(Long id, CouponPolicyUpdateRequestDTO requestDTO) {
 		Optional<CouponPolicy> optionalPolicy = couponPolicyRepository.findById(id);
-
 
 		if (optionalPolicy.isPresent()) {
 			CouponPolicy policy = optionalPolicy.get();
@@ -127,7 +139,8 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			}
 
 		} else {
-			ErrorStatus errorStatus = ErrorStatus.from(String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id), HttpStatus.NOT_FOUND, LocalDateTime.now());
+			ErrorStatus errorStatus = ErrorStatus.from(String.format("해당 쿠폰정책번호 '%d'는 존재하지 않습니다.", id),
+				HttpStatus.NOT_FOUND, LocalDateTime.now());
 			throw new CouponPolicyNotFoundException(errorStatus);
 		}
 

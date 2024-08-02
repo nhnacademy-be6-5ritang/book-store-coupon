@@ -34,7 +34,9 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-
+    /**
+     *{@inheritDoc}
+     */
     @Override
     public Page<UserAndCouponResponseDTO> findAllByUserPaging(Pageable pageable, Long userId, Map<Long, BookCoupon.BookInfo> bookIdMap, Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap) {
         // Fetch tuples
@@ -107,6 +109,9 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
         return new PageImpl<>(results, pageable, totalCount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<UserAndCouponResponseDTO> findAllByManagerPaging(Pageable pageable, String type, Long userId, Map<Long, BookCoupon.BookInfo> bookIdMap, Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap) {
         // Define where clause
@@ -181,7 +186,9 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
         return new PageImpl<>(results, pageable, totalCount);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UserAndCouponResponseDTO> findCouponByOrder(
         Long userId,
@@ -267,7 +274,9 @@ public class CustomUserAndCouponRepositoryImpl implements CustomUserAndCouponRep
         return results;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UserAndCouponResponseDTO> findCouponByCartOrder(
         Long userId,

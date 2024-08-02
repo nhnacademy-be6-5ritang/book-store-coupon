@@ -13,30 +13,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-
+import lombok.RequiredArgsConstructor;
 
 /**
- * Swagger 문서에 대한 API를 제공하는 컨트롤러입니다.
- * <p>
- * 이 컨트롤러는 Swagger API 문서를 JSON 형식으로 반환합니다.
- * </p>
- *
  * @author 이기훈
+ * Swagger 문서에 대한 API 를 제공하는 컨트롤러입니다.
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/coupons/api")
 public class SwaggerController {
-
-    @Autowired
-    private OpenApiResource openApiResource;
-
+    private final OpenApiResource openApiResource;
 
     /**
      * Swagger API 문서를 JSON 형식으로 반환합니다.
-     * <p>
-     * 이 메소드는 현재 요청의 Locale을 사용하여 Swagger 문서의 JSON 형식을 결정합니다.
-     * </p>
      *
      * @param request HTTP 요청 객체
      * @return Swagger 문서의 JSON 표현을 포함한 {@link ResponseEntity}

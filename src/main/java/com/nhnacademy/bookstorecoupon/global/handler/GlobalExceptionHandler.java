@@ -18,16 +18,13 @@ import lombok.extern.slf4j.Slf4j;
 
 
 /**
+ * @author 이기훈
  * 글로벌 예외를 처리하는 클래스입니다.
  * 이 클래스는 애플리케이션 전역에서 발생하는 예외를 처리하여 적절한 HTTP 응답을 반환합니다.
- *
- * @author 이기훈
  */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-
 
 	/**
 	 * MethodArgumentNotValidException 예외를 처리합니다.
@@ -66,8 +63,6 @@ public class GlobalExceptionHandler {
 
 	}
 
-
-
 	/**
 	 * GlobalException 예외를 처리합니다.
 	 * <p>
@@ -84,10 +79,6 @@ public class GlobalExceptionHandler {
 		log.error("글로벌 에러: {}", ex.getMessage());
 		return new ResponseEntity<>(errorStatus, errorStatus.getStatus());
 	}
-
-
-
-
 
 	/**
 	 * 모든 {@link Exception} 예외를 처리합니다.

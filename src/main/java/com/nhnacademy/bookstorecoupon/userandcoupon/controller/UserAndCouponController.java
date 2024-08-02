@@ -38,12 +38,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 /**
- * 사용자와 쿠폰 관련 API를 제공하는 컨트롤러 클래스입니다.
- * <p>
- * 이 클래스는 사용자에게 쿠폰을 발행하거나 조회하는 등의 기능을 제공합니다.
- * </p>
- *
  * @author 이기훈
+ * 사용자와 쿠폰 관련 API 를 제공하는 컨트롤러 클래스입니다.
  */
 @RestController
 @RequestMapping("/coupons")
@@ -57,7 +53,6 @@ public class UserAndCouponController {
         this.userAndCouponService = userAndCouponService;
         this.rabbitMQUserAndCouponService = rabbitMQUserAndCouponService;
     }
-
 
     /**
      * 특정 쿠폰 ID로 사용자에게 쿠폰을 발행합니다.
@@ -79,8 +74,6 @@ public class UserAndCouponController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-
-
     /**
      * 특정 사용자에게 웰컴 쿠폰을 발행합니다.
      *
@@ -101,9 +94,6 @@ public class UserAndCouponController {
         userAndCouponService.createUserWelcomeCouponIssue(userId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
-
-
 
     /**
      * 특정 사용자 기준으로 페이징된 모든 쿠폰을 조회합니다.
@@ -155,7 +145,6 @@ public class UserAndCouponController {
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
 
-
     /**
      * 특정 주문에 대한 쿠폰을 조회합니다.
      *
@@ -188,8 +177,6 @@ public class UserAndCouponController {
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
 
-
-
     /**
      * 특정 장바구니 주문에 대한 쿠폰을 조회합니다.
      *
@@ -219,7 +206,6 @@ public class UserAndCouponController {
         return ResponseEntity.status(HttpStatus.OK).body(coupons);
     }
 
-
     /**
      * 특정 사용자 쿠폰 ID로 쿠폰을 결제 후 사용됨 처리합니다.
      *
@@ -241,13 +227,10 @@ public class UserAndCouponController {
             throw new UserCouponValidationException(errorStatus);
         }
 
-
-         userAndCouponService.updateCouponAfterPayment(userAndCouponId);
+        userAndCouponService.updateCouponAfterPayment(userAndCouponId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-
 
     /**
      * 특정 쿠폰 ID로 선택된 쿠폰을 조회합니다.
@@ -286,15 +269,12 @@ public class UserAndCouponController {
     @GetMapping("/users/auth")
     public ResponseEntity<Boolean> isRealUserCheck(
         @Parameter(description = "유저 아이디 가져오는 용도", required = true) @CurrentUser CurrentUserDetails currentUserDetails) {
-        if(currentUserDetails==null){
+        if (currentUserDetails == null){
             return ResponseEntity.status(HttpStatus.OK).body(false);
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(true);
         }
 
     }
-
-
-
 
 }

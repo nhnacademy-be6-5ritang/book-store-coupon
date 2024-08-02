@@ -9,11 +9,8 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.CouponPolicy;
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
 
 /**
- * {@link UserAndCoupon} 엔티티에 대한 JPA 리포지토리입니다.
- * <p>
- * 이 리포지토리는 사용자와 쿠폰 간의 관계를 관리하며, 사용자와 쿠폰에 대한 CRUD 연산을 지원합니다.
- * 또한 커스텀 리포지토리 인터페이스 {@link CustomUserAndCouponRepository}를 확장하여 커스텀 쿼리 메소드를 제공합니다.
- * </p>
+ * @author 이기훈
+ * 엔티티에 대한 JPA 리포지토리입니다.
  */
 public interface UserAndCouponRepository extends JpaRepository<UserAndCoupon, Long>, CustomUserAndCouponRepository {
 

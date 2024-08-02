@@ -7,11 +7,9 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPoli
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.request.CouponPolicyUpdateRequestDTO;
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.dto.response.CouponPolicyResponseDTO;
 
-
 /**
- * 쿠폰 정책을 관리하는 서비스 레이어를 나타내는 인터페이스입니다.
- *
  * @author 이기훈
+ * 쿠폰 정책을 관리하는 서비스 레이어를 나타내는 인터페이스입니다.
  */
 public interface CouponPolicyService {
 	/**

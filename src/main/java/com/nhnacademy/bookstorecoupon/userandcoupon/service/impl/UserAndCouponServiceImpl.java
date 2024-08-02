@@ -35,13 +35,14 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.feignclient.UserBirthdayFeig
 import com.nhnacademy.bookstorecoupon.userandcoupon.repository.UserAndCouponRepository;
 import com.nhnacademy.bookstorecoupon.userandcoupon.service.UserAndCouponService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
-@Slf4j
+@RequiredArgsConstructor
 public class UserAndCouponServiceImpl implements UserAndCouponService {
-
 	private static final int MAX_RETRY_ATTEMPTS = 3;
 	private static final int RETRY_DELAY_MS = 5000; // 5초 대기
 
@@ -51,23 +52,11 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 	private final UserBirthdayFeignClient userBirthdayFeignClient;
 	private final CouponPolicyRepository couponPolicyRepository;
 
-	public UserAndCouponServiceImpl(UserAndCouponRepository userAndCouponRepository,
-		 BookCouponRepository bookCouponRepository,
-		CategoryCouponRepository categoryCouponRepository,
-		UserBirthdayFeignClient userBirthdayFeignClient, CouponPolicyRepository couponPolicyRepository) {
-		this.userAndCouponRepository = userAndCouponRepository;
-
-		this.bookCouponRepository = bookCouponRepository;
-		this.categoryCouponRepository = categoryCouponRepository;
-		this.userBirthdayFeignClient = userBirthdayFeignClient;
-		this.couponPolicyRepository = couponPolicyRepository;
-	}
-
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void createUserWelcomeCouponIssue(Long userId) {
-
-
 		CouponPolicy couponPolicy = couponPolicyRepository.findLatestCouponPolicyByType("welcome")
 			.orElseThrow(() -> new CouponPolicyNotFoundException(ErrorStatus.from("최신 웰컴쿠폰 정책을 찾을 수 없습니다.", HttpStatus.NOT_FOUND, LocalDateTime.now())));
 
@@ -80,7 +69,6 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			.build();
 
 		userAndCouponRepository.save(userAndCoupon);
-
 	}
 
 	// 쿠폰 만료처리 스케줄링   매일 새벽 2시 시작 설정
@@ -96,10 +84,11 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			// 재시도 로직 호출
 			retryLogic(1);
 		}
-
-
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void findExpiredCoupons() {
 
@@ -140,8 +129,9 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		}
 	}
 
-
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Scheduled(cron = "0 0 1 * * *")
 	public void issueBirthdayCoupon() {
@@ -172,6 +162,9 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		log.warn("생일쿠폰발급 스케줄링 끝");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByUserPaging(Long userId, Pageable pageable) {
@@ -183,6 +176,9 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			categoryIdMap);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@Transactional(readOnly = true)
 	public Page<UserAndCouponResponseDTO> getAllUsersAndCouponsByManagerPaging(Pageable pageable, String type,
@@ -195,6 +191,9 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			categoryIdMap);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<UserAndCouponResponseDTO> findCouponByOrder(
 		Long userId, List<Long> bookIds, List<Long> categoryIds,  BigDecimal bookPrice) {
@@ -212,7 +211,9 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		return userAndCouponRepository.findCouponByOrder(userId, bookIdMap, categoryIdMap, bookIds, categoryIds, bookPrice);
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<UserAndCouponResponseDTO> findCouponByCartOrder(
 		Long userId, List<GetBookByOrderCouponResponse> bookDetails) {
@@ -222,9 +223,9 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		return userAndCouponRepository.findCouponByCartOrder(userId, bookIdMap, categoryIdMap, bookDetails);
 	}
 
-
-
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void updateCouponAfterPayment(Long userAndCouponId) {
 		Optional<UserAndCoupon> optionalUserAndCoupon = userAndCouponRepository.findById(userAndCouponId);
@@ -238,9 +239,9 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 		}
 	}
 
-
-
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public UserAndCouponOrderResponseDTO findUserAndCouponsById(Long couponId) {
 		UserAndCoupon userAndCoupon = userAndCouponRepository.findById(couponId).orElse(null);
@@ -256,7 +257,6 @@ public class UserAndCouponServiceImpl implements UserAndCouponService {
 			userAndCoupon.getCouponPolicy().getType()
 		);
 	}
-
 }
 
 
