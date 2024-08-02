@@ -29,9 +29,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-
-
-
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author 이기훈
@@ -39,15 +37,10 @@ import jakarta.validation.Valid;
  */
 @Tag(name = "CouponPolicy", description = "쿠폰 정책관련 API")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/coupons/policies")
 public class CouponPolicyController {
 	private final CouponPolicyService couponPolicyService;
-
-	public CouponPolicyController(CouponPolicyService couponPolicyService) {
-		this.couponPolicyService = couponPolicyService;
-	}
-
-
 
 	/**
 	 * 웰컴쿠폰 정책을 생성하는 컨트롤러

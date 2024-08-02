@@ -23,28 +23,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-
+import lombok.RequiredArgsConstructor;
 
 /**
- * 쿠폰 템플릿과 관련된 API를 제공하는 컨트롤러입니다.
- * 쿠폰 템플릿 생성 및 조회를 위한 엔드포인트를 제공합니다.
- *
  * @author 이기훈
+ * 쿠폰 템플릿과 관련된 API 를 제공하는 컨트롤러입니다.
+ * 쿠폰 템플릿 생성 및 조회를 위한 엔드포인트를 제공합니다.
  */
 @Tag(name = "CouponTemplate", description = "쿠폰템플릿관련 API")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/coupons")
 public class CouponTemplateController {
-
-	@Autowired
 	private final CouponTemplateService couponTemplateService;
-
-	public CouponTemplateController(CouponTemplateService couponTemplateService) {
-		this.couponTemplateService = couponTemplateService;
-	}
-
-
-
 
 	/**
 	 * 새로운 쿠폰 템플릿을 생성합니다.
@@ -64,7 +55,6 @@ public class CouponTemplateController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-
 	/**
 	 * 유저 기준으로 페이징된 모든 쿠폰 템플릿을 조회합니다.
 	 *
@@ -80,8 +70,6 @@ public class CouponTemplateController {
 	public ResponseEntity<Page<CouponTemplateResponseDTO>> getAllCouponTemplatesByUserPaging(@Parameter(description = "페이지 수, 페이지 사이즈", required = false) @PageableDefault(page = 1, size = 3)Pageable pageable) {
 		Page<CouponTemplateResponseDTO> coupons = couponTemplateService.getAllCouponTemplatesByUserPaging(pageable);
 		return ResponseEntity.status(HttpStatus.OK).body(coupons);
-
-
 	}
 
 	/**
@@ -103,8 +91,5 @@ public class CouponTemplateController {
 		Page<CouponTemplateResponseDTO> coupons = couponTemplateService.getAllCouponTemplatesByManagerPaging(pageable);
 		return ResponseEntity.status(HttpStatus.OK).body(coupons);
 	}
-
-
-
 
 }

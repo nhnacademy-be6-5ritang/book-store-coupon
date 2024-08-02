@@ -13,10 +13,8 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.GetBookB
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 
 /**
+ * @author 이기훈
  * 사용자와 쿠폰 관련 데이터에 대한 커스텀 리포지토리 인터페이스입니다.
- * <p>
- * 이 인터페이스는 사용자와 쿠폰 관련 데이터를 조회하기 위한 메소드들을 정의하고 있습니다.
- * </p>
  */
 public interface CustomUserAndCouponRepository {
 

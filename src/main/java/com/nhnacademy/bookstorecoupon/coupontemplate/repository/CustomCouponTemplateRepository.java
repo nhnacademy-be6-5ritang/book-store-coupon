@@ -10,10 +10,9 @@ import com.nhnacademy.bookstorecoupon.categorycoupon.domain.entity.CategoryCoupo
 import com.nhnacademy.bookstorecoupon.coupontemplate.domain.dto.response.CouponTemplateResponseDTO;
 
 /**
+ * @author 이기훈
  * 쿠폰 템플릿과 관련된 사용자 정의 데이터 접근 레이어 인터페이스입니다.
  * 이 인터페이스는 사용자와 관리자가 페이징된 쿠폰 템플릿을 조회할 수 있도록 하는 메소드를 제공합니다.
- *
- * @author 이기훈
  */
 public interface CustomCouponTemplateRepository  {
 	/**
@@ -39,6 +38,4 @@ public interface CustomCouponTemplateRepository  {
 	 Page<CouponTemplateResponseDTO> findAllTemplatesByManagerPaging(Pageable pageable,
 		 Map<Long, BookCoupon.BookInfo> bookIdMap,
 		 Map<Long, CategoryCoupon.CategoryInfo> categoryIdMap);
-
-
 }

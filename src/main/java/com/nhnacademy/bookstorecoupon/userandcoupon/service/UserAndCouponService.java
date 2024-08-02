@@ -11,13 +11,10 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndC
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.response.UserAndCouponResponseDTO;
 
 /**
+ * @author 이기훈
  * 사용자와 쿠폰 관련 비즈니스 로직을 정의하는 서비스 인터페이스입니다.
- * <p>
- * 이 인터페이스는 사용자와 쿠폰 간의 상호작용을 관리하며, 쿠폰 발행, 조회, 업데이트 등의 다양한 기능을 제공합니다.
- * </p>
  */
 public interface UserAndCouponService {
-
 
     /**
      * 특정 사용자에게 웰컴 쿠폰을 발행합니다.
@@ -25,9 +22,6 @@ public interface UserAndCouponService {
      * @param userId 쿠폰을 발행할 사용자 ID
      */
     void createUserWelcomeCouponIssue(Long userId);
-
-
-
 
     /**
      * 특정 사용자에 대한 페이징된 쿠폰 목록을 조회합니다.
@@ -50,17 +44,11 @@ public interface UserAndCouponService {
 
     /**
      * 만료된 쿠폰을 처리합니다.
-     * <p>
-     * 만료된 쿠폰을 찾아서 적절한 처리를 수행합니다. 예를 들어, 쿠폰을 비활성화하거나 삭제하는 작업이 포함될 수 있습니다.
-     * </p>
      */
     void findExpiredCoupons();
 
     /**
      * 생일 쿠폰을 발행합니다.
-     * <p>
-     * 사용자 생일에 맞춰 생일 쿠폰을 발행하는 작업을 수행합니다.
-     * </p>
      */
     void issueBirthdayCoupon();
 
@@ -75,7 +63,6 @@ public interface UserAndCouponService {
      */
     List<UserAndCouponResponseDTO> findCouponByOrder(Long userId, List<Long> bookIds, List<Long> categoryIds, BigDecimal bookPrice);
 
-
     /**
      * 장바구니 주문에 대해 사용할 수 있는 쿠폰을 조회합니다.
      *
@@ -84,8 +71,6 @@ public interface UserAndCouponService {
      * @return 장바구니 주문에 대해 사용할 수 있는 쿠폰 목록
      */
     List<UserAndCouponResponseDTO> findCouponByCartOrder(Long userId, List<GetBookByOrderCouponResponse> bookDetails);
-
-
 
     /**
      * 결제 후 쿠폰을 사용됨 상태로 업데이트합니다.

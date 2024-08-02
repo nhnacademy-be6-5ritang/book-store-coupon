@@ -18,30 +18,22 @@ import com.nhnacademy.bookstorecoupon.userandcoupon.domain.dto.request.CouponIss
 import com.nhnacademy.bookstorecoupon.userandcoupon.domain.entity.UserAndCoupon;
 import com.nhnacademy.bookstorecoupon.userandcoupon.repository.UserAndCouponRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 
 
 /**
+ * @author 이기훈
  * 쿠폰 발급을 처리하는 리스너입니다.
  * 메시지를 수신하여 쿠폰 템플릿을 조회하고, 쿠폰 발급 및 수량 업데이트를 수행합니다.
- *
- * @author 이기훈
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CouponIssuanceListener implements MessageListener {
-
     private final UserAndCouponRepository userAndCouponRepository;
     private final CouponTemplateRepository couponTemplateRepository;
-
-    public CouponIssuanceListener(UserAndCouponRepository userAndCouponRepository,
-        CouponTemplateRepository couponTemplateRepository
-    ) {
-        this.userAndCouponRepository = userAndCouponRepository;
-        this.couponTemplateRepository = couponTemplateRepository;
-    }
-
 
     /**
      * 메시지를 수신하여 쿠폰 발급을 처리합니다.
