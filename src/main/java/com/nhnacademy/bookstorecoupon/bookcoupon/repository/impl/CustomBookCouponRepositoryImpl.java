@@ -9,13 +9,15 @@ import com.nhnacademy.bookstorecoupon.bookcoupon.repository.CustomBookCouponRepo
 import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.QCouponPolicy;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class CustomBookCouponRepositoryImpl implements CustomBookCouponRepository {
 	private final JPAQueryFactory queryFactory;
-
-	public CustomBookCouponRepositoryImpl(JPAQueryFactory queryFactory) {
-		this.queryFactory = queryFactory;
-	}
-
+	
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	public Map<Long, BookCoupon.BookInfo> fetchBookIdMap() {
 		QCouponPolicy couponPolicy = QCouponPolicy.couponPolicy;
@@ -32,6 +34,5 @@ public class CustomBookCouponRepositoryImpl implements CustomBookCouponRepositor
 				tuple -> new BookCoupon.BookInfo(tuple.get(1, Long.class), tuple.get(2, String.class))
 			));
 	}
-
 
 }
