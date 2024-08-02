@@ -9,11 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class UserStatus {
-
-
 	private Long id;
-
-
 	private String userStatusName;
 
 	@Builder

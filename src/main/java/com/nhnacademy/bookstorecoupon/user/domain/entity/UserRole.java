@@ -7,12 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class UserRole {
-
 	private Long id;
-
-
 	private User user;
-
 	private Role role;
 
 	@Builder
