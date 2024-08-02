@@ -44,7 +44,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	@Override
 	public void issueWelcomeCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
-
 		couponPolicyRepository.save(couponPolicy);
 	}
 
@@ -55,7 +54,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	public void issueBirthdayCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
 		couponPolicyRepository.save(couponPolicy);
-
 	}
 
 	/**
@@ -71,7 +69,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 			.bookTitle(requestDTO.bookTitle())
 			.couponPolicy(couponPolicy)
 			.build());
-
 	}
 
 	/**
@@ -84,7 +81,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 		couponPolicyRepository.save(couponPolicy);
 		categoryCouponRepository.save(CategoryCoupon.builder().categoryId(requestDTO.categoryId()).categoryName(
 			requestDTO.categoryName()).couponPolicy(couponPolicy).build());
-
 	}
 
 	/**
@@ -93,9 +89,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 	@Override
 	public void issueDiscountCoupon(CouponPolicyRequestDTO requestDTO) {
 		CouponPolicy couponPolicy = CouponPolicy.createFromRequestDTO(requestDTO);
-
 		couponPolicyRepository.save(couponPolicy);
-
 	}
 
 	/**

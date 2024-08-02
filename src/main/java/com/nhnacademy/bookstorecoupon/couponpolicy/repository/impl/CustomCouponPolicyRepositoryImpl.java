@@ -16,12 +16,11 @@ import com.nhnacademy.bookstorecoupon.couponpolicy.domain.entity.QCouponPolicy;
 import com.nhnacademy.bookstorecoupon.couponpolicy.repository.CustomCouponPolicyRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class CustomCouponPolicyRepositoryImpl implements CustomCouponPolicyRepository {
 	private final JPAQueryFactory queryFactory;
-
-	public CustomCouponPolicyRepositoryImpl(JPAQueryFactory queryFactory) {
-		this.queryFactory = queryFactory;
-	}
 
 	/**
 	 *{@inheritDoc}
